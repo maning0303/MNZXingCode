@@ -9,9 +9,9 @@
     4：历史记录（只放了个按钮，功能未实现）
     
 #####*截图:
-    ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png "首页面")  \<br>
-    ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png "二维码扫描页面") \<br>
-    ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/003.png "相册页面") \<br>
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/003.png)
   
 #####使用方法:  
     直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用了！

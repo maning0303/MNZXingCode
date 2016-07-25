@@ -189,7 +189,7 @@ public class CaptureActivity extends Activity implements Callback {
         Intent wrapperIntent = Intent.createChooser(innerIntent, "选择二维码图片");
 
         CaptureActivity.this
-                .startActivityForResult(wrapperIntent, Constants.ScanPhotosRequestCode);
+                .startActivityForResult(wrapperIntent, ZXingConstants.ScanPhotosRequestCode);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class CaptureActivity extends Activity implements Callback {
 
             switch (requestCode) {
 
-                case Constants.ScanPhotosRequestCode:
+                case ZXingConstants.ScanPhotosRequestCode:
 
                     String[] proj = {MediaStore.Images.Media.DATA};
                     // 获取选中图片的路径
@@ -243,8 +243,8 @@ public class CaptureActivity extends Activity implements Callback {
                                 // 数据返回
                                 String recode = recode(result.toString());
                                 Intent data = new Intent();
-                                data.putExtra(Constants.ScanResult, recode);
-                                setResult(Constants.ScanRequestCode, data);
+                                data.putExtra(ZXingConstants.ScanResult, recode);
+                                setResult(ZXingConstants.ScanRequestCode, data);
                                 finish();
                             }
                         }
@@ -422,8 +422,8 @@ public class CaptureActivity extends Activity implements Callback {
         String recode = recode(result.toString());
         // 数据返回
         Intent data = new Intent();
-        data.putExtra(Constants.ScanResult, recode);
-        setResult(Constants.ScanRequestCode, data);
+        data.putExtra(ZXingConstants.ScanResult, recode);
+        setResult(ZXingConstants.ScanRequestCode, data);
         finish();
     }
 

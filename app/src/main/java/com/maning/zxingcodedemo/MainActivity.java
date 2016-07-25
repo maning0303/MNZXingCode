@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.baozi.Zxing.CaptureActivity;
-import com.baozi.Zxing.Constants;
+import com.baozi.Zxing.ZXingConstants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public void scanCode(View view) {
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
-        startActivityForResult(intent, 100);
+        startActivityForResult(intent, ZXingConstants.ScanRequestCode);
     }
 
     @Override
@@ -36,11 +36,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         switch (requestCode) {
-            case Constants.ScanRequestCode:
+            case ZXingConstants.ScanRequestCode:
                 /**
                  * 拿到解析完成的字符串
                  */
-                textView.setText(data.getStringExtra("result"));
+                String result = data.getStringExtra(ZXingConstants.ScanResult);
+                textView.setText(result);
                 break;
         }
     }

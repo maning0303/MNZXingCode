@@ -4,7 +4,7 @@ package com.baozi.Zxing;
  * Created by maning on 16/1/21.
  * 常量类
  */
-public class Constants {
+public class ZXingConstants {
 
     //开启二维码扫描的请求码
     public static final int ScanRequestCode = 0x003;

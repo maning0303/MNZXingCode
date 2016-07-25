@@ -16,7 +16,7 @@
 #####使用方法:  
     直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用！
     
-    ``` java
+``` java
     1.跳转：
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
@@ -38,7 +38,7 @@
                     break;
             }
         }
-    ``` 
+``` 
 
 #####关于代码：
     例子中的代码用的是Baozi的，稍微改了点，还有扫描框用的徐医生大神的扫描框（自己太懒，感觉那个挺好看的）

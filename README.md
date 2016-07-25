@@ -7,6 +7,11 @@
     2：相册中选取图片
     3：开启闪光灯
     4：历史记录（只放了个按钮，功能未实现）
+    
+#####*截图:
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/003.png)
   
 #####使用方法:  
     直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用了！

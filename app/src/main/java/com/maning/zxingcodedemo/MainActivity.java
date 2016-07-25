@@ -1,12 +1,11 @@
 package com.maning.zxingcodedemo;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baozi.Zxing.CaptureActivity;
 import com.baozi.Zxing.ZXingConstants;

@@ -14,6 +14,9 @@ public class ZXingConstants {
     public static final String ScanResult = "ScanResult";
     //是否显示历史信息
     public static final String ScanIsShowHistory = "ScanIsShowHistory";
+    //二维码扫描点击历史记录回调回去
+    public static final String ScanHistoryResult = "ScanHistoryResult";
+    public static final int ScanHistoryResultCode = 0x002;
 
 
 }

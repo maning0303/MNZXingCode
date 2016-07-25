@@ -61,7 +61,6 @@ import java.util.Vector;
  */
 public class CaptureActivity extends Activity implements Callback, OnClickListener {
 
-
     private CaptureActivityHandler handler;
     private ViewfinderView viewfinderView;
     private boolean hasSurface;
@@ -134,7 +133,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
         //默认隐藏历史记录
         mo_scanner_histroy.setVisibility(View.GONE);
-        if(isShowHistory){
+        if (isShowHistory) {
             mo_scanner_histroy.setVisibility(View.VISIBLE);
         }
 
@@ -357,7 +356,6 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
             translateAnimation.cancel();
             translateAnimation = null;
         }
-        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -539,15 +537,19 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.mo_scanner_back){
-            this.finish();;
-        }else if(id == R.id.mo_scanner_photo){
+        if (id == R.id.mo_scanner_back) {
+            this.finish();
+        } else if (id == R.id.mo_scanner_photo) {
             photo();
-        }else if(id == R.id.mo_scanner_light){
+        } else if (id == R.id.mo_scanner_light) {
             light();
-        }else if(id == R.id.mo_scanner_histroy){
-            //TODO:历史记录
-
+        } else if (id == R.id.mo_scanner_histroy) {
+            // 数据返回
+            Intent data = new Intent();
+            data.putExtra(ZXingConstants.ScanHistoryResult, ZXingConstants.ScanHistoryResult);
+            setResult(ZXingConstants.ScanHistoryResultCode, data);
+            this.finish();
         }
     }
+
 }

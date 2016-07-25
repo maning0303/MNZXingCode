@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public void scanCode(View view) {
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
+        intent.putExtra(ZXingConstants.ScanIsShowHistory,false);
         startActivityForResult(intent, ZXingConstants.ScanRequestCode);
     }
 

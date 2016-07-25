@@ -12,6 +12,8 @@ public class ZXingConstants {
     public static final int ScanPhotosRequestCode = 0x001;
     //二维码扫描返回的Intent结果
     public static final String ScanResult = "ScanResult";
+    //是否显示历史信息
+    public static final String ScanIsShowHistory = "ScanIsShowHistory";
 
 
 }

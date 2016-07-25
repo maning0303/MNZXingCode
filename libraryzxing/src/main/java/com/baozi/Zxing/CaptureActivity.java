@@ -53,12 +53,13 @@ import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Vector;
 
+
 /**
  * 拍照的Activity
  *
  * @author Baozi
  */
-public class CaptureActivity extends Activity implements Callback {
+public class CaptureActivity extends Activity implements Callback, OnClickListener {
 
 
     private CaptureActivityHandler handler;
@@ -79,6 +80,7 @@ public class CaptureActivity extends Activity implements Callback {
     private ImageView mo_scanner_photo;
     private ImageView mo_scanner_light;
     private ImageView mo_scanner_histroy;
+    private boolean isShowHistory;
 
     /**
      * Called when the activity is first created.
@@ -86,8 +88,10 @@ public class CaptureActivity extends Activity implements Callback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.mo_scanner_main);
+
+        initIntent();
+
         // 初始化 CameraManager
         CameraManager.init(getApplication());
 
@@ -107,6 +111,13 @@ public class CaptureActivity extends Activity implements Callback {
 
     }
 
+    private void initIntent() {
+
+        Intent intent = getIntent();
+        isShowHistory = intent.getBooleanExtra(ZXingConstants.ScanIsShowHistory, false);
+
+    }
+
     private void initView() {
         viewfinderView = (ViewfinderView) findViewById(R.id.mo_scanner_viewfinder_view);
         scanLine = (ImageView) findViewById(R.id.capture_scan_line);
@@ -116,35 +127,16 @@ public class CaptureActivity extends Activity implements Callback {
         mo_scanner_histroy = (ImageView) findViewById(R.id.mo_scanner_histroy);
 
 
-        mo_scanner_histroy.setOnClickListener(
-                new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(CaptureActivity.this, "历史记录", Toast.LENGTH_SHORT).show();
-                    }
-                });
-        mo_scanner_back.setOnClickListener(
-                new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                });
-        mo_scanner_photo.setOnClickListener(
-                new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        photo();
-                    }
-                });
-        mo_scanner_light.setOnClickListener(
-                new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // 闪光灯
-                        light();
-                    }
-                });
+        mo_scanner_histroy.setOnClickListener(this);
+        mo_scanner_back.setOnClickListener(this);
+        mo_scanner_photo.setOnClickListener(this);
+        mo_scanner_light.setOnClickListener(this);
+
+        //默认隐藏历史记录
+        mo_scanner_histroy.setVisibility(View.GONE);
+        if(isShowHistory){
+            mo_scanner_histroy.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -365,6 +357,7 @@ public class CaptureActivity extends Activity implements Callback {
             translateAnimation.cancel();
             translateAnimation = null;
         }
+        handler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -541,5 +534,20 @@ public class CaptureActivity extends Activity implements Callback {
             }
         }
         return yuv;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if(id == R.id.mo_scanner_back){
+            this.finish();;
+        }else if(id == R.id.mo_scanner_photo){
+            photo();
+        }else if(id == R.id.mo_scanner_light){
+            light();
+        }else if(id == R.id.mo_scanner_histroy){
+            //TODO:历史记录
+
+        }
     }
 }

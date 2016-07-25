@@ -13,6 +13,7 @@
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png)
 
 ## 如何添加
+###Gradle添加：
 #### 1.在Project的build.gradle中添加仓库地址
 
 ``` gradle
@@ -27,17 +28,19 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	      compile 'com.github.maning0303:SwitcherView:v1.0.0'
+	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0'
 	}
 ```
-##使用方法:  
 
-    （或者直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用）
+### 源码添加：
+#### 直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用
+
+##使用方法:  
     
 ``` java
         1.跳转：
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-            //判断是不是显示历史记录按钮
+            //是不是显示历史记录按钮
             intent.putExtra(ZXingConstants.ScanIsShowHistory,true);
             startActivityForResult(intent, ZXingConstants.ScanRequestCode);
         

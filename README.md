@@ -17,11 +17,12 @@
     直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用！
     
 ``` java
-    1.跳转：
+        1.跳转：
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
         startActivityForResult(intent, ZXingConstants.ScanRequestCode);
-    2.获取结果：
+        
+        2.获取结果：
         @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -34,7 +35,6 @@
                     * 拿到解析完成的字符串
                     */
                     String result = data.getStringExtra(ZXingConstants.ScanResult);
-                    textView.setText(result);
                     break;
             }
         }

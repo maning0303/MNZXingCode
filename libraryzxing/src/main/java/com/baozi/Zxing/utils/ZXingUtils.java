@@ -18,8 +18,6 @@ import java.util.Hashtable;
  */
 public class ZXingUtils {
 
-    private static int IMAGE_HALFWIDTH = 200;//宽度值，影响中间图片大小
-
     /**
      * 生成二维码，默认大小为500*500
      *
@@ -87,7 +85,7 @@ public class ZXingUtils {
      */
     public static Bitmap createQRCodeWithLogo(String text, int size, Bitmap mBitmap) {
         try {
-            IMAGE_HALFWIDTH = size/10;
+            int IMAGE_HALFWIDTH = size/10;
             Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
             hints.put(EncodeHintType.MARGIN, 0);  //边距

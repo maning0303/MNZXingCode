@@ -76,7 +76,7 @@
             
         3：生成二维码：
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
-        	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logo);
+        	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
 ``` 
 
 #####关于代码：

@@ -3,10 +3,11 @@
 #（Android）一个关于二维码扫描的Demo
 
 ##功能：
-    1：二维码扫描
-    2：相册中选取图片
-    3：开启闪光灯
-    4：历史记录（需要自己实现：ActivityForResult）
+    1：生成二维码（带Logo）
+    2：二维码扫描
+    3：相册中选取图片
+    4：开启闪光灯
+    5：历史记录（需要自己实现：ActivityForResult）
     
 ##截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png)
@@ -28,7 +29,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0'
+	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0.1'
 	}
 ```
 
@@ -72,6 +73,10 @@
                         break;
                 }
             }
+            
+        3：生成二维码：
+        	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
+        	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logo);
 ``` 
 
 #####关于代码：

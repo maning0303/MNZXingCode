@@ -17,4 +17,28 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="扫描结果显示..." />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="createQRImage"
+        android:text="生成二维码" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="#ff00ff"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher" />
+
 </LinearLayout>

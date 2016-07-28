@@ -39,6 +39,10 @@
 ##使用方法:  
     
 ``` java
+	<!--权限添加-->
+    	<uses-permission android:name="android.permission.CAMERA" />
+    	<uses-permission android:name="android.permission.FLASHLIGHT" />
+
         1.跳转：
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
             //是不是显示历史记录按钮
@@ -78,7 +82,10 @@
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
 ``` 
+##注意：
+		如果你targetSdkVersion >= 23 ，进入前先申请相机权限，不然不能扫描；
 
-#####关于代码：
+
+##关于代码：
     例子中的代码用的是Baozi的，稍微改了点
     感谢开源的大神们；

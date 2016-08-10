@@ -42,6 +42,7 @@
 	<!--权限添加-->
     	<uses-permission android:name="android.permission.CAMERA" />
     	<uses-permission android:name="android.permission.FLASHLIGHT" />
+        <uses-permission android:name="android.permission.VIBRATE" />
 
         1.跳转：
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);

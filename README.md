@@ -29,7 +29,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0.2'
+	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0.3'
 	}
 ```
 
@@ -39,10 +39,6 @@
 ##使用方法:  
     
 ``` java
-	<!--权限添加-->
-    	<uses-permission android:name="android.permission.CAMERA" />
-    	<uses-permission android:name="android.permission.FLASHLIGHT" />
-        <uses-permission android:name="android.permission.VIBRATE" />
 
         1.跳转：
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);

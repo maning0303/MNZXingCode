@@ -63,9 +63,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
     private ImageView mo_scanner_light;
     private boolean isShowHistory;
 
-    /**
-     * Called when the activity is first created.
-     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +78,6 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
-
-        //初始化动画
-        initAnimation();
-
 
     }
 
@@ -124,6 +118,9 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
         if (isShowHistory) {
             mo_scanner_histroy.setVisibility(View.VISIBLE);
         }
+
+        //初始化动画
+        initAnimation();
 
     }
 
@@ -187,7 +184,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
     private void analysisImage(final String photoPath) {
         if (TextUtils.isEmpty(photoPath)) {
-            Toast.makeText(this, "获取图片失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.libraryzxing_get_pic_fail, Toast.LENGTH_SHORT).show();
             return;
         }
         new Thread(new Runnable() {
@@ -198,7 +195,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
                     @Override
                     public void run() {
                         if (TextUtils.isEmpty(result)) {
-                            Toast.makeText(CaptureActivity.this, "图片格式错误", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CaptureActivity.this, R.string.libraryzxing_get_pic_fail, Toast.LENGTH_SHORT).show();
                         } else {
                             // 数据返回
                             Intent data = new Intent();
@@ -298,8 +295,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
     }
 
     public void drawViewfinder() {
-        // viewfinderView.drawViewfinder();
-
+         viewfinderView.drawViewfinder();
     }
 
     public void handleDecode(final Result result, Bitmap barcode) {
@@ -315,9 +311,6 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
     private void initBeepSound() {
         if (playBeep && mediaPlayer == null) {
-            // The volume on STREAM_SYSTEM is not adjustable, and users found it
-            // too loud,
-            // so we now play on the music stream.
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -349,9 +342,6 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
         }
     }
 
-    /**
-     * When the beep has finished playing, rewind to queue up another one.
-     */
     private final OnCompletionListener beepListener = new OnCompletionListener() {
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);

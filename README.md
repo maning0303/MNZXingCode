@@ -84,5 +84,7 @@
 
 
 ##关于代码：
-    例子中的代码用的是Baozi的，稍微改了点
-    感谢开源的大神们；
+    例子中的代码用的是Baozi（很遗憾现在不知道是谁了），在这基础上做了修改；
+    部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+    感谢所有开源的人；
+

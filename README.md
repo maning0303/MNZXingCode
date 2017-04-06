@@ -2,19 +2,19 @@
 
 #（Android）一个关于二维码扫描的Demo
 
-##功能：
+## 功能：
     1：生成二维码（带Logo）
     2：二维码扫描
     3：相册中选取图片
     4：开启闪光灯
     5：历史记录（需要自己实现：ActivityForResult）
     
-##截图:
+## 截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png)
 
 ## 如何添加
-###Gradle添加：
+### Gradle添加：
 #### 1.在Project的build.gradle中添加仓库地址
 
 ``` gradle
@@ -36,7 +36,7 @@
 ### 源码添加：
 #### 直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用
 
-##使用方法:  
+## 使用方法:  
     
 ``` java
 
@@ -79,12 +79,11 @@
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
 ``` 
-##注意：
+## 注意：
 		如果你targetSdkVersion >= 23 ，进入前先申请相机权限，不然不能扫描；
 
 
-##关于代码：
-    例子中的代码用的是Baozi（很遗憾现在不知道是谁了），在这基础上做了修改；
+## 关于代码：
     部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
     感谢所有开源的人；
 

@@ -1,6 +1,7 @@
 # ZXingCodeDemo
 
 #（Android）一个关于二维码扫描的Demo
+[![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ## 功能：
     1：生成二维码（带Logo）

@@ -29,7 +29,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:ZXingCodeDemo:V1.0.3'
+	     compile 'com.github.maning0303:MNZXingCode:V1.0.3'
 	}
 ```
 

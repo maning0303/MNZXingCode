@@ -126,6 +126,6 @@
         android:gravity="center_horizontal"
         android:text="将二维码放入框内，即可自动扫描"
         android:textColor="#ffffff"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

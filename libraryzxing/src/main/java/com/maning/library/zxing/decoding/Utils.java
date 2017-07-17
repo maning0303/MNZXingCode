@@ -1,4 +1,4 @@
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import android.content.ContentUris;
 import android.content.Context;

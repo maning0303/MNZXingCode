@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -23,7 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.baozi.Zxing.CaptureActivity;
+import com.maning.library.zxing.CaptureActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;

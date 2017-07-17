@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:background="#00000000">
 
-        <com.baozi.Zxing.view.ViewfinderView
+        <com.maning.library.zxing.view.ViewfinderView
             android:id="@+id/mo_scanner_viewfinder_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

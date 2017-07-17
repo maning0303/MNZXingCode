@@ -13,11 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baozi.Zxing.CaptureActivity;
-import com.baozi.Zxing.ZXingConstants;
-import com.baozi.Zxing.utils.ZXingUtils;
+import com.maning.library.zxing.CaptureActivity;
+import com.maning.library.zxing.ZXingConstants;
+import com.maning.library.zxing.utils.ZXingUtils;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
 
@@ -42,32 +42,31 @@ public class MainActivity extends AppCompatActivity{
     public void scanCode(View view) {
         Intent intent = new Intent(MainActivity.this,
                 CaptureActivity.class);
-        intent.putExtra(ZXingConstants.ScanIsShowHistory,true);
-        startActivityForResult(intent, ZXingConstants.ScanRequestCode);
+        intent.putExtra(ZXingConstants.ScanIsShowHistory, true);
+        startActivityForResult(intent, 0x001);
     }
-
 
 
     public void createQRImage(View view) {
         String str = editText.getText().toString();
 
-        if(TextUtils.isEmpty(str)){
-            Toast.makeText(this,"字符串不能为空",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(str)) {
+            Toast.makeText(this, "字符串不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Bitmap qrImage;
-        if(checkbox.isChecked()){
-            Bitmap logo = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
-            qrImage = ZXingUtils.createQRCodeWithLogo(str,logo);
-        }else{
+        if (checkbox.isChecked()) {
+            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            qrImage = ZXingUtils.createQRCodeWithLogo(str, logo);
+        } else {
             qrImage = ZXingUtils.createQRImage(str);
         }
 
-        if(qrImage!=null){
+        if (qrImage != null) {
             imageView.setImageBitmap(qrImage);
-        }else{
-            Toast.makeText(this,"生成失败",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "生成失败", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -78,25 +77,18 @@ public class MainActivity extends AppCompatActivity{
         if (data == null) {
             return;
         }
-        switch (requestCode) {
-            case ZXingConstants.ScanRequestCode:
-                if(resultCode == ZXingConstants.ScanRequestCode){
-                    /**
-                     * 拿到解析完成的字符串
-                     */
-                    String result = data.getStringExtra(ZXingConstants.ScanResult);
-                    textView.setText(result);
-                }else if(resultCode == ZXingConstants.ScanHistoryResultCode){
-                    /**
-                     * 历史记录
-                     */
-                    String resultHistory = data.getStringExtra(ZXingConstants.ScanHistoryResult);
-                    if(!TextUtils.isEmpty(resultHistory)){
-                        //自己实现历史页面
-                        startActivity(new Intent(MainActivity.this,HistoryActivity.class));
-                    }
-                }
-                break;
+        if (resultCode == ZXingConstants.ScanRequltCode) {
+            /**
+             * 拿到解析完成的字符串
+             */
+            String result = data.getStringExtra(ZXingConstants.ScanResult);
+            textView.setText(result);
+        } else if (resultCode == ZXingConstants.ScanHistoryResultCode) {
+            /**
+             * 历史记录
+             */
+            //自己实现历史页面
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
         }
     }
 }

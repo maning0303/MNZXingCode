@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.camera;
+package com.maning.library.zxing.camera;
 
 import android.graphics.Point;
 import android.hardware.Camera;

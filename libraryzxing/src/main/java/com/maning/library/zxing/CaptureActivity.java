@@ -1,4 +1,4 @@
-package com.baozi.Zxing;
+package com.maning.library.zxing;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,11 +24,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.baozi.Zxing.camera.CameraManager;
-import com.baozi.Zxing.decoding.CaptureActivityHandler;
-import com.baozi.Zxing.decoding.InactivityTimer;
-import com.baozi.Zxing.utils.ZXingUtils;
-import com.baozi.Zxing.view.ViewfinderView;
+import com.maning.library.zxing.camera.CameraManager;
+import com.maning.library.zxing.decoding.CaptureActivityHandler;
+import com.maning.library.zxing.decoding.InactivityTimer;
+import com.maning.library.zxing.utils.ZXingUtils;
+import com.maning.library.zxing.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.maning.libraryzxing.R;
@@ -200,7 +200,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
                             // 数据返回
                             Intent data = new Intent();
                             data.putExtra(ZXingConstants.ScanResult, result);
-                            setResult(ZXingConstants.ScanRequestCode, data);
+                            setResult(ZXingConstants.ScanRequltCode, data);
                             finish();
                         }
                     }
@@ -305,7 +305,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
         // 数据返回
         Intent data = new Intent();
         data.putExtra(ZXingConstants.ScanResult, recode);
-        setResult(ZXingConstants.ScanRequestCode, data);
+        setResult(ZXingConstants.ScanRequltCode, data);
         finish();
     }
 
@@ -361,7 +361,6 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
         } else if (id == R.id.mo_scanner_histroy) {
             // 数据返回
             Intent data = new Intent();
-            data.putExtra(ZXingConstants.ScanHistoryResult, ZXingConstants.ScanHistoryResult);
             setResult(ZXingConstants.ScanHistoryResultCode, data);
             this.finish();
         }

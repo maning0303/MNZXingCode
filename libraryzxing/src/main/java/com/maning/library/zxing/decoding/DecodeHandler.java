@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import java.util.Hashtable;
 
@@ -24,9 +24,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
-import com.baozi.Zxing.CaptureActivity;
-import com.baozi.Zxing.camera.CameraManager;
-import com.baozi.Zxing.camera.PlanarYUVLuminanceSource;
+import com.maning.library.zxing.CaptureActivity;
+import com.maning.library.zxing.camera.CameraManager;
+import com.maning.library.zxing.camera.PlanarYUVLuminanceSource;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;

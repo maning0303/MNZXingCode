@@ -17,7 +17,7 @@
 
         <!-- sanner -->
         <activity
-            android:name="com.baozi.Zxing.CaptureActivity"
+            android:name="com.maning.library.zxing.CaptureActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"

@@ -1,4 +1,4 @@
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 /*
  * Copyright 2009 ZXing authors

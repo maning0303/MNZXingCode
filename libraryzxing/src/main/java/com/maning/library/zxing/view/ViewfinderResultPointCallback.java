@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.view;
+package com.maning.library.zxing.view;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;

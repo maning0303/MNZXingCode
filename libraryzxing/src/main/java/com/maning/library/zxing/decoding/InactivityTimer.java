@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

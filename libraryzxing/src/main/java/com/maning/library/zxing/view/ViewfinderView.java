@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.view;
+package com.maning.library.zxing.view;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.baozi.Zxing.camera.CameraManager;
+import com.maning.library.zxing.camera.CameraManager;
 import com.google.zxing.ResultPoint;
 
 /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import java.util.Vector;
 
@@ -27,9 +27,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.baozi.Zxing.CaptureActivity;
-import com.baozi.Zxing.camera.CameraManager;
-import com.baozi.Zxing.view.ViewfinderResultPointCallback;
+import com.maning.library.zxing.CaptureActivity;
+import com.maning.library.zxing.camera.CameraManager;
+import com.maning.library.zxing.view.ViewfinderResultPointCallback;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.maning.libraryzxing.R;

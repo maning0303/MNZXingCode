@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.decoding;
+package com.maning.library.zxing.decoding;
 
 import java.util.Arrays;
 import java.util.List;

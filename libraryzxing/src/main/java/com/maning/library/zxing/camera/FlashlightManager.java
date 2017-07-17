@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baozi.Zxing.camera;
+package com.maning.library.zxing.camera;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

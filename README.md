@@ -11,8 +11,8 @@
     5：历史记录（需要自己实现：ActivityForResult）
     
 ## 截图:
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/001.png)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/002.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.png)
 
 ## 如何添加
 ### Gradle添加：
@@ -30,7 +30,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNZXingCode:V1.0.3'
+	     compile 'com.github.maning0303:MNZXingCode:V1.0.5'
 	}
 ```
 
@@ -48,43 +48,34 @@
             startActivityForResult(intent, ZXingConstants.ScanRequestCode);
         
         2.获取结果：
-            @Override
-            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                super.onActivityResult(requestCode, resultCode, data);
-                if (data == null) {
-                    return;
-                }
-                switch (requestCode) {
-                    case ZXingConstants.ScanRequestCode:
-                        if(resultCode == ZXingConstants.ScanRequestCode){
-                            /**
-                             * 拿到解析完成的字符串
-                             */
-                            String result = data.getStringExtra(ZXingConstants.ScanResult);
-                            textView.setText(result);
-                        }else if(resultCode == ZXingConstants.ScanHistoryResultCode){
-                            /**
-                             * 历史记录
-                             */
-                            String resultHistory = data.getStringExtra(ZXingConstants.ScanHistoryResult);
-                            if(!TextUtils.isEmpty(resultHistory)){
-                                //自己实现历史页面
-                                startActivity(new Intent(MainActivity.this,HistoryActivity.class));
-                            }
-                        }
-                        break;
-                }
-            }
+           @Override
+           protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+               super.onActivityResult(requestCode, resultCode, data);
+               if (data == null) {
+                   return;
+               }
+               if (resultCode == ZXingConstants.ScanRequltCode) {
+                   /**
+                    * 拿到解析完成的字符串
+                    */
+                   String result = data.getStringExtra(ZXingConstants.ScanResult);
+                   textView.setText(result);
+               } else if (resultCode == ZXingConstants.ScanHistoryResultCode) {
+                   /**
+                    * 历史记录
+                    */
+                   //自己实现历史页面
+                   startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+               }
+           }
             
         3：生成二维码：
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
-``` 
-## 注意：
-		如果你targetSdkVersion >= 23 ，进入前先申请相机权限，不然不能扫描；
+```
 
 
 ## 关于代码：
-    部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+    里面代码使用baozi的(现在不知道是谁了),感谢开源,部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
     感谢所有开源的人；
 

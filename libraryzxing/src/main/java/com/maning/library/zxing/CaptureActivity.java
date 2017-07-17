@@ -1,7 +1,9 @@
 package com.maning.library.zxing;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +15,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -24,13 +29,13 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
 import com.maning.library.zxing.camera.CameraManager;
 import com.maning.library.zxing.decoding.CaptureActivityHandler;
 import com.maning.library.zxing.decoding.InactivityTimer;
 import com.maning.library.zxing.utils.ZXingUtils;
 import com.maning.library.zxing.view.ViewfinderView;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
 import com.maning.libraryzxing.R;
 
 import java.io.IOException;
@@ -63,6 +68,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
     private ImageView mo_scanner_light;
     private boolean isShowHistory;
 
+    private static final int REQUEST_TAKE_PHOTO_PERMISSION = 111;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,14 +77,34 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
         initIntent();
 
-        // 初始化 CameraManager
-        CameraManager.init(getApplication());
 
         initView();
+        // 初始化 CameraManager
+        CameraManager.init(getApplication());
 
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
+        //权限判断
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    REQUEST_TAKE_PHOTO_PERMISSION);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_TAKE_PHOTO_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //申请成功
+            } else {
+                Toast.makeText(this, "相机权限被拒绝,关闭页面", Toast.LENGTH_SHORT).show();
+                CaptureActivity.this.finish();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void initAnimation() {
@@ -245,7 +271,10 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
 
     @Override
     protected void onDestroy() {
-        inactivityTimer.shutdown();
+        if (inactivityTimer != null) {
+            inactivityTimer.shutdown();
+            inactivityTimer = null;
+        }
         if (translateAnimation != null) {
             translateAnimation.cancel();
             translateAnimation = null;
@@ -295,7 +324,7 @@ public class CaptureActivity extends Activity implements Callback, OnClickListen
     }
 
     public void drawViewfinder() {
-         viewfinderView.drawViewfinder();
+        viewfinderView.drawViewfinder();
     }
 
     public void handleDecode(final Result result, Bitmap barcode) {

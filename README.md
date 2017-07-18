@@ -35,7 +35,7 @@
 ```
 
 ### 源码添加：
-#### 直接拷贝整个modlue：libraryzxing，然后关联到你的项目就可以使用
+#### 直接拷贝整个module：libraryzxing，然后关联到你的项目就可以使用
 
 ## 使用方法:  
     
@@ -76,6 +76,6 @@
 
 
 ## 关于代码：
-    部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+    部分代码采用：  [BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
     感谢所有开源的人；
 

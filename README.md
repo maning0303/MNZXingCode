@@ -76,6 +76,6 @@
 
 
 ## 关于代码：
-    里面代码使用baozi的(现在不知道是谁了),感谢开源,部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+    部分代码采用：[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
     感谢所有开源的人；
 

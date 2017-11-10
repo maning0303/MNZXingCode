@@ -1,9 +1,9 @@
-# ZXingCodeDemo
+#    ZXingCodeDemo
 
-#（Android）快速集成二维码扫描，使用最新版本的zxing代码提取（2017.11.10）
+#  快速集成二维码扫描，使用最新版本的zxing代码提取（2017.11.10）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
-## 功能：
+##  功能：
     1：生成二维码（带Logo）
     2：二维码扫描
     3：相册中选取图片识别
@@ -13,7 +13,7 @@
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpg)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpg)
-## 最新版本zxing:
+## 最新版本zxing（2017.11.10）:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_004.png)
 
 ## 如何添加
@@ -37,7 +37,7 @@
 ```
 
 ### 源码添加：
-#### 直接拷贝整个module：libraryzxing，然后关联到你的项目就可以使用
+#### 直接拷贝整个module：libraryzxing 和 libraryzxingcore，然后关联到你的项目就可以使用
 
 ## 使用方法:
 
@@ -89,7 +89,8 @@
 
 
 ## 感谢：
-    [zxing](https://github.com/zxing/zxing)
-    [BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
-    感谢所有开源的人；
+
+[zxing](https://github.com/zxing/zxing)
+[BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+感谢所有开源的人；
 

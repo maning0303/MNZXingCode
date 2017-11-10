@@ -1,26 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ Copyright (C) 2008 ZXing authors
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.maning.libraryzxing">
+    package="com.google.zxing.client.android">
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
-    <!--权限添加-->
+    <!--摄像头-->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <!--震动-->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!--闪光灯-->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
+    <uses-feature android:name="android.hardware.camera.any" />
 
-        <!-- sanner -->
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+
+    <application android:allowBackup="true">
+
         <activity
-            android:name="com.maning.library.zxing.CaptureActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:name=".CaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:theme="@style/MNScanCaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
     </application>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">libraryZxing</string>
-    <string name="libraryzxing_get_pic_fail">获取图片失败</string>
-    <string name="libraryzxing_analysis_pic_fail">图片格式错误</string>
-</resources>

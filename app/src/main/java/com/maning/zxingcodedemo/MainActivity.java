@@ -13,9 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.maning.library.zxing.CaptureActivity;
-import com.maning.library.zxing.ZXingConstants;
-import com.maning.library.zxing.utils.ZXingUtils;
+import com.google.zxing.client.android.CaptureActivity;
+import com.google.zxing.client.android.utils.ZXingUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,11 +39,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void scanCode(View view) {
-
-        Intent intent = new Intent(MainActivity.this,
-                CaptureActivity.class);
-        intent.putExtra(ZXingConstants.ScanIsShowHistory, true);
-        startActivityForResult(intent, 0x001);
+        Intent intent = new Intent(this, CaptureActivity.class);
+        //是否显示相册按钮
+        intent.putExtra(CaptureActivity.INTENT_KEY_PHOTO_FLAG, true);
+        //识别声音
+        intent.putExtra(CaptureActivity.INTENT_KEY_BEEP_FLAG, true);
+        //识别震动
+        intent.putExtra(CaptureActivity.INTENT_KEY_VIBRATE_FLAG, true);
+        //扫码框的颜色
+        intent.putExtra(CaptureActivity.INTENT_KEY_SCSNCOLOR, "#FFFF00");
+        //扫码框上面的提示文案
+        intent.putExtra(CaptureActivity.INTENT_KEY_HINTTEXT, "请将二维码放入框中....");
+        startActivityForResult(intent, 1000);
     }
 
 
@@ -75,21 +81,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data == null) {
-            return;
+        if (requestCode == 1000) {
+            if (data == null) {
+                return;
+            }
+            switch (resultCode) {
+                case CaptureActivity.RESULT_SUCCESS:
+                    String resultSuccess = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_SUCCESS);
+                    showToast(resultSuccess);
+                    textView.setText(resultSuccess);
+                    break;
+                case CaptureActivity.RESULT_FAIL:
+                    String resultError = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_ERROR);
+                    showToast(resultError);
+                    break;
+                case CaptureActivity.RESULT_CANCLE:
+                    showToast("取消扫码");
+                    break;
+            }
         }
-        if (resultCode == ZXingConstants.ScanRequltCode) {
-            /**
-             * 拿到解析完成的字符串
-             */
-            String result = data.getStringExtra(ZXingConstants.ScanResult);
-            textView.setText(result);
-        } else if (resultCode == ZXingConstants.ScanHistoryResultCode) {
-            /**
-             * 历史记录
-             */
-            //自己实现历史页面
-            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
-        }
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

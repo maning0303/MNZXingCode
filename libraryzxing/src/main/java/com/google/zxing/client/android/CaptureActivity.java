@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,7 @@ import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
 import com.google.zxing.client.android.utils.ZXingUtils;
 
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -91,6 +94,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private TextView tv_scan_light;
     private LinearLayout btn_close;
     private LinearLayout btn_photo;
+    private RelativeLayout btn_dialog_bg;
     //闪光灯是否打开
     private boolean is_light_on = false;
     private boolean beepFlag = true;
@@ -120,6 +124,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
         btn_close = (LinearLayout) findViewById(R.id.btn_close);
         btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
+        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
+        btn_dialog_bg.setVisibility(View.GONE);
 
         //初始化相关参数
         initIntent();
@@ -159,6 +165,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 getImageFromAlbum();
             }
         });
+
+        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void initIntent() {
@@ -183,36 +196,60 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      * 获取相册中的图片
      */
     public void getImageFromAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");//相片类型
+        Intent intent = new Intent();
+        /* 开启Pictures画面Type设定为image */
+        intent.setType("image/*");
+        /* 使用Intent.ACTION_GET_CONTENT这个Action */
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_PICK);
+        /* 取得相片后返回本画面 */
         startActivityForResult(intent, 1000);
+        //开始转Dialog
+        btn_dialog_bg.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //去相册选择图片
         if (requestCode == 1000) {
-            if (data == null) return;
-            Uri uri = data.getData();
-            String[] projection = {MediaStore.Images.Media.DATA};
-            Cursor cursor = this.getContentResolver().query(uri, projection, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            Log.i(TAG, "图片的Path:" + path);
-
-            String decodeQRCodeFromBitmap = ZXingUtils.syncDecodeQRCode(path);
-
-            Log.i(TAG, "图片的decodeQRCode:" + decodeQRCodeFromBitmap);
-
-            if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
-                Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
-            } else {
-                finishSuccess(decodeQRCodeFromBitmap);
+            if (data == null){
+                //隐藏Dialog
+                btn_dialog_bg.setVisibility(View.GONE);
+                return;
             }
-
+            final Uri uri = data.getData();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap bitmapChoose = ZXingUtils.decodeUriAsBitmap(CaptureActivity.this, uri);
+                    if (bitmapChoose != null) {
+                        final String decodeQRCodeFromBitmap = ZXingUtils.syncDecodeQRCode(bitmapChoose);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btn_dialog_bg.setVisibility(View.GONE);
+                                Log.i(TAG, "图片的decodeQRCode:" + decodeQRCodeFromBitmap);
+                                if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
+                                    Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    finishSuccess(decodeQRCodeFromBitmap);
+                                }
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btn_dialog_bg.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                }
+            }).start();
         }
     }
+
 
     @Override
     protected void onResume() {

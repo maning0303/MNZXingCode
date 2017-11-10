@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto">
 
     <SurfaceView
         android:id="@+id/preview_view"
@@ -90,6 +91,41 @@
                 android:text="相册"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/btn_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/mn_scan_dialog_bg"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.google.zxing.client.android.utils.MProgressWheel
+                android:id="@+id/progress_wheel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                wheel:mn_barColor="#FFFFFF"
+                wheel:mn_barWidth="2dp"
+                wheel:mn_fillRadius="true"
+                wheel:mn_progressIndeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="加载中..."
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
 
         </LinearLayout>
 

@@ -15,6 +15,19 @@
  -->
 <resources>
 
+    <declare-styleable name="ScanProgressWheel">
+        <attr name="mn_progressIndeterminate" format="boolean" />
+        <attr name="mn_barColor" format="color" />
+        <attr name="mn_rimColor" format="color" />
+        <attr name="mn_rimWidth" format="dimension" />
+        <attr name="mn_spinSpeed" format="float" />
+        <attr name="mn_barSpinCycleTime" format="integer" />
+        <attr name="mn_circleRadius" format="dimension" />
+        <attr name="mn_fillRadius" format="boolean" />
+        <attr name="mn_barWidth" format="dimension" />
+        <attr name="mn_linearProgress" format="boolean" />
+    </declare-styleable>
+
     <style name="MNScanBottomToTopAnim" parent="@android:style/Animation.Translucent">
         <item name="@android:windowEnterAnimation">@anim/mn_scan_activity_bottom_in</item>
         <item name="@android:windowExitAnimation">@anim/mn_scan_activity_bottom_out</item>

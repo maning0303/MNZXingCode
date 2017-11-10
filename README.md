@@ -1,6 +1,6 @@
 # ZXingCodeDemo
 
-#（Android）快速集成二维码扫描
+#（Android）快速集成二维码扫描，使用最新版本的zxing代码提取（2017.11.10）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ## 功能：

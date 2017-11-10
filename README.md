@@ -88,8 +88,8 @@
 ```
 
 
-## 关于代码：
-    感谢：  [zxing](https://github.com/zxing/zxing)
-    感谢：  [BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
+## 感谢：
+    [zxing](https://github.com/zxing/zxing)
+    [BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
     感谢所有开源的人；
 

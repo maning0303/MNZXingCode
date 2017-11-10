@@ -8,7 +8,7 @@
     2：二维码扫描
     3：相册中选取图片识别
     4：开启闪光灯
-    
+
 ## 截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpg)
@@ -39,8 +39,8 @@
 ### 源码添加：
 #### 直接拷贝整个module：libraryzxing，然后关联到你的项目就可以使用
 
-## 使用方法:  
-    
+## 使用方法:
+
 ``` java
 
         1.跳转：
@@ -56,7 +56,7 @@
             //扫码框上面的提示文案
             intent.putExtra(CaptureActivity.INTENT_KEY_HINTTEXT, "请将二维码放入框中....");
             startActivityForResult(intent, 1000);
-        
+
         2.获取结果：
             @Override
             protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -81,7 +81,7 @@
                     }
                 }
             }
-            
+
         3：生成二维码：
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);

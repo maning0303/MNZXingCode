@@ -1,6 +1,6 @@
 #   ZXingCodeDemo
 
-##  快速集成二维码扫描，使用最新版本的zxing代码提取（2017.11.10）
+##  快速集成二维码扫描，使用最新版本的zxing代码提取（2017.11.10--ZXing 3.3.1）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ##  功能：
@@ -13,7 +13,7 @@
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpg)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpg)
-## 最新版本zxing（2017.11.10）:
+## 最新版本zxing（2017.11.10--ZXing 3.3.1）:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_004.png)
 
 ## 如何添加

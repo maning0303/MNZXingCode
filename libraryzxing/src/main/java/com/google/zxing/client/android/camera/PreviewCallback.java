@@ -42,15 +42,34 @@ final class PreviewCallback implements Camera.PreviewCallback {
 
   @Override
   public void onPreviewFrame(byte[] data, Camera camera) {
+//    Point cameraResolution = configManager.getCameraResolution();
+//    Handler thePreviewHandler = previewHandler;
+//    if (cameraResolution != null && thePreviewHandler != null) {
+//      Message message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,
+//          cameraResolution.y, data);
+//      message.sendToTarget();
+//      previewHandler = null;
+//    } else {
+//      Log.d(TAG, "Got preview callback, but no handler or resolution available");
+//    }
+
+    //改
     Point cameraResolution = configManager.getCameraResolution();
     Handler thePreviewHandler = previewHandler;
     if (cameraResolution != null && thePreviewHandler != null) {
-      Message message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,
-          cameraResolution.y, data);
+      //2017.11.13 添加竖屏代码处理
+      Point screenResolution = configManager.getScreenResolution();
+      Message message;
+      if (screenResolution.x < screenResolution.y) {
+        // portrait
+        message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.y,
+                cameraResolution.x, data);
+      } else {
+        // landscape
+        message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,
+                cameraResolution.y, data);
+      }
       message.sendToTarget();
-      previewHandler = null;
-    } else {
-      Log.d(TAG, "Got preview callback, but no handler or resolution available");
     }
   }
 

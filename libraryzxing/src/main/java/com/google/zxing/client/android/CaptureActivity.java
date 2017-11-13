@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,6 +33,8 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -95,6 +98,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private LinearLayout btn_close;
     private LinearLayout btn_photo;
     private RelativeLayout btn_dialog_bg;
+    private ImageView ivScreenshot;
     //闪光灯是否打开
     private boolean is_light_on = false;
     private boolean beepFlag = true;
@@ -125,6 +129,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         btn_close = (LinearLayout) findViewById(R.id.btn_close);
         btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
         btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
+        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
         btn_dialog_bg.setVisibility(View.GONE);
 
         //初始化相关参数
@@ -213,7 +218,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         super.onActivityResult(requestCode, resultCode, data);
         //去相册选择图片
         if (requestCode == 1000) {
-            if (data == null){
+            if (data == null) {
                 //隐藏Dialog
                 btn_dialog_bg.setVisibility(View.GONE);
                 return;
@@ -324,6 +329,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         beepManager.playBeepSoundAndVibrate();
         //关闭页面
         finishSuccess(lastResult.getText());
+        //图片显示：测试才显示
+        ivScreenshot.setImageBitmap(barcode);
+
     }
 
     private void finishFailed(String errorMsg) {

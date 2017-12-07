@@ -21,5 +21,5 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':libraryzxingcore')
+    compile 'com.google.zxing:core:3.3.1'
 }

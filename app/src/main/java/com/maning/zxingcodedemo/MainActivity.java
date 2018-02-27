@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
+import com.google.zxing.client.android.MNScanManager;
+import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.ZXingUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,23 +36,28 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         editText = (EditText) findViewById(R.id.editText);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
-
     }
 
+    public void scanCodeDefault(View view) {
+        MNScanManager.startScan(this, 1000);
+    }
 
     public void scanCode(View view) {
-        Intent intent = new Intent(this, CaptureActivity.class);
-        //是否显示相册按钮
-        intent.putExtra(CaptureActivity.INTENT_KEY_PHOTO_FLAG, true);
-        //识别声音
-        intent.putExtra(CaptureActivity.INTENT_KEY_BEEP_FLAG, true);
-        //识别震动
-        intent.putExtra(CaptureActivity.INTENT_KEY_VIBRATE_FLAG, true);
-        //扫码框的颜色
-        intent.putExtra(CaptureActivity.INTENT_KEY_SCSNCOLOR, "#FFFF00");
-        //扫码框上面的提示文案
-        intent.putExtra(CaptureActivity.INTENT_KEY_HINTTEXT, "请将二维码放入框中....");
-        startActivityForResult(intent, 1000);
+        MNScanConfig scanConfig = new MNScanConfig.Builder()
+                //设置完成震动
+                .isShowVibrate(false)
+                //扫描完成声音
+                .isShowBeep(true)
+                //显示相册功能
+                .isShowPhotoAlbum(true)
+                //打开扫描页面的动画
+                .setActivityOpenAnime(R.anim.activity_anmie_in)
+                //自定义文案
+                .setScanHintText("我是自定义文字")
+                //扫描线的颜色
+                .setScanColor("#FFFF00")
+                .builder();
+        MNScanManager.startScan(this, 1000, scanConfig);
     }
 
 

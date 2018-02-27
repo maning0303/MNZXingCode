@@ -28,14 +28,23 @@
         <attr name="mn_linearProgress" format="boolean" />
     </declare-styleable>
 
-    <style name="MNScanBottomToTopAnim" parent="@android:style/Animation.Translucent">
-        <item name="@android:windowEnterAnimation">@anim/mn_scan_activity_bottom_in</item>
-        <item name="@android:windowExitAnimation">@anim/mn_scan_activity_bottom_out</item>
+    <style name="MNScanAnimation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
     </style>
-
     <style name="MNScanCaptureTheme" parent="android:Theme.Holo.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/MNScanBottomToTopAnim</item>
+        <item name="android:windowAnimationStyle">@style/MNScanAnimation</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowFullscreen">false</item>
     </style>

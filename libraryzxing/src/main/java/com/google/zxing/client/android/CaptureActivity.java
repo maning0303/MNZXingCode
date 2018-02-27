@@ -339,11 +339,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         intent.putExtra(INTENT_KEY_RESULT_ERROR, errorMsg);
         this.setResult(RESULT_FAIL, intent);
         this.finish();
+        //关闭窗体动画显示
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
     }
 
     private void finishCancle() {
         this.setResult(RESULT_CANCLE, null);
         this.finish();
+        //关闭窗体动画显示
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
     }
 
     private void finishSuccess(String result) {
@@ -351,6 +355,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         intent.putExtra(INTENT_KEY_RESULT_SUCCESS, result);
         this.setResult(RESULT_SUCCESS, intent);
         this.finish();
+        //关闭窗体动画显示
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
     }
 
     @Override

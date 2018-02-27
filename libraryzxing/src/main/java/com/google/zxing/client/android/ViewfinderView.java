@@ -46,7 +46,7 @@ public final class ViewfinderView extends View {
 
     private int linePosition = 0;
 
-    private static String hintMsg = "将二维码放置框内，即开始扫描";
+    private static String hintMsg;
 
     private Context context;
 
@@ -62,7 +62,7 @@ public final class ViewfinderView extends View {
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.mn_scan_viewfinder_mask);
         laserColor = resources.getColor(R.color.mn_scan_viewfinder_laser);
-
+        hintMsg = resources.getString(R.string.mn_scan_hint_text);
         //文字
         paintText.setColor(Color.WHITE);
         paintText.setTextSize(CommonUtils.sp2px(context, 14));

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.model.MNScanConfig;
+import com.google.zxing.client.android.other.MNScanCallback;
 import com.google.zxing.client.android.utils.ZXingUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scanCodeDefault(View view) {
-        MNScanManager.startScan(this, 1000);
+        MNScanManager.startScan(this, new MNScanCallback() {
+            @Override
+            public void onActivityResult(int resultCode, Intent data) {
+                handlerResult(resultCode, data);
+            }
+        });
     }
 
     public void scanCode(View view) {
@@ -57,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
                 //扫描线的颜色
                 .setScanColor("#FFFF00")
                 .builder();
-        MNScanManager.startScan(this, 1000, scanConfig);
+        MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
+            @Override
+            public void onActivityResult(int resultCode, Intent data) {
+                handlerResult(resultCode, data);
+            }
+        });
     }
 
 
@@ -85,31 +96,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000) {
-            if (data == null) {
-                return;
-            }
-            switch (resultCode) {
-                case CaptureActivity.RESULT_SUCCESS:
-                    String resultSuccess = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_SUCCESS);
-                    showToast(resultSuccess);
-                    textView.setText(resultSuccess);
-                    break;
-                case CaptureActivity.RESULT_FAIL:
-                    String resultError = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_ERROR);
-                    showToast(resultError);
-                    break;
-                case CaptureActivity.RESULT_CANCLE:
-                    showToast("取消扫码");
-                    break;
-            }
-        }
-    }
-
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void handlerResult(int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        switch (resultCode) {
+            case CaptureActivity.RESULT_SUCCESS:
+                String resultSuccess = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_SUCCESS);
+                showToast(resultSuccess);
+                textView.setText(resultSuccess);
+                break;
+            case CaptureActivity.RESULT_FAIL:
+                String resultError = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_ERROR);
+                showToast(resultError);
+                break;
+            case CaptureActivity.RESULT_CANCLE:
+                showToast("取消扫码");
+                break;
+        }
     }
 }

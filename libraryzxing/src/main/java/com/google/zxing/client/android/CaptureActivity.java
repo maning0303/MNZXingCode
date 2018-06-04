@@ -234,7 +234,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                             @Override
                             public void run() {
                                 btn_dialog_bg.setVisibility(View.GONE);
-                                Log.i(TAG, "图片的decodeQRCode:" + decodeQRCodeFromBitmap);
+                                Log.i(TAG, "decodeQRCode:" + decodeQRCodeFromBitmap);
                                 if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
                                     Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -340,14 +340,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         this.setResult(RESULT_FAIL, intent);
         this.finish();
         //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
     }
 
     private void finishCancle() {
         this.setResult(RESULT_CANCLE, null);
         this.finish();
         //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
     }
 
     private void finishSuccess(String result) {
@@ -356,7 +356,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         this.setResult(RESULT_SUCCESS, intent);
         this.finish();
         //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out,0);
+        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
     }
 
     @Override

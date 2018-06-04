@@ -44,8 +44,8 @@ public final class CameraManager {
 
     private static final int MIN_FRAME_WIDTH = 240;
     private static final int MIN_FRAME_HEIGHT = 240;
-    private static final int MAX_FRAME_WIDTH = 1200; // = 5/8 * 1920
-    private static final int MAX_FRAME_HEIGHT = 675; // = 5/8 * 1080
+    private static final int MAX_FRAME_WIDTH = 675;
+    private static final int MAX_FRAME_HEIGHT = 675;
 
     private final Context context;
     private final CameraConfigurationManager configManager;
@@ -218,7 +218,7 @@ public final class CameraManager {
             }
 
             int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
-            int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
+            int height = width;
 
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;

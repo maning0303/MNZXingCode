@@ -106,16 +106,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         switch (resultCode) {
-            case CaptureActivity.RESULT_SUCCESS:
-                String resultSuccess = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_SUCCESS);
+            case MNScanManager.RESULT_SUCCESS:
+                String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
                 showToast(resultSuccess);
                 textView.setText(resultSuccess);
                 break;
-            case CaptureActivity.RESULT_FAIL:
-                String resultError = data.getStringExtra(CaptureActivity.INTENT_KEY_RESULT_ERROR);
+            case MNScanManager.RESULT_FAIL:
+                String resultError = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_ERROR);
                 showToast(resultError);
                 break;
-            case CaptureActivity.RESULT_CANCLE:
+            case MNScanManager.RESULT_CANCLE:
                 showToast("取消扫码");
                 break;
         }

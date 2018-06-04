@@ -14,6 +14,21 @@ import com.google.zxing.client.android.other.MNScanCallback;
 
 public class MNScanManager {
 
+    //常量
+    public static final int RESULT_SUCCESS = 0;
+    public static final int RESULT_FAIL = 1;
+    public static final int RESULT_CANCLE = 2;
+    public static final String INTENT_KEY_RESULT_SUCCESS = "intent_key_result_success";
+    public static final String INTENT_KEY_RESULT_ERROR = "intent_key_result_error";
+
+
+    //跳转传入的数据
+    public static final String INTENT_KEY_HINTTEXT = "intent_key_hinttext";
+    public static final String INTENT_KEY_SCSNCOLOR = "intent_key_scsncolor";
+    public static final String INTENT_KEY_PHOTO_FLAG = "intent_key_photo_flag";
+    public static final String INTENT_KEY_BEEP_FLAG = "intent_key_beep_flag";
+    public static final String INTENT_KEY_VIBRATE_FLAG = "intent_key_vibrate_flag";
+
 
     public static void startScan(Activity activity, MNScanCallback scanCallback) {
         Intent intent = new Intent(activity.getApplicationContext(), CaptureActivity.class);
@@ -28,15 +43,15 @@ public class MNScanManager {
         }
         Intent intent = new Intent(activity.getApplicationContext(), CaptureActivity.class);
         //是否显示相册按钮
-        intent.putExtra(CaptureActivity.INTENT_KEY_PHOTO_FLAG, mnScanConfig.isShowPhotoAlbum());
+        intent.putExtra(MNScanManager.INTENT_KEY_PHOTO_FLAG, mnScanConfig.isShowPhotoAlbum());
         //识别声音
-        intent.putExtra(CaptureActivity.INTENT_KEY_BEEP_FLAG, mnScanConfig.isShowBeep());
+        intent.putExtra(MNScanManager.INTENT_KEY_BEEP_FLAG, mnScanConfig.isShowBeep());
         //识别震动
-        intent.putExtra(CaptureActivity.INTENT_KEY_VIBRATE_FLAG, mnScanConfig.isShowVibrate());
+        intent.putExtra(MNScanManager.INTENT_KEY_VIBRATE_FLAG, mnScanConfig.isShowVibrate());
         //扫码框的颜色
-        intent.putExtra(CaptureActivity.INTENT_KEY_SCSNCOLOR, mnScanConfig.getScanColor());
+        intent.putExtra(MNScanManager.INTENT_KEY_SCSNCOLOR, mnScanConfig.getScanColor());
         //扫码框上面的提示文案
-        intent.putExtra(CaptureActivity.INTENT_KEY_HINTTEXT, mnScanConfig.getScanHintText());
+        intent.putExtra(MNScanManager.INTENT_KEY_HINTTEXT, mnScanConfig.getScanHintText());
 
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);

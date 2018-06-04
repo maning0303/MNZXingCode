@@ -69,17 +69,6 @@ import java.util.Map;
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
-    //常量
-    public static final int RESULT_SUCCESS = 0;
-    public static final int RESULT_FAIL = 1;
-    public static final int RESULT_CANCLE = 2;
-    public static final String INTENT_KEY_RESULT_SUCCESS = "intent_key_result_success";
-    public static final String INTENT_KEY_RESULT_ERROR = "intent_key_result_error";
-    public static final String INTENT_KEY_HINTTEXT = "intent_key_hinttext";
-    public static final String INTENT_KEY_SCSNCOLOR = "intent_key_scsncolor";
-    public static final String INTENT_KEY_PHOTO_FLAG = "intent_key_photo_flag";
-    public static final String INTENT_KEY_BEEP_FLAG = "intent_key_beep_flag";
-    public static final String INTENT_KEY_VIBRATE_FLAG = "intent_key_vibrate_flag";
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -181,11 +170,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void initIntent() {
         Intent intent = getIntent();
-        String hintText = intent.getStringExtra(INTENT_KEY_HINTTEXT);
-        String scanColor = intent.getStringExtra(INTENT_KEY_SCSNCOLOR);
-        boolean photoFlag = intent.getBooleanExtra(INTENT_KEY_PHOTO_FLAG, true);
-        beepFlag = intent.getBooleanExtra(INTENT_KEY_BEEP_FLAG, true);
-        vibrateFlag = intent.getBooleanExtra(INTENT_KEY_VIBRATE_FLAG, true);
+        String hintText = intent.getStringExtra(MNScanManager.INTENT_KEY_HINTTEXT);
+        String scanColor = intent.getStringExtra(MNScanManager.INTENT_KEY_SCSNCOLOR);
+        boolean photoFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_PHOTO_FLAG, true);
+        beepFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_BEEP_FLAG, true);
+        vibrateFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_VIBRATE_FLAG, true);
         if (!TextUtils.isEmpty(hintText)) {
             viewfinderView.setHintText(hintText);
         }
@@ -336,15 +325,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void finishFailed(String errorMsg) {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_KEY_RESULT_ERROR, errorMsg);
-        this.setResult(RESULT_FAIL, intent);
+        intent.putExtra(MNScanManager.INTENT_KEY_RESULT_ERROR, errorMsg);
+        this.setResult(MNScanManager.RESULT_FAIL, intent);
         this.finish();
         //关闭窗体动画显示
         this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
     }
 
     private void finishCancle() {
-        this.setResult(RESULT_CANCLE, null);
+        this.setResult(MNScanManager.RESULT_CANCLE, null);
         this.finish();
         //关闭窗体动画显示
         this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
@@ -352,8 +341,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void finishSuccess(String result) {
         Intent intent = new Intent();
-        intent.putExtra(INTENT_KEY_RESULT_SUCCESS, result);
-        this.setResult(RESULT_SUCCESS, intent);
+        intent.putExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS, result);
+        this.setResult(MNScanManager.RESULT_SUCCESS, intent);
         this.finish();
         //关闭窗体动画显示
         this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);

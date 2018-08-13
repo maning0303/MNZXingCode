@@ -328,24 +328,26 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         intent.putExtra(MNScanManager.INTENT_KEY_RESULT_ERROR, errorMsg);
         this.setResult(MNScanManager.RESULT_FAIL, intent);
         this.finish();
-        //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
+        finishFinal();
     }
 
     private void finishCancle() {
         this.setResult(MNScanManager.RESULT_CANCLE, null);
-        this.finish();
-        //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
+        finishFinal();
     }
 
     private void finishSuccess(String result) {
         Intent intent = new Intent();
         intent.putExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS, result);
         this.setResult(MNScanManager.RESULT_SUCCESS, intent);
+        finishFinal();
+    }
+
+    private void finishFinal(){
         this.finish();
         //关闭窗体动画显示
-        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, 0);
+        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+//        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, android.R.anim.fade_in);
     }
 
     @Override

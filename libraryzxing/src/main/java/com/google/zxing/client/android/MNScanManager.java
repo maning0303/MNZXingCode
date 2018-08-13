@@ -34,7 +34,7 @@ public class MNScanManager {
         Intent intent = new Intent(activity.getApplicationContext(), CaptureActivity.class);
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(R.anim.mn_scan_activity_bottom_in, 0);
+        activity.overridePendingTransition(R.anim.mn_scan_activity_bottom_in, R.anim.mn_scan_activity_no_anim);
     }
 
     public static void startScan(Activity activity, MNScanConfig mnScanConfig, MNScanCallback scanCallback) {
@@ -55,7 +55,7 @@ public class MNScanManager {
 
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(mnScanConfig.getActivityOpenAnime(), 0);
+        activity.overridePendingTransition(mnScanConfig.getActivityOpenAnime(), R.anim.mn_scan_activity_no_anim);
     }
 
 }

@@ -30,7 +30,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNZXingCode:V1.1.5'
+	     compile 'com.github.maning0303:MNZXingCode:V1.1.6'
 	}
 ```
 
@@ -100,6 +100,11 @@
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
 ```
+
+## 版本记录：
+    v1.1.6:
+        1.修复8.0-Only fullscreen opaque activities can request orientation错误
+        2.优化启动退出动画
 
 
 ## 感谢：

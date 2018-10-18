@@ -216,6 +216,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    //需要压缩图片
                     Bitmap bitmapChoose = ZXingUtils.decodeUriAsBitmap(CaptureActivity.this, uri);
                     if (bitmapChoose != null) {
                         final String decodeQRCodeFromBitmap = ZXingUtils.syncDecodeQRCode(bitmapChoose);

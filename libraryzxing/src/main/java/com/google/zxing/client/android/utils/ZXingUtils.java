@@ -271,12 +271,36 @@ public class ZXingUtils {
     public static Bitmap decodeUriAsBitmap(Context context, Uri uri) {
         Bitmap bitmap = null;
         try {
-            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
+//            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
+            //压缩图片
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
+            options.inSampleSize = calculateInSampleSize(options, 720, 1280);
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
         }
         return bitmap;
     }
+
+    //计算图片的缩放值
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            //使用需要的宽高的最大值来计算比率
+            final int suitedValue = reqHeight > reqWidth ? reqHeight : reqWidth;
+            final int heightRatio = Math.round((float) height / (float) suitedValue);
+            final int widthRatio = Math.round((float) width / (float) suitedValue);
+
+            inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;//用最大
+        }
+        return inSampleSize;
+    }
+
 
 }

@@ -16,6 +16,7 @@
 
 package com.google.zxing.client.android;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -24,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.google.zxing.client.android.camera.CameraManager;
@@ -50,6 +52,10 @@ public final class ViewfinderView extends View {
 
     private Context context;
 
+    private Rect frame;
+    private int margin;
+    private int lineW;
+
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,6 +75,9 @@ public final class ViewfinderView extends View {
         paintText.setTextAlign(Paint.Align.CENTER);
         //扫描线 + 四角
         paintLine.setColor(laserColor);
+
+        margin = CommonUtils.dip2px(context, 4);
+        lineW = CommonUtils.dip2px(context, 2);
     }
 
     //设置颜色
@@ -92,7 +101,7 @@ public final class ViewfinderView extends View {
         if (cameraManager == null) {
             return; // not ready yet, early draw before done configuring
         }
-        Rect frame = cameraManager.getFramingRect();
+        frame = cameraManager.getFramingRect();
         Rect previewFrame = cameraManager.getFramingRectInPreview();
         if (frame == null || previewFrame == null) {
             return;
@@ -128,16 +137,8 @@ public final class ViewfinderView extends View {
         canvas.drawRect(frame.right - rectH, frame.bottom - rectW, frame.right + 1, frame.bottom + 1, paintLine);
 
         //中间的线：动画
-        int margin = CommonUtils.dip2px(context, 6);
-        int lineW = CommonUtils.dip2px(context, 2);
         if (linePosition == 0) {
             linePosition = frame.top + margin;
-        } else {
-            if (linePosition > frame.bottom - margin * 2) {
-                linePosition = frame.top + margin;
-            } else {
-                linePosition += 8;
-            }
         }
         canvas.drawRect(frame.left + margin, linePosition, frame.right - margin, linePosition + lineW, paintLine);
 
@@ -148,10 +149,33 @@ public final class ViewfinderView extends View {
                 frame.top,
                 frame.right,
                 frame.bottom);
+
+        startAnimation();
+    }
+
+
+    ValueAnimator anim;
+
+    public void startAnimation() {
+        if (anim != null && anim.isRunning()) {
+            return;
+        }
+        anim = ValueAnimator.ofInt(frame.top + margin, frame.bottom - margin);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.setRepeatMode(ValueAnimator.RESTART);
+        anim.setDuration(2500);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                linePosition = (int) animation.getAnimatedValue();
+                postInvalidate();
+            }
+        });
+        anim.start();
     }
 
     public void drawViewfinder() {
-        invalidate();
+        postInvalidate();
     }
 
 }

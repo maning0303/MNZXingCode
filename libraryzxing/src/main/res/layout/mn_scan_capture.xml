@@ -103,8 +103,8 @@
         android:visibility="visible">
 
         <LinearLayout
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_centerInParent="true"
             android:background="@drawable/mn_scan_dialog_bg"
             android:gravity="center"
@@ -118,14 +118,6 @@
                 wheel:mn_barWidth="2dp"
                 wheel:mn_fillRadius="true"
                 wheel:mn_progressIndeterminate="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="加载中..."
-                android:textColor="#FFFFFF"
-                android:textSize="12sp" />
 
         </LinearLayout>
 

@@ -15,19 +15,4 @@
     <!-- android:radius 弧形的半径 -->
 
     <corners android:radius="6dip" />
-
-    <!-- padding: Button 里面的文字与Button边界的间隔 -->
-
-    <padding
-
-        android:bottom="0dp"
-
-        android:left="0dp"
-
-        android:right="0dp"
-
-        android:top="0dp"
-
-        />
-
 </shape>

@@ -16,11 +16,13 @@
 
 package com.google.zxing.client.android;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,6 +94,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private boolean is_light_on = false;
     private boolean beepFlag = true;
     private boolean vibrateFlag = true;
+    private int exitAnime = 0;
     private SurfaceView surfaceView;
 
     public Handler getHandler() {
@@ -168,6 +171,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         });
     }
 
+
     private void initIntent() {
         Intent intent = getIntent();
         String hintText = intent.getStringExtra(MNScanManager.INTENT_KEY_HINTTEXT);
@@ -175,6 +179,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         boolean photoFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_PHOTO_FLAG, true);
         beepFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_BEEP_FLAG, true);
         vibrateFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_VIBRATE_FLAG, true);
+        exitAnime = intent.getIntExtra(MNScanManager.INTENT_KEY_ACTIVITY_EXIT_ANIME, 0);
         if (!TextUtils.isEmpty(hintText)) {
             viewfinderView.setHintText(hintText);
         }
@@ -183,6 +188,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         }
         if (!photoFlag) {
             btn_photo.setVisibility(View.GONE);
+        }
+        if (exitAnime == 0) {
+            exitAnime = R.anim.mn_scan_activity_bottom_out;
         }
     }
 
@@ -295,6 +303,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         cameraManager.closeDriver();
         //historyManager = null; // Keep for onActivityResult
         if (!hasSurface) {
+            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
             surfaceHolder.removeCallback(this);
         }
@@ -344,11 +353,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         finishFinal();
     }
 
-    private void finishFinal(){
+    private void finishFinal() {
         this.finish();
         //关闭窗体动画显示
-        overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-//        this.overridePendingTransition(R.anim.mn_scan_activity_bottom_out, android.R.anim.fade_in);
+        this.overridePendingTransition(0, exitAnime);
     }
 
     @Override
@@ -387,7 +395,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
             }
         } catch (Exception e) {
-            displayFrameworkBugMessageAndExit("开启摄像头异常：" + e.toString());
+            displayFrameworkBugMessageAndExit("open camera fail：" + e.toString());
         }
     }
 

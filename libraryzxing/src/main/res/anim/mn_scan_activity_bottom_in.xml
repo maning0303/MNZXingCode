@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<translate
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="400"
-    android:fromYDelta="100%p"
-    android:toYDelta="0"
-    />
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="300">
+
+    <alpha
+        android:duration="150"
+        android:fromAlpha="0"
+        android:toAlpha="1" />
+
+    <translate
+        android:duration="200"
+        android:fromYDelta="100%p"
+        android:toYDelta="0" />
+
+</set>

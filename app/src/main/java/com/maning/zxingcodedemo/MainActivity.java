@@ -1,8 +1,11 @@
 package com.maning.zxingcodedemo;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -37,9 +40,20 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         editText = (EditText) findViewById(R.id.editText);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
+
+    }
+
+    public void requestCameraPerm() {
+        //判断权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 10010);
+            }
+        }
     }
 
     public void scanCodeDefault(View view) {
+        requestCameraPerm();
         MNScanManager.startScan(this, new MNScanCallback() {
             @Override
             public void onActivityResult(int resultCode, Intent data) {
@@ -49,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scanCode(View view) {
+        requestCameraPerm();
         MNScanConfig scanConfig = new MNScanConfig.Builder()
                 //设置完成震动
                 .isShowVibrate(false)
@@ -58,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 .isShowPhotoAlbum(true)
                 //打开扫描页面的动画
                 .setActivityOpenAnime(R.anim.activity_anmie_in)
+                //退出扫描页面动画
+                .setActivityExitAnime(R.anim.activity_anmie_out)
                 //自定义文案
                 .setScanHintText("我是自定义文字")
                 //扫描线的颜色

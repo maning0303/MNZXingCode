@@ -2,12 +2,16 @@ package com.google.zxing.client.android.model;
 
 import com.google.zxing.client.android.R;
 
+import java.io.Serializable;
+
 /**
  * Created by maning on 2017/12/7.
  * 启动Activity的一些配置参数
  */
 
-public class MNScanConfig {
+public class MNScanConfig implements Serializable {
+
+    private static final long serialVersionUID = -5260676142223049891L;
 
     //是否显示相册
     private boolean showPhotoAlbum;
@@ -21,6 +25,8 @@ public class MNScanConfig {
     private String scanHintText;
     //开启Activity动画
     private int activityOpenAnime;
+    //关闭Activity动画
+    private int activityExitAnime;
 
     private MNScanConfig() {
 
@@ -33,6 +39,7 @@ public class MNScanConfig {
         scanColor = builder.scanColor;
         scanHintText = builder.scanHintText;
         activityOpenAnime = builder.activityOpenAnime;
+        activityExitAnime = builder.activityExitAnime;
     }
 
     public boolean isShowPhotoAlbum() {
@@ -59,6 +66,14 @@ public class MNScanConfig {
         return activityOpenAnime;
     }
 
+    public int getActivityExitAnime() {
+        return activityExitAnime;
+    }
+
+    public void setActivityExitAnime(int activityExitAnime) {
+        this.activityExitAnime = activityExitAnime;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -66,6 +81,7 @@ public class MNScanConfig {
         private String scanColor;
         private String scanHintText;
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
+        private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -98,6 +114,11 @@ public class MNScanConfig {
 
         public Builder setActivityOpenAnime(int activityOpenAnime) {
             this.activityOpenAnime = activityOpenAnime;
+            return this;
+        }
+
+        public Builder setActivityExitAnime(int activityExitAnime) {
+            this.activityExitAnime = activityExitAnime;
             return this;
         }
 

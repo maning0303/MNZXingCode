@@ -18,23 +18,27 @@ public class MNScanManager {
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = 1;
     public static final int RESULT_CANCLE = 2;
-    public static final String INTENT_KEY_RESULT_SUCCESS = "intent_key_result_success";
-    public static final String INTENT_KEY_RESULT_ERROR = "intent_key_result_error";
+    public static final String INTENT_KEY_RESULT_SUCCESS = "INTENT_KEY_RESULT_SUCCESS";
+    public static final String INTENT_KEY_RESULT_ERROR = "INTENT_KEY_RESULT_ERROR";
 
 
     //跳转传入的数据
-    public static final String INTENT_KEY_HINTTEXT = "intent_key_hinttext";
-    public static final String INTENT_KEY_SCSNCOLOR = "intent_key_scsncolor";
-    public static final String INTENT_KEY_PHOTO_FLAG = "intent_key_photo_flag";
-    public static final String INTENT_KEY_BEEP_FLAG = "intent_key_beep_flag";
-    public static final String INTENT_KEY_VIBRATE_FLAG = "intent_key_vibrate_flag";
+    //提示文案
+    public static final String INTENT_KEY_HINTTEXT = "INTENT_KEY_HINTTEXT";
+    //扫描线的颜色
+    public static final String INTENT_KEY_SCSNCOLOR = "INTENT_KEY_SCSNCOLOR";
+    //相机是否显示
+    public static final String INTENT_KEY_PHOTO_FLAG = "INTENT_KEY_PHOTO_FLAG";
+    //识别声音
+    public static final String INTENT_KEY_BEEP_FLAG = "INTENT_KEY_BEEP_FLAG";
+    //识别震动
+    public static final String INTENT_KEY_VIBRATE_FLAG = "INTENT_KEY_VIBRATE_FLAG";
+    //扫描退出动画
+    public static final String INTENT_KEY_ACTIVITY_EXIT_ANIME = "INTENT_KEY_ACTIVITY_EXIT_ANIME";
 
 
     public static void startScan(Activity activity, MNScanCallback scanCallback) {
-        Intent intent = new Intent(activity.getApplicationContext(), CaptureActivity.class);
-        ActResultRequest actResultRequest = new ActResultRequest(activity);
-        actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(R.anim.mn_scan_activity_bottom_in, R.anim.mn_scan_activity_no_anim);
+        startScan(activity, null, scanCallback);
     }
 
     public static void startScan(Activity activity, MNScanConfig mnScanConfig, MNScanCallback scanCallback) {
@@ -52,10 +56,12 @@ public class MNScanManager {
         intent.putExtra(MNScanManager.INTENT_KEY_SCSNCOLOR, mnScanConfig.getScanColor());
         //扫码框上面的提示文案
         intent.putExtra(MNScanManager.INTENT_KEY_HINTTEXT, mnScanConfig.getScanHintText());
+        //退出动画
+        intent.putExtra(MNScanManager.INTENT_KEY_ACTIVITY_EXIT_ANIME, mnScanConfig.getActivityExitAnime());
 
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);
-        activity.overridePendingTransition(mnScanConfig.getActivityOpenAnime(), R.anim.mn_scan_activity_no_anim);
+        activity.overridePendingTransition(mnScanConfig.getActivityOpenAnime(), android.R.anim.fade_out);
     }
 
 }

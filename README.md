@@ -73,6 +73,8 @@
                         .isShowPhotoAlbum(true)
                         //打开扫描页面的动画
                         .setActivityOpenAnime(R.anim.activity_anmie_in)
+                        //退出扫描页面动画
+                        .setActivityExitAnime(R.anim.activity_anmie_out)
                         //自定义文案
                         .setScanHintText("我是自定义文字")
                         //扫描线的颜色
@@ -106,6 +108,10 @@
 ```
 
 ## 版本记录：
+    v1.1.9:
+        1.添加退出动画配置
+        2.修复activity动画黑色背景问题
+        
     v1.1.8:
         1.扫描线动画处理
         2.优化UI

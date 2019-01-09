@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 .setScanHintText("我是自定义文字")
                 //扫描线的颜色
                 .setScanColor("#FFFF00")
+                //是否显示缩放控制器
+                .isShowZoomController(false)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

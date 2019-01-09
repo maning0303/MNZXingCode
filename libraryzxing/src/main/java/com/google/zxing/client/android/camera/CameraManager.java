@@ -122,6 +122,37 @@ public final class CameraManager {
 
     }
 
+    public boolean isZoomSupported() {
+        if (camera != null) {
+            Camera camera = this.camera.getCamera();
+            if (camera != null) {
+                Camera.Parameters parameters = camera.getParameters();
+                if (parameters != null) {
+                    return parameters.isZoomSupported();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void setZoom(int value) {
+        if (camera != null) {
+            Camera camera = this.camera.getCamera();
+            if (camera != null) {
+                Camera.Parameters parameters = camera.getParameters();
+                if (parameters != null) {
+                    if (parameters.isZoomSupported()) {
+                        int maxZoom = parameters.getMaxZoom();
+                        int currentValue = value * maxZoom / 100;
+                        parameters.setZoom(currentValue);
+                        //刷新
+                        camera.setParameters(parameters);
+                    }
+                }
+            }
+        }
+    }
+
     public synchronized boolean isOpen() {
         return camera != null;
     }

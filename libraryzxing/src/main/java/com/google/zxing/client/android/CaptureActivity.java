@@ -16,35 +16,28 @@
 
 package com.google.zxing.client.android;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.OrientationEventListener;
-import android.view.Surface;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,9 +47,9 @@ import com.google.zxing.Result;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
+import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.ZXingUtils;
 
-import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -94,8 +87,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private boolean is_light_on = false;
     private boolean beepFlag = true;
     private boolean vibrateFlag = true;
+    private boolean zoomControllerFlag = true;
     private int exitAnime = 0;
     private SurfaceView surfaceView;
+    private ImageView mIvScanZoomIn;
+    private ImageView mIvScanZoomOut;
+    private SeekBar mSeekBarZoom;
+    private LinearLayout mLlRoomController;
+    private Context context;
 
     public Handler getHandler() {
         return handler;
@@ -112,63 +111,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.mn_scan_capture);
-
-        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
-        iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
-        tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
-        btn_close = (LinearLayout) findViewById(R.id.btn_close);
-        btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
-        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
-        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
-        btn_dialog_bg.setVisibility(View.GONE);
-
-        //初始化相关参数
+        context = this;
+        initView();
         initIntent();
-
-        hasSurface = false;
-        inactivityTimer = new InactivityTimer(this);
-        beepManager = new BeepManager(this);
-
-        //点击事件
-        btn_scan_light.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (is_light_on) {
-                    is_light_on = false;
-                    cameraManager.offLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
-                    tv_scan_light.setText("打开手电筒");
-                } else {
-                    is_light_on = true;
-                    cameraManager.openLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
-                    tv_scan_light.setText("关闭手电筒");
-                }
-            }
-        });
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishCancle();
-            }
-        });
-
-        btn_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getImageFromAlbum();
-            }
-        });
-
-        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
 
@@ -180,6 +125,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         beepFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_BEEP_FLAG, true);
         vibrateFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_VIBRATE_FLAG, true);
         exitAnime = intent.getIntExtra(MNScanManager.INTENT_KEY_ACTIVITY_EXIT_ANIME, 0);
+        zoomControllerFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_ZOOM_CONTROLLER, true);
         if (!TextUtils.isEmpty(hintText)) {
             viewfinderView.setHintText(hintText);
         }
@@ -397,6 +343,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         } catch (Exception e) {
             displayFrameworkBugMessageAndExit("open camera fail：" + e.toString());
         }
+        //刷新控制器
+        updateZoomController();
     }
 
     private void displayFrameworkBugMessageAndExit(String errorMessage) {
@@ -418,4 +366,167 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
     }
+
+    private void initView() {
+        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
+        iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
+        tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
+        btn_close = (LinearLayout) findViewById(R.id.btn_close);
+        btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
+        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
+        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
+        btn_dialog_bg.setVisibility(View.GONE);
+
+        hasSurface = false;
+        inactivityTimer = new InactivityTimer(this);
+        beepManager = new BeepManager(this);
+
+        //点击事件
+        btn_scan_light.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (is_light_on) {
+                    is_light_on = false;
+                    cameraManager.offLight();
+                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
+                    tv_scan_light.setText("打开手电筒");
+                } else {
+                    is_light_on = true;
+                    cameraManager.openLight();
+                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
+                    tv_scan_light.setText("关闭手电筒");
+                }
+            }
+        });
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishCancle();
+            }
+        });
+
+        btn_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImageFromAlbum();
+            }
+        });
+
+        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
+        mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
+        mSeekBarZoom = (SeekBar) findViewById(R.id.seek_bar_zoom);
+        mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomIn(10);
+            }
+        });
+        mIvScanZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomOut(10);
+            }
+        });
+        mSeekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cameraManager.setZoom(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
+    }
+
+    private void zoomOut(int value) {
+        int progress = mSeekBarZoom.getProgress() - value;
+        if (progress <= 0) {
+            progress = 0;
+        }
+        mSeekBarZoom.setProgress(progress);
+        cameraManager.setZoom(progress);
+    }
+
+    private void zoomIn(int value) {
+        int progress = mSeekBarZoom.getProgress() + value;
+        if (progress >= 100) {
+            progress = 100;
+        }
+        mSeekBarZoom.setProgress(progress);
+        cameraManager.setZoom(progress);
+    }
+
+    private void updateZoomController() {
+        if (cameraManager == null) {
+            return;
+        }
+        Rect framingRect = cameraManager.getFramingRect();
+        if (framingRect == null) {
+            return;
+        }
+        //动态修改位置
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLlRoomController.getLayoutParams();
+        layoutParams.width = framingRect.right - framingRect.left - CommonUtils.dip2px(context, 20);
+        layoutParams.setMargins(0, framingRect.bottom + CommonUtils.dip2px(context, 10), 0, 0);
+        mLlRoomController.setLayoutParams(layoutParams);
+        if (zoomControllerFlag) {
+            mLlRoomController.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    //手指按下的点为(x1, y1)手指离开屏幕的点为(x2, y2)
+    float startX = 0;
+    float startY = 0;
+    float moveX = 0;
+    float moveY = 0;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //继承了Activity的onTouchEvent方法，直接监听点击事件
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            //当手指按下的时候
+            startX = event.getX();
+            startY = event.getY();
+        }
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            //当手指离开的时候
+            moveX = event.getX();
+            moveY = event.getY();
+            if (!zoomControllerFlag) {
+                return super.onTouchEvent(event);
+            }
+            if (startY - moveY > 50) {
+                //向上滑
+            } else if (moveY - startY > 50) {
+                //向下滑
+            } else if (startX - moveX > 50) {
+                //向左滑
+                zoomOut(1);
+            } else if (moveX - startX > 50) {
+                //向右滑
+                zoomIn(1);
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+
 }

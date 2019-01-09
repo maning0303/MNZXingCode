@@ -27,6 +27,8 @@ public class MNScanConfig implements Serializable {
     private int activityOpenAnime;
     //关闭Activity动画
     private int activityExitAnime;
+    //是否显示缩放控制器
+    private boolean showZoomController = true;
 
     private MNScanConfig() {
 
@@ -40,6 +42,15 @@ public class MNScanConfig implements Serializable {
         scanHintText = builder.scanHintText;
         activityOpenAnime = builder.activityOpenAnime;
         activityExitAnime = builder.activityExitAnime;
+        showZoomController = builder.showZoomController;
+    }
+
+    public boolean isShowZoomController() {
+        return showZoomController;
+    }
+
+    public void setShowZoomController(boolean showZoomController) {
+        this.showZoomController = showZoomController;
     }
 
     public boolean isShowPhotoAlbum() {
@@ -82,6 +93,7 @@ public class MNScanConfig implements Serializable {
         private String scanHintText;
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
+        private boolean showZoomController = true;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -119,6 +131,11 @@ public class MNScanConfig implements Serializable {
 
         public Builder setActivityExitAnime(int activityExitAnime) {
             this.activityExitAnime = activityExitAnime;
+            return this;
+        }
+
+        public Builder isShowZoomController(boolean showZoomController) {
+            this.showZoomController = showZoomController;
             return this;
         }
 

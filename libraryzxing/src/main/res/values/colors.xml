@@ -15,5 +15,5 @@
  -->
 <resources>
     <color name="mn_scan_viewfinder_laser">#FFff3535</color>
-    <color name="mn_scan_viewfinder_mask">#7b000000</color>
+    <color name="mn_scan_viewfinder_mask">#96000000</color>
 </resources>

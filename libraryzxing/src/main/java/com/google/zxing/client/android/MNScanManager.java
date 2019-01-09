@@ -35,6 +35,8 @@ public class MNScanManager {
     public static final String INTENT_KEY_VIBRATE_FLAG = "INTENT_KEY_VIBRATE_FLAG";
     //扫描退出动画
     public static final String INTENT_KEY_ACTIVITY_EXIT_ANIME = "INTENT_KEY_ACTIVITY_EXIT_ANIME";
+    //是否显示缩放控制器
+    public static final String INTENT_KEY_ZOOM_CONTROLLER = "INTENT_KEY_ZOOM_CONTROLLER";
 
 
     public static void startScan(Activity activity, MNScanCallback scanCallback) {
@@ -58,6 +60,8 @@ public class MNScanManager {
         intent.putExtra(MNScanManager.INTENT_KEY_HINTTEXT, mnScanConfig.getScanHintText());
         //退出动画
         intent.putExtra(MNScanManager.INTENT_KEY_ACTIVITY_EXIT_ANIME, mnScanConfig.getActivityExitAnime());
+        //是否显示缩放控制器
+        intent.putExtra(MNScanManager.INTENT_KEY_ZOOM_CONTROLLER, mnScanConfig.isShowZoomController());
 
         ActResultRequest actResultRequest = new ActResultRequest(activity);
         actResultRequest.startForResult(intent, scanCallback);

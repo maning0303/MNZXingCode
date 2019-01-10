@@ -1,6 +1,6 @@
 #   ZXingCode
 
-##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，自定义扫描线颜色（ZXing 3.3.3）
+##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色（ZXing 3.3.3）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ##  功能：
@@ -8,11 +8,13 @@
     2：二维码扫描
     3：相册中选取图片识别
     4：开启闪光灯
+    5: 相机可以调整焦距放大缩小
 
 ## 截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpg)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpg)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpeg)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
 
 ## 如何添加
 ### Gradle添加：
@@ -65,21 +67,25 @@
             
             //自定义扫描
             MNScanConfig scanConfig = new MNScanConfig.Builder()
-                        //设置完成震动
-                        .isShowVibrate(false)
-                        //扫描完成声音
-                        .isShowBeep(true)
-                        //显示相册功能
-                        .isShowPhotoAlbum(true)
-                        //打开扫描页面的动画
-                        .setActivityOpenAnime(R.anim.activity_anmie_in)
-                        //退出扫描页面动画
-                        .setActivityExitAnime(R.anim.activity_anmie_out)
-                        //自定义文案
-                        .setScanHintText("我是自定义文字")
-                        //扫描线的颜色
-                        .setScanColor("#FFFF00")
-                        .builder();
+                            //设置完成震动
+                            .isShowVibrate(false)
+                            //扫描完成声音
+                            .isShowBeep(true)
+                            //显示相册功能
+                            .isShowPhotoAlbum(true)
+                            //打开扫描页面的动画
+                            .setActivityOpenAnime(R.anim.activity_anmie_in)
+                            //退出扫描页面动画
+                            .setActivityExitAnime(R.anim.activity_anmie_out)
+                            //自定义文案
+                            .setScanHintText("请将二维码放入框中...")
+                            //扫描线的颜色
+                            .setScanColor("#FFFF00")
+                            //是否显示缩放控制器
+                            .isShowZoomController(true)
+                            //显示缩放控制器位置
+                            .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
+                            .builder();
             MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
                 @Override
                 public void onActivityResult(int resultCode, Intent data) {
@@ -108,6 +114,10 @@
 ```
 
 ## 版本记录：
+    v2.0.0:
+        1.添加缩放控制器，可以缩放相机焦距
+        2.缩放控制器方向：左，右，下
+        
     v1.1.9:
         1.添加退出动画配置
         2.修复activity动画黑色背景问题

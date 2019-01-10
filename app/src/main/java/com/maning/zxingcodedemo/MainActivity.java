@@ -76,12 +76,12 @@ public class MainActivity extends AppCompatActivity {
                 //退出扫描页面动画
                 .setActivityExitAnime(R.anim.activity_anmie_out)
                 //自定义文案
-                .setScanHintText("我是自定义文字")
+                .setScanHintText("请将二维码放入框中...")
                 //扫描线的颜色
                 .setScanColor("#FFFF00")
                 //是否显示缩放控制器
                 .isShowZoomController(true)
-                //显示位置
+                //显示缩放控制器位置
                 .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {

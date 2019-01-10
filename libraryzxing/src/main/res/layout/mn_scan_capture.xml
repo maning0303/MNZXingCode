@@ -14,8 +14,8 @@
  limitations under the License.
  -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:wheel="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <SurfaceView
         android:id="@+id/preview_view"
@@ -94,7 +94,7 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
-        <!--放大缩小-->
+        <!--放大缩小横向-->
         <LinearLayout
             android:id="@+id/ll_room_controller"
             android:layout_width="240dp"
@@ -131,7 +131,7 @@
                 android:paddingStart="0dp"
                 android:progress="0"
                 android:progressDrawable="@drawable/mn_scan_seekbar_zoom"
-                android:thumb="@drawable/mn_scan_seekbar_thume"
+                android:thumb="@drawable/mn_scan_seekbar_thumb"
                 android:thumbOffset="0dp" />
 
             <ImageView
@@ -140,6 +140,43 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/mn_scan_icon_zoom_in" />
+
+        </LinearLayout>
+        <!--放大缩小竖向-->
+        <LinearLayout
+            android:id="@+id/ll_room_controller_vertical"
+            android:layout_width="24dp"
+            android:layout_height="200dp"
+            android:background="@drawable/mn_scan_zoom_bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_in_vertical"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_in" />
+
+            <com.google.zxing.client.android.view.VerticalSeekBar
+                android:id="@+id/seek_bar_zoom_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1" />
+
+
+            <ImageView
+                android:id="@+id/iv_scan_zoom_out_vertical"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mn_scan_icon_zoom_out" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -163,10 +200,10 @@
                 android:id="@+id/progress_wheel"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                wheel:mn_barColor="#FFFFFF"
-                wheel:mn_barWidth="2dp"
-                wheel:mn_fillRadius="true"
-                wheel:mn_progressIndeterminate="true" />
+                app:mn_barColor="#FFFFFF"
+                app:mn_barWidth="2dp"
+                app:mn_fillRadius="true"
+                app:mn_progressIndeterminate="true" />
 
         </LinearLayout>
 

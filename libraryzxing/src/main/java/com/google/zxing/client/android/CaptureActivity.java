@@ -31,7 +31,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -47,8 +46,10 @@ import com.google.zxing.Result;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
+import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.ZXingUtils;
+import com.google.zxing.client.android.view.VerticalSeekBar;
 
 import java.util.Collection;
 import java.util.Map;
@@ -83,18 +84,26 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private LinearLayout btn_photo;
     private RelativeLayout btn_dialog_bg;
     private ImageView ivScreenshot;
-    //闪光灯是否打开
-    private boolean is_light_on = false;
-    private boolean beepFlag = true;
-    private boolean vibrateFlag = true;
-    private boolean zoomControllerFlag = true;
-    private int exitAnime = 0;
+
     private SurfaceView surfaceView;
     private ImageView mIvScanZoomIn;
     private ImageView mIvScanZoomOut;
     private SeekBar mSeekBarZoom;
     private LinearLayout mLlRoomController;
     private Context context;
+    private VerticalSeekBar mSeekBarZoomVertical;
+    private ImageView mIvScanZoomOutVertical;
+    private LinearLayout mLlRoomControllerVertical;
+    private ImageView mIvScanZoomInVertical;
+
+    //传递数据
+    //闪光灯是否打开
+    private boolean is_light_on = false;
+    private boolean beepFlag = true;
+    private boolean vibrateFlag = true;
+    private boolean zoomControllerFlag = true;
+    private int exitAnime = 0;
+    private MNScanConfig.ZoomControllerLocation zoomControllerLocation;
 
     public Handler getHandler() {
         return handler;
@@ -119,13 +128,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private void initIntent() {
         Intent intent = getIntent();
-        String hintText = intent.getStringExtra(MNScanManager.INTENT_KEY_HINTTEXT);
-        String scanColor = intent.getStringExtra(MNScanManager.INTENT_KEY_SCSNCOLOR);
-        boolean photoFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_PHOTO_FLAG, true);
-        beepFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_BEEP_FLAG, true);
-        vibrateFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_VIBRATE_FLAG, true);
-        exitAnime = intent.getIntExtra(MNScanManager.INTENT_KEY_ACTIVITY_EXIT_ANIME, 0);
-        zoomControllerFlag = intent.getBooleanExtra(MNScanManager.INTENT_KEY_ZOOM_CONTROLLER, true);
+
+        MNScanConfig mnScanConfig = (MNScanConfig) intent.getSerializableExtra(MNScanManager.INTENT_KEY_CONFIG_MODEL);
+
+
+        String hintText = mnScanConfig.getScanHintText();
+        String scanColor = mnScanConfig.getScanColor();
+        boolean photoFlag = mnScanConfig.isShowPhotoAlbum();
+        beepFlag = mnScanConfig.isShowBeep();
+        vibrateFlag = mnScanConfig.isShowVibrate();
+        exitAnime = mnScanConfig.getActivityExitAnime();
+        zoomControllerFlag = mnScanConfig.isShowZoomController();
+        zoomControllerLocation = mnScanConfig.getZoomControllerLocation();
+
         if (!TextUtils.isEmpty(hintText)) {
             viewfinderView.setHintText(hintText);
         }
@@ -424,6 +439,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
         mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
         mSeekBarZoom = (SeekBar) findViewById(R.id.seek_bar_zoom);
+        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
+
+        mSeekBarZoomVertical = (VerticalSeekBar) findViewById(R.id.seek_bar_zoom_vertical);
+        mIvScanZoomOutVertical = (ImageView) findViewById(R.id.iv_scan_zoom_out_vertical);
+        mIvScanZoomInVertical = (ImageView) findViewById(R.id.iv_scan_zoom_in_vertical);
+        mLlRoomControllerVertical = (LinearLayout) findViewById(R.id.ll_room_controller_vertical);
+
+        mSeekBarZoomVertical.setMaxProgress(100);
+        mSeekBarZoomVertical.setProgress(0);
+        mSeekBarZoomVertical.setThumbSize(8, 8);
+        mSeekBarZoomVertical.setUnSelectColor(Color.parseColor("#b4b4b4"));
+        mSeekBarZoomVertical.setSelectColor(Color.parseColor("#FFFFFF"));
+
         mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -436,10 +464,24 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 zoomOut(10);
             }
         });
+        mIvScanZoomInVertical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomIn(10);
+            }
+        });
+        mIvScanZoomOutVertical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomOut(10);
+            }
+        });
+
         mSeekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 cameraManager.setZoom(progress);
+                mSeekBarZoomVertical.setProgress(progress);
             }
 
             @Override
@@ -452,7 +494,24 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
             }
         });
-        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
+
+        mSeekBarZoomVertical.setOnSlideChangeListener(new VerticalSeekBar.SlideChangeListener() {
+            @Override
+            public void onStart(VerticalSeekBar slideView, int progress) {
+
+            }
+
+            @Override
+            public void onProgress(VerticalSeekBar slideView, int progress) {
+                cameraManager.setZoom(progress);
+                mSeekBarZoom.setProgress(progress);
+            }
+
+            @Override
+            public void onStop(VerticalSeekBar slideView, int progress) {
+
+            }
+        });
     }
 
     private void zoomOut(int value) {
@@ -461,6 +520,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             progress = 0;
         }
         mSeekBarZoom.setProgress(progress);
+        mSeekBarZoomVertical.setProgress(progress);
         cameraManager.setZoom(progress);
     }
 
@@ -470,6 +530,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             progress = 100;
         }
         mSeekBarZoom.setProgress(progress);
+        mSeekBarZoomVertical.setProgress(progress);
         cameraManager.setZoom(progress);
     }
 
@@ -481,14 +542,38 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (framingRect == null) {
             return;
         }
-        //动态修改位置
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLlRoomController.getLayoutParams();
-        layoutParams.width = framingRect.right - framingRect.left - CommonUtils.dip2px(context, 20);
-        layoutParams.setMargins(0, framingRect.bottom + CommonUtils.dip2px(context, 10), 0, 0);
-        mLlRoomController.setLayoutParams(layoutParams);
+        //显示
         if (zoomControllerFlag) {
-            mLlRoomController.setVisibility(View.VISIBLE);
+            int size10 = CommonUtils.dip2px(context, 10);
+
+            if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left) {
+                //垂直方向
+                RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
+                layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
+                layoutParamsVertical.setMargins(framingRect.left - size10 - layoutParamsVertical.width, framingRect.top + size10, 0, 0);
+                mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
+
+                mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+            } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
+                //垂直方向
+                RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
+                layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
+                layoutParamsVertical.setMargins(framingRect.right + size10, framingRect.top + size10, 0, 0);
+                mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
+
+                mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+            } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
+                //横向
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLlRoomController.getLayoutParams();
+                layoutParams.width = framingRect.right - framingRect.left - size10 * 2;
+                layoutParams.setMargins(0, framingRect.bottom + size10, 0, 0);
+                mLlRoomController.setLayoutParams(layoutParams);
+
+                mLlRoomController.setVisibility(View.VISIBLE);
+            }
         }
+
+
     }
 
 
@@ -514,15 +599,31 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 return super.onTouchEvent(event);
             }
             if (startY - moveY > 50) {
-                //向上滑
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left
+                        || zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
+                    //垂直方向
+                    //向上滑
+                    zoomIn(1);
+                }
             } else if (moveY - startY > 50) {
-                //向下滑
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left
+                        || zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
+                    //垂直方向
+                    //向下滑
+                    zoomOut(1);
+                }
             } else if (startX - moveX > 50) {
-                //向左滑
-                zoomOut(1);
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
+                    //垂直方向
+                    //向左滑
+                    zoomOut(1);
+                }
             } else if (moveX - startX > 50) {
-                //向右滑
-                zoomIn(1);
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
+                    //垂直方向
+                    //向右滑
+                    zoomIn(1);
+                }
             }
         }
         return super.onTouchEvent(event);

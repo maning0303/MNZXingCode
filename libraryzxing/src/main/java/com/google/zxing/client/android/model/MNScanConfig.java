@@ -13,6 +13,13 @@ public class MNScanConfig implements Serializable {
 
     private static final long serialVersionUID = -5260676142223049891L;
 
+    //枚举类型：缩放控制器位置
+    public enum ZoomControllerLocation {
+        Bottom,
+        Left,
+        Right,
+    }
+
     //是否显示相册
     private boolean showPhotoAlbum;
     //扫描声音
@@ -29,10 +36,13 @@ public class MNScanConfig implements Serializable {
     private int activityExitAnime;
     //是否显示缩放控制器
     private boolean showZoomController = true;
+    //控制器位置
+    private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
 
     private MNScanConfig() {
 
     }
+
 
     private MNScanConfig(Builder builder) {
         showPhotoAlbum = builder.showPhotoAlbum;
@@ -43,6 +53,7 @@ public class MNScanConfig implements Serializable {
         activityOpenAnime = builder.activityOpenAnime;
         activityExitAnime = builder.activityExitAnime;
         showZoomController = builder.showZoomController;
+        zoomControllerLocation = builder.zoomControllerLocation;
     }
 
     public boolean isShowZoomController() {
@@ -85,6 +96,38 @@ public class MNScanConfig implements Serializable {
         this.activityExitAnime = activityExitAnime;
     }
 
+    public void setShowPhotoAlbum(boolean showPhotoAlbum) {
+        this.showPhotoAlbum = showPhotoAlbum;
+    }
+
+    public void setShowBeep(boolean showBeep) {
+        this.showBeep = showBeep;
+    }
+
+    public void setShowVibrate(boolean showVibrate) {
+        this.showVibrate = showVibrate;
+    }
+
+    public void setScanColor(String scanColor) {
+        this.scanColor = scanColor;
+    }
+
+    public void setScanHintText(String scanHintText) {
+        this.scanHintText = scanHintText;
+    }
+
+    public void setActivityOpenAnime(int activityOpenAnime) {
+        this.activityOpenAnime = activityOpenAnime;
+    }
+
+    public ZoomControllerLocation getZoomControllerLocation() {
+        return zoomControllerLocation;
+    }
+
+    public void setZoomControllerLocation(ZoomControllerLocation zoomControllerLocation) {
+        this.zoomControllerLocation = zoomControllerLocation;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -94,6 +137,7 @@ public class MNScanConfig implements Serializable {
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
         private boolean showZoomController = true;
+        private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -136,6 +180,11 @@ public class MNScanConfig implements Serializable {
 
         public Builder isShowZoomController(boolean showZoomController) {
             this.showZoomController = showZoomController;
+            return this;
+        }
+
+        public Builder setZoomControllerLocation(ZoomControllerLocation zoomControllerLocation) {
+            this.zoomControllerLocation = zoomControllerLocation;
             return this;
         }
 

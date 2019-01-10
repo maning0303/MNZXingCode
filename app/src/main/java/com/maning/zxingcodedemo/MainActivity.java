@@ -80,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 //扫描线的颜色
                 .setScanColor("#FFFF00")
                 //是否显示缩放控制器
-                .isShowZoomController(false)
+                .isShowZoomController(true)
+                //显示位置
+                .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

@@ -1,4 +1,4 @@
-#   ZXingCode
+#   ZXingCode 二维码扫描
 
 ##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色（ZXing 3.3.3）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
@@ -32,7 +32,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNZXingCode:V1.1.9'
+	     compile 'com.github.maning0303:MNZXingCode:V2.0.0'
 	}
 ```
 

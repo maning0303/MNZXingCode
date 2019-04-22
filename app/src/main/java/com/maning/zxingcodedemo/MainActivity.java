@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) findViewById(R.id.editText);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
 
+        requestCameraPerm();
     }
 
     public void requestCameraPerm() {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scanCodeDefault(View view) {
-        requestCameraPerm();
+        //需要判断有没有权限
         MNScanManager.startScan(this, new MNScanCallback() {
             @Override
             public void onActivityResult(int resultCode, Intent data) {

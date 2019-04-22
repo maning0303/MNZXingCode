@@ -16,13 +16,16 @@
 
 package com.google.zxing.client.android;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -65,6 +68,7 @@ import java.util.Map;
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
+    private static final int REQUEST_CODE_CAMERA = 10010;
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -193,7 +197,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                             @Override
                             public void run() {
                                 btn_dialog_bg.setVisibility(View.GONE);
-                                Log.i(TAG, "decodeQRCode:" + decodeQRCodeFromBitmap);
                                 if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
                                     Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -218,7 +221,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume");
         // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
         // want to open the camera driver and measure the screen size if we're going to show the help on
         // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
@@ -342,8 +344,17 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
+        //检查相机权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                //没有相机权限
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                return;
+            }
+        }
         if (surfaceHolder == null) {
-            displayFrameworkBugMessageAndExit("SurfaceHolder 不存在");
+            displayFrameworkBugMessageAndExit("初始化相机失败");
+            return;
         }
         if (cameraManager.isOpen()) {
             Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
@@ -356,10 +367,31 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
             }
         } catch (Exception e) {
-            displayFrameworkBugMessageAndExit("open camera fail：" + e.toString());
+            Log.e(TAG, "open camera fail：" + e.toString());
+            displayFrameworkBugMessageAndExit("初始化相机失败");
         }
         //刷新控制器
         updateZoomController();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_CAMERA:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted 授予权限
+                    onResume();
+                } else {
+                    // Permission Denied 权限被拒绝
+                    displayFrameworkBugMessageAndExit("初始化相机失败,权限被拒绝");
+                }
+                break;
+            default:
+                break;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
     private void displayFrameworkBugMessageAndExit(String errorMessage) {

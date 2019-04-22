@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             case MNScanManager.RESULT_SUCCESS:
                 String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
                 showToast(resultSuccess);
-                textView.setText(resultSuccess);
+                textView.setText("扫描结果显示：" + resultSuccess);
                 break;
             case MNScanManager.RESULT_FAIL:
                 String resultError = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_ERROR);

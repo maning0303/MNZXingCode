@@ -32,7 +32,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNZXingCode:V2.0.0'
+	     compile 'com.github.maning0303:MNZXingCode:V2.0.1'
 	}
 ```
 
@@ -49,7 +49,6 @@
             MNScanManager.startScan(this, new MNScanCallback() {
                    @Override
                    public void onActivityResult(int resultCode, Intent data) {
-                    //TODO:
                     switch (resultCode) {
                         case MNScanManager.RESULT_SUCCESS:
                             String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
@@ -116,6 +115,7 @@
 ## 版本记录：
     v2.0.1:
         1.再次修复8.0-Only fullscreen ...错误
+        2.优化权限，内部检查相机权限
 
     v2.0.0:
         1.添加缩放控制器，可以缩放相机焦距

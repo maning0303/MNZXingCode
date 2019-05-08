@@ -20,6 +20,12 @@ public class MNScanConfig implements Serializable {
         Right,
     }
 
+    //枚举类型：扫描线样式
+    public enum LaserStyle {
+        Line,
+        Grid,
+    }
+
     //是否显示相册
     private boolean showPhotoAlbum;
     //扫描声音
@@ -28,6 +34,8 @@ public class MNScanConfig implements Serializable {
     private boolean showVibrate;
     //扫描框和扫描线的颜色
     private String scanColor;
+    //扫描线的样式
+    private LaserStyle laserStyle;
     //扫描提示文案
     private String scanHintText;
     //开启Activity动画
@@ -49,11 +57,20 @@ public class MNScanConfig implements Serializable {
         showBeep = builder.showBeep;
         showVibrate = builder.showVibrate;
         scanColor = builder.scanColor;
+        laserStyle = builder.laserStyle;
         scanHintText = builder.scanHintText;
         activityOpenAnime = builder.activityOpenAnime;
         activityExitAnime = builder.activityExitAnime;
         showZoomController = builder.showZoomController;
         zoomControllerLocation = builder.zoomControllerLocation;
+    }
+
+    public LaserStyle getLaserStyle() {
+        return laserStyle;
+    }
+
+    public void setLaserStyle(LaserStyle laserStyle) {
+        this.laserStyle = laserStyle;
     }
 
     public boolean isShowZoomController() {
@@ -133,6 +150,7 @@ public class MNScanConfig implements Serializable {
         private boolean showBeep = true;
         private boolean showVibrate = true;
         private String scanColor;
+        private LaserStyle laserStyle = LaserStyle.Line;
         private String scanHintText;
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
@@ -141,6 +159,11 @@ public class MNScanConfig implements Serializable {
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
+        }
+
+        public Builder setLaserStyle(LaserStyle laserStyle) {
+            this.laserStyle = laserStyle;
+            return this;
         }
 
         public Builder isShowPhotoAlbum(boolean showPhotoAlbum) {

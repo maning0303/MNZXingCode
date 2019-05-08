@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 .isShowZoomController(true)
                 //显示缩放控制器位置
                 .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
+                //扫描线样式
+                .setLaserStyle(MNScanConfig.LaserStyle.Grid)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

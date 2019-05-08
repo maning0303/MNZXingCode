@@ -135,23 +135,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         MNScanConfig mnScanConfig = (MNScanConfig) intent.getSerializableExtra(MNScanManager.INTENT_KEY_CONFIG_MODEL);
 
-
-        String hintText = mnScanConfig.getScanHintText();
         String scanColor = mnScanConfig.getScanColor();
-        boolean photoFlag = mnScanConfig.isShowPhotoAlbum();
         beepFlag = mnScanConfig.isShowBeep();
         vibrateFlag = mnScanConfig.isShowVibrate();
         exitAnime = mnScanConfig.getActivityExitAnime();
         zoomControllerFlag = mnScanConfig.isShowZoomController();
         zoomControllerLocation = mnScanConfig.getZoomControllerLocation();
 
-        if (!TextUtils.isEmpty(hintText)) {
-            viewfinderView.setHintText(hintText);
-        }
+        viewfinderView.setHintText(mnScanConfig.getScanHintText());
         if (!TextUtils.isEmpty(scanColor)) {
-            viewfinderView.setScanLineColor(Color.parseColor(scanColor));
+            viewfinderView.setLaserColor(Color.parseColor(scanColor));
         }
-        if (!photoFlag) {
+        viewfinderView.setLaserStyle(mnScanConfig.getLaserStyle());
+        if (!mnScanConfig.isShowPhotoAlbum()) {
             btn_photo.setVisibility(View.GONE);
         }
         if (exitAnime == 0) {

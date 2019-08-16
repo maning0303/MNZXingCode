@@ -296,6 +296,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         MNScanConfig mnScanConfig = (MNScanConfig) intent.getSerializableExtra(MNScanManager.INTENT_KEY_CONFIG_MODEL);
 
         String scanColor = mnScanConfig.getScanColor();
+        String maskColor = mnScanConfig.getBgColor();
         beepFlag = mnScanConfig.isShowBeep();
         vibrateFlag = mnScanConfig.isShowVibrate();
         exitAnime = mnScanConfig.getActivityExitAnime();
@@ -307,6 +308,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             viewfinderView.setLaserColor(Color.parseColor(scanColor));
         }
         viewfinderView.setLaserStyle(mnScanConfig.getLaserStyle());
+        if (!TextUtils.isEmpty(maskColor)) {
+            viewfinderView.setMaskColor(Color.parseColor(maskColor));
+        }
         if (!mnScanConfig.isShowPhotoAlbum()) {
             btn_photo.setVisibility(View.GONE);
         }

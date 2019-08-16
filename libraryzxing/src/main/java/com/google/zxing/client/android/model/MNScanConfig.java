@@ -52,6 +52,8 @@ public class MNScanConfig implements Serializable {
     private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
     //自定义View
     private int customShadeViewLayoutID;
+    //扫描背景色
+    private String bgColor;
 
     private MNScanConfig() {
 
@@ -70,6 +72,7 @@ public class MNScanConfig implements Serializable {
         showZoomController = builder.showZoomController;
         zoomControllerLocation = builder.zoomControllerLocation;
         customShadeViewLayoutID = builder.customShadeViewLayoutID;
+        bgColor = builder.bgColor;
     }
 
     public LaserStyle getLaserStyle() {
@@ -160,6 +163,14 @@ public class MNScanConfig implements Serializable {
         this.customShadeViewLayoutID = customShadeViewLayoutID;
     }
 
+    public String getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(String bgColor) {
+        this.bgColor = bgColor;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -172,6 +183,7 @@ public class MNScanConfig implements Serializable {
         private boolean showZoomController = true;
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
         private int customShadeViewLayoutID;
+        private String bgColor;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -230,6 +242,11 @@ public class MNScanConfig implements Serializable {
         public Builder setCustomShadeViewLayoutID(int customShadeViewLayoutID, MNCustomViewBindCallback mnCustomViewBindCallback) {
             this.customShadeViewLayoutID = customShadeViewLayoutID;
             CaptureActivity.setMnCustomViewBindCallback(mnCustomViewBindCallback);
+            return this;
+        }
+
+        public Builder setBgColor(String bgColor) {
+            this.bgColor = bgColor;
             return this;
         }
 

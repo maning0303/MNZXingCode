@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 })
+                //背景颜色
+                .setBgColor("#33FF0000")
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

@@ -125,6 +125,15 @@ public final class ViewfinderView extends View {
     }
 
     /**
+     * 背景色
+     *
+     * @param maskColor
+     */
+    public void setMaskColor(int maskColor) {
+        this.maskColor = maskColor;
+    }
+
+    /**
      * 设置文案
      *
      * @param msg

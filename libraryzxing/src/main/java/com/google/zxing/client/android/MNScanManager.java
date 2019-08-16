@@ -42,4 +42,39 @@ public class MNScanManager {
         activity.overridePendingTransition(mnScanConfig.getActivityOpenAnime(), android.R.anim.fade_out);
     }
 
+    /**
+     * 关闭当前页面
+     */
+    public static void closeScanPage() {
+        CaptureActivity.closeScanPage();
+    }
+
+    /**
+     * 打开相册扫描图片
+     */
+    public static void openAlbumPage() {
+        CaptureActivity.openAlbumPage();
+    }
+
+    /**
+     * 打开手电筒
+     */
+    public static void openScanLight() {
+        CaptureActivity.openScanLight();
+    }
+
+    /**
+     * 关闭手电筒
+     */
+    public static void closeScanLight() {
+        CaptureActivity.closeScanLight();
+    }
+
+    /**
+     * 手电筒是否开启
+     */
+    public static boolean isLightOn() {
+        return CaptureActivity.isLightOn();
+    }
+
 }

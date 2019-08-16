@@ -1,10 +1,12 @@
 package com.google.zxing.client.android.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -19,6 +21,8 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -184,7 +188,7 @@ public class ZXingUtils {
     }
 
 
-    //------解析图片-----代码来自：https://github.com/bingoogolapple/BGAQRCode-Android----感谢
+    //------解析图片-----
 
     /**
      * 同步解析本地图片二维码。该方法是耗时操作，请在子线程中调用。
@@ -232,13 +236,15 @@ public class ZXingUtils {
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(picturePath, options);
             int sampleSize = options.outHeight / 400;
-            if (sampleSize <= 0)
+            if (sampleSize <= 0) {
                 sampleSize = 1;
+            }
             options.inSampleSize = sampleSize;
             options.inJustDecodeBounds = false;
 
             return BitmapFactory.decodeFile(picturePath, options);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -263,44 +269,4 @@ public class ZXingUtils {
         }
         return formart;
     }
-
-    /**
-     * @param uri：图片的本地url地址
-     * @return Bitmap；
-     */
-    public static Bitmap decodeUriAsBitmap(Context context, Uri uri) {
-        Bitmap bitmap = null;
-        try {
-//            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
-            //压缩图片
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
-            options.inSampleSize = calculateInSampleSize(options, 720, 1280);
-            options.inJustDecodeBounds = false;
-            bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return bitmap;
-    }
-
-    //计算图片的缩放值
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            //使用需要的宽高的最大值来计算比率
-            final int suitedValue = reqHeight > reqWidth ? reqHeight : reqWidth;
-            final int heightRatio = Math.round((float) height / (float) suitedValue);
-            final int widthRatio = Math.round((float) width / (float) suitedValue);
-
-            inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;//用最大
-        }
-        return inSampleSize;
-    }
-
-
 }

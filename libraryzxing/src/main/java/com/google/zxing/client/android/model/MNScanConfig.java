@@ -1,6 +1,10 @@
 package com.google.zxing.client.android.model;
 
+import android.view.View;
+
+import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.R;
+import com.google.zxing.client.android.other.MNCustomViewBindCallback;
 
 import java.io.Serializable;
 
@@ -46,6 +50,8 @@ public class MNScanConfig implements Serializable {
     private boolean showZoomController = true;
     //控制器位置
     private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
+    //自定义View
+    private int customShadeViewLayoutID;
 
     private MNScanConfig() {
 
@@ -63,6 +69,7 @@ public class MNScanConfig implements Serializable {
         activityExitAnime = builder.activityExitAnime;
         showZoomController = builder.showZoomController;
         zoomControllerLocation = builder.zoomControllerLocation;
+        customShadeViewLayoutID = builder.customShadeViewLayoutID;
     }
 
     public LaserStyle getLaserStyle() {
@@ -145,6 +152,14 @@ public class MNScanConfig implements Serializable {
         this.zoomControllerLocation = zoomControllerLocation;
     }
 
+    public int getCustomShadeViewLayoutID() {
+        return customShadeViewLayoutID;
+    }
+
+    public void setCustomShadeViewLayoutID(int customShadeViewLayoutID) {
+        this.customShadeViewLayoutID = customShadeViewLayoutID;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -156,6 +171,7 @@ public class MNScanConfig implements Serializable {
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
         private boolean showZoomController = true;
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
+        private int customShadeViewLayoutID;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -208,6 +224,12 @@ public class MNScanConfig implements Serializable {
 
         public Builder setZoomControllerLocation(ZoomControllerLocation zoomControllerLocation) {
             this.zoomControllerLocation = zoomControllerLocation;
+            return this;
+        }
+
+        public Builder setCustomShadeViewLayoutID(int customShadeViewLayoutID, MNCustomViewBindCallback mnCustomViewBindCallback) {
+            this.customShadeViewLayoutID = customShadeViewLayoutID;
+            CaptureActivity.setMnCustomViewBindCallback(mnCustomViewBindCallback);
             return this;
         }
 

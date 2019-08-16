@@ -13,12 +13,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.model.MNScanConfig;
+import com.google.zxing.client.android.other.MNCustomViewBindCallback;
 import com.google.zxing.client.android.other.MNScanCallback;
 import com.google.zxing.client.android.utils.ZXingUtils;
 
@@ -86,6 +88,62 @@ public class MainActivity extends AppCompatActivity {
                 .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
                 //扫描线样式
                 .setLaserStyle(MNScanConfig.LaserStyle.Grid)
+                //自定义遮罩
+                .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
+                    @Override
+                    public void onBindView(View customView) {
+                        ImageView iv_back = customView.findViewById(R.id.iv_back);
+                        ImageView iv_photo = customView.findViewById(R.id.iv_photo);
+                        LinearLayout btn_scan_light = customView.findViewById(R.id.btn_scan_light);
+                        final ImageView iv_scan_light = customView.findViewById(R.id.iv_scan_light);
+                        final TextView tv_scan_light = customView.findViewById(R.id.tv_scan_light);
+                        LinearLayout btn_my_card = customView.findViewById(R.id.btn_my_card);
+                        LinearLayout btn_scan_record = customView.findViewById(R.id.btn_scan_record);
+                        iv_back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //关闭扫描页面
+                                MNScanManager.closeScanPage();
+                            }
+                        });
+                        btn_scan_light.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //手电筒
+                                if (MNScanManager.isLightOn()) {
+                                    MNScanManager.closeScanLight();
+                                    iv_scan_light.setImageResource(R.drawable.icon_custom_light_close);
+                                    tv_scan_light.setText("开启手电筒");
+                                } else {
+                                    MNScanManager.openScanLight();
+                                    iv_scan_light.setImageResource(R.drawable.icon_custom_light_open);
+                                    tv_scan_light.setText("关闭手电筒");
+                                }
+                            }
+                        });
+                        iv_photo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //打开相册扫描
+                                MNScanManager.openAlbumPage();
+                            }
+                        });
+                        btn_my_card.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //我的名片
+                                showToast("我的名片");
+                            }
+                        });
+                        btn_scan_record.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //扫码记录
+                                showToast("扫码记录");
+                            }
+                        });
+                    }
+                })
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

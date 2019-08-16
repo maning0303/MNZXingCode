@@ -30,11 +30,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,10 +50,13 @@ import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
 import com.google.zxing.client.android.model.MNScanConfig;
+import com.google.zxing.client.android.other.MNCustomViewBindCallback;
 import com.google.zxing.client.android.utils.CommonUtils;
+import com.google.zxing.client.android.utils.ImageUtils;
 import com.google.zxing.client.android.utils.ZXingUtils;
 import com.google.zxing.client.android.view.VerticalSeekBar;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Map;
 
@@ -67,8 +70,12 @@ import java.util.Map;
  */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
+    //用来保存当前Activity
+    private static WeakReference<CaptureActivity> sActivityRef;
     private static final String TAG = CaptureActivity.class.getSimpleName();
-    private static final int REQUEST_CODE_CAMERA = 10010;
+    private static final int REQUEST_CODE_PICK_IMAGE = 10010;
+    private static final int REQUEST_CODE_PERMISSION_CAMERA = 10011;
+    private static final int REQUEST_CODE_PERMISSION_STORAGE = 10012;
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -88,6 +95,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private LinearLayout btn_photo;
     private RelativeLayout btn_dialog_bg;
     private ImageView ivScreenshot;
+
+    private RelativeLayout rl_default_menu;
+    private LinearLayout ll_custom_view;
 
     private SurfaceView surfaceView;
     private ImageView mIvScanZoomIn;
@@ -109,6 +119,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private int exitAnime = 0;
     private MNScanConfig.ZoomControllerLocation zoomControllerLocation;
 
+    //自定义遮罩View
+    private static MNCustomViewBindCallback customViewBindCallback;
+
+    public static void setMnCustomViewBindCallback(MNCustomViewBindCallback mnCustomViewBindCallback) {
+        customViewBindCallback = mnCustomViewBindCallback;
+    }
+
     public Handler getHandler() {
         return handler;
     }
@@ -120,15 +137,158 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.mn_scan_capture);
+        sActivityRef = new WeakReference<>(this);
         context = this;
         initView();
         initIntent();
     }
 
+    private void initView() {
+        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
+        iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
+        tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
+        btn_close = (LinearLayout) findViewById(R.id.btn_close);
+        btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
+        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
+        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
+        rl_default_menu = (RelativeLayout) findViewById(R.id.rl_default_menu);
+        ll_custom_view = (LinearLayout) findViewById(R.id.ll_custom_view);
+
+        btn_dialog_bg.setVisibility(View.GONE);
+        rl_default_menu.setVisibility(View.GONE);
+        ll_custom_view.setVisibility(View.GONE);
+
+        hasSurface = false;
+        inactivityTimer = new InactivityTimer(this);
+        beepManager = new BeepManager(this);
+
+        //点击事件
+        btn_scan_light.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (is_light_on) {
+                    closeLight();
+                } else {
+                    openLight();
+                }
+            }
+        });
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishCancle();
+            }
+        });
+
+        btn_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImageFromAlbum();
+            }
+        });
+
+        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
+        mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
+        mSeekBarZoom = (SeekBar) findViewById(R.id.seek_bar_zoom);
+        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
+
+        mSeekBarZoomVertical = (VerticalSeekBar) findViewById(R.id.seek_bar_zoom_vertical);
+        mIvScanZoomOutVertical = (ImageView) findViewById(R.id.iv_scan_zoom_out_vertical);
+        mIvScanZoomInVertical = (ImageView) findViewById(R.id.iv_scan_zoom_in_vertical);
+        mLlRoomControllerVertical = (LinearLayout) findViewById(R.id.ll_room_controller_vertical);
+
+        mSeekBarZoomVertical.setMaxProgress(100);
+        mSeekBarZoomVertical.setProgress(0);
+        mSeekBarZoomVertical.setThumbSize(8, 8);
+        mSeekBarZoomVertical.setUnSelectColor(Color.parseColor("#b4b4b4"));
+        mSeekBarZoomVertical.setSelectColor(Color.parseColor("#FFFFFF"));
+
+        mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomIn(10);
+            }
+        });
+        mIvScanZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomOut(10);
+            }
+        });
+        mIvScanZoomInVertical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomIn(10);
+            }
+        });
+        mIvScanZoomOutVertical.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zoomOut(10);
+            }
+        });
+
+        mSeekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cameraManager.setZoom(progress);
+                mSeekBarZoomVertical.setProgress(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        mSeekBarZoomVertical.setOnSlideChangeListener(new VerticalSeekBar.SlideChangeListener() {
+            @Override
+            public void onStart(VerticalSeekBar slideView, int progress) {
+
+            }
+
+            @Override
+            public void onProgress(VerticalSeekBar slideView, int progress) {
+                cameraManager.setZoom(progress);
+                mSeekBarZoom.setProgress(progress);
+            }
+
+            @Override
+            public void onStop(VerticalSeekBar slideView, int progress) {
+
+            }
+        });
+    }
+
+    private void openLight() {
+        is_light_on = true;
+        cameraManager.openLight();
+        iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
+        tv_scan_light.setText("关闭手电筒");
+    }
+
+    private void closeLight() {
+        is_light_on = false;
+        cameraManager.offLight();
+        iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
+        tv_scan_light.setText("打开手电筒");
+    }
 
     private void initIntent() {
         Intent intent = getIntent();
@@ -153,61 +313,70 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (exitAnime == 0) {
             exitAnime = R.anim.mn_scan_activity_bottom_out;
         }
+
+        //自定义View
+        int customShadeViewLayoutID = mnScanConfig.getCustomShadeViewLayoutID();
+        if (customShadeViewLayoutID > 0 && customViewBindCallback != null) {
+            //显示出来
+            ll_custom_view.setVisibility(View.VISIBLE);
+            View customView = LayoutInflater.from(context).inflate(customShadeViewLayoutID, null);
+            ll_custom_view.addView(customView);
+            //事件绑定
+            customViewBindCallback.onBindView(customView);
+        } else {
+            rl_default_menu.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * 获取相册中的图片
      */
     public void getImageFromAlbum() {
-        Intent intent = new Intent();
-        /* 开启Pictures画面Type设定为image */
-        intent.setType("image/*");
-        /* 使用Intent.ACTION_GET_CONTENT这个Action */
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.setAction(Intent.ACTION_PICK);
-        /* 取得相片后返回本画面 */
-        startActivityForResult(intent, 1000);
-        //开始转Dialog
-        btn_dialog_bg.setVisibility(View.VISIBLE);
+        if (checkStoragePermission()) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
+        }
+    }
+
+    private boolean checkStoragePermission() {
+        //判断权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION_STORAGE);
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //去相册选择图片
-        if (requestCode == 1000) {
+        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK) {
             if (data == null) {
-                //隐藏Dialog
-                btn_dialog_bg.setVisibility(View.GONE);
                 return;
             }
-            final Uri uri = data.getData();
+            btn_dialog_bg.setVisibility(View.VISIBLE);
+            //需要压缩图片
+            final String picturePath = ImageUtils.getImageAbsolutePath(context, data.getData());
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    //需要压缩图片
-                    Bitmap bitmapChoose = ZXingUtils.decodeUriAsBitmap(CaptureActivity.this, uri);
-                    if (bitmapChoose != null) {
-                        final String decodeQRCodeFromBitmap = ZXingUtils.syncDecodeQRCode(bitmapChoose);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_dialog_bg.setVisibility(View.GONE);
-                                if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
-                                    Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    finishSuccess(decodeQRCodeFromBitmap);
-                                }
+                    final String decodeQRCodeFromBitmap = ZXingUtils.syncDecodeQRCode(picturePath);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btn_dialog_bg.setVisibility(View.GONE);
+                            if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
+                                Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
+                            } else {
+                                finishSuccess(decodeQRCodeFromBitmap);
                             }
-                        });
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                btn_dialog_bg.setVisibility(View.GONE);
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
             }).start();
         }
@@ -313,6 +482,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void finishFinal() {
+        //清空监听
+        setMnCustomViewBindCallback(null);
+        //销毁相关数据
+        sActivityRef = null;
+        //关闭
+        closeLight();
+        //关闭
         this.finish();
         //关闭窗体动画显示
         this.overridePendingTransition(0, exitAnime);
@@ -344,7 +520,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 //没有相机权限
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_PERMISSION_CAMERA);
                 return;
             }
         }
@@ -374,7 +550,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_CODE_CAMERA:
+            case REQUEST_CODE_PERMISSION_CAMERA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission Granted 授予权限
                     onResume();
@@ -383,6 +559,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     displayFrameworkBugMessageAndExit("初始化相机失败,权限被拒绝");
                 }
                 break;
+            case REQUEST_CODE_PERMISSION_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //用户同意使用write
+                    getImageFromAlbum();
+                } else {
+                    //缺少权限
+                    Toast.makeText(context, "缺少读写权限", Toast.LENGTH_SHORT).show();
+                }
             default:
                 break;
         }
@@ -408,138 +592,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
-    }
-
-    private void initView() {
-        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
-        iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
-        tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
-        btn_close = (LinearLayout) findViewById(R.id.btn_close);
-        btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
-        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
-        ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
-        btn_dialog_bg.setVisibility(View.GONE);
-
-        hasSurface = false;
-        inactivityTimer = new InactivityTimer(this);
-        beepManager = new BeepManager(this);
-
-        //点击事件
-        btn_scan_light.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (is_light_on) {
-                    is_light_on = false;
-                    cameraManager.offLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
-                    tv_scan_light.setText("打开手电筒");
-                } else {
-                    is_light_on = true;
-                    cameraManager.openLight();
-                    iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
-                    tv_scan_light.setText("关闭手电筒");
-                }
-            }
-        });
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishCancle();
-            }
-        });
-
-        btn_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getImageFromAlbum();
-            }
-        });
-
-        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        mIvScanZoomIn = (ImageView) findViewById(R.id.iv_scan_zoom_in);
-        mIvScanZoomOut = (ImageView) findViewById(R.id.iv_scan_zoom_out);
-        mSeekBarZoom = (SeekBar) findViewById(R.id.seek_bar_zoom);
-        mLlRoomController = (LinearLayout) findViewById(R.id.ll_room_controller);
-
-        mSeekBarZoomVertical = (VerticalSeekBar) findViewById(R.id.seek_bar_zoom_vertical);
-        mIvScanZoomOutVertical = (ImageView) findViewById(R.id.iv_scan_zoom_out_vertical);
-        mIvScanZoomInVertical = (ImageView) findViewById(R.id.iv_scan_zoom_in_vertical);
-        mLlRoomControllerVertical = (LinearLayout) findViewById(R.id.ll_room_controller_vertical);
-
-        mSeekBarZoomVertical.setMaxProgress(100);
-        mSeekBarZoomVertical.setProgress(0);
-        mSeekBarZoomVertical.setThumbSize(8, 8);
-        mSeekBarZoomVertical.setUnSelectColor(Color.parseColor("#b4b4b4"));
-        mSeekBarZoomVertical.setSelectColor(Color.parseColor("#FFFFFF"));
-
-        mIvScanZoomIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomIn(10);
-            }
-        });
-        mIvScanZoomOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomOut(10);
-            }
-        });
-        mIvScanZoomInVertical.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomIn(10);
-            }
-        });
-        mIvScanZoomOutVertical.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoomOut(10);
-            }
-        });
-
-        mSeekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                cameraManager.setZoom(progress);
-                mSeekBarZoomVertical.setProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        mSeekBarZoomVertical.setOnSlideChangeListener(new VerticalSeekBar.SlideChangeListener() {
-            @Override
-            public void onStart(VerticalSeekBar slideView, int progress) {
-
-            }
-
-            @Override
-            public void onProgress(VerticalSeekBar slideView, int progress) {
-                cameraManager.setZoom(progress);
-                mSeekBarZoom.setProgress(progress);
-            }
-
-            @Override
-            public void onStop(VerticalSeekBar slideView, int progress) {
-
-            }
-        });
     }
 
     private void zoomOut(int value) {
@@ -657,5 +709,53 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         return super.onTouchEvent(event);
     }
 
+
+    //---------对外提供方法----------
+
+    /**
+     * 关闭当前Activity
+     */
+    public static void closeScanPage() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            sActivityRef.get().finishCancle();
+        }
+    }
+
+    /**
+     * 打开相册扫描图片
+     */
+    public static void openAlbumPage() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            sActivityRef.get().getImageFromAlbum();
+        }
+    }
+
+    /**
+     * 打开手电筒
+     */
+    public static void openScanLight() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            sActivityRef.get().openLight();
+        }
+    }
+
+    /**
+     * 关闭手电筒
+     */
+    public static void closeScanLight() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            sActivityRef.get().closeLight();
+        }
+    }
+
+    /**
+     * 是否开启手电筒
+     */
+    public static boolean isLightOn() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            return sActivityRef.get().is_light_on;
+        }
+        return false;
+    }
 
 }

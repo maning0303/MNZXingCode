@@ -1,6 +1,6 @@
 #   ZXingCode 二维码扫描
 
-##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色（ZXing 3.3.3）
+##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层（ZXing 3.3.3）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ##  功能：
@@ -9,12 +9,12 @@
     3：相册中选取图片识别
     4：开启闪光灯
     5: 相机可以调整焦距放大缩小
+    6: 完全自定义遮罩层
 
 ## 截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpeg)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.png)
 
 ## 如何添加
 ### Gradle添加：
@@ -32,7 +32,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNZXingCode:V2.0.1'
+	     compile 'com.github.maning0303:MNZXingCode:V2.1.0'
 	}
 ```
 
@@ -84,11 +84,19 @@
                             .isShowZoomController(true)
                             //显示缩放控制器位置
                             .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
+                            //自定义遮罩
+                            .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
+                                @Override
+                                public void onBindView(View customView) {
+                                    //TODO:通过findviewById 获取View
+                                }
+                            })
+                            //背景颜色
+                            .setBgColor("#33FF0000")
                             .builder();
             MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
                 @Override
                 public void onActivityResult(int resultCode, Intent data) {
-                    //TODO:
                     switch (resultCode) {
                         case MNScanManager.RESULT_SUCCESS:
                             String resultSuccess = data.getStringExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS);
@@ -113,6 +121,12 @@
 ```
 
 ## 版本记录：
+    v2.1.0:
+        1.支持自定义遮罩层
+        2.支持修改背景色
+        3.优化扫描图片相关
+        4.内部检查读写权限
+
     v2.0.1:
         1.再次修复8.0-Only fullscreen ...错误
         2.优化权限，内部检查相机权限

@@ -277,17 +277,21 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void openLight() {
-        is_light_on = true;
-        cameraManager.openLight();
-        iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
-        tv_scan_light.setText("关闭手电筒");
+        if (!is_light_on) {
+            is_light_on = true;
+            cameraManager.openLight();
+            iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_on);
+            tv_scan_light.setText("关闭手电筒");
+        }
     }
 
     private void closeLight() {
-        is_light_on = false;
-        cameraManager.offLight();
-        iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
-        tv_scan_light.setText("打开手电筒");
+        if (is_light_on) {
+            is_light_on = false;
+            cameraManager.offLight();
+            iv_scan_light.setImageResource(R.drawable.mn_icon_scan_flash_light_off);
+            tv_scan_light.setText("打开手电筒");
+        }
     }
 
     private void initIntent() {

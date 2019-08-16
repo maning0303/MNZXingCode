@@ -118,6 +118,32 @@
         4：解析图片中的二维码：
         	String code = ZXingUtils.syncDecodeQRCode(String picturePath);
         	String code = ZXingUtils.syncDecodeQRCode(Bitmap bitmap);
+
+        5.提供扫描界面相关方法（自定义遮罩层会使用）：
+            /**
+             * 关闭当前页面
+             */
+            MNScanManager.closeScanPage();
+
+            /**
+             * 打开相册扫描图片
+             */
+            MNScanManager.openAlbumPage();
+
+            /**
+             * 打开手电筒
+             */
+            MNScanManager.openScanLight();
+
+            /**
+             * 关闭手电筒
+             */
+            MNScanManager.closeScanLight();
+
+            /**
+             * 手电筒是否开启
+             */
+            MNScanManager.isLightOn();
 ```
 
 ## 版本记录：

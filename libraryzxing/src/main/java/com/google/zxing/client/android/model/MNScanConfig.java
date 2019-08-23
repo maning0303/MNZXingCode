@@ -54,6 +54,10 @@ public class MNScanConfig implements Serializable {
     private int customShadeViewLayoutID;
     //扫描背景色
     private String bgColor;
+    //网格扫描线的列数
+    private int gridScanLineColumn;
+    //网格扫描线的高度
+    private int gridScanLineHeight;
 
     private MNScanConfig() {
 
@@ -73,6 +77,8 @@ public class MNScanConfig implements Serializable {
         zoomControllerLocation = builder.zoomControllerLocation;
         customShadeViewLayoutID = builder.customShadeViewLayoutID;
         bgColor = builder.bgColor;
+        gridScanLineColumn = builder.gridScanLineColumn;
+        gridScanLineHeight = builder.gridScanLineHeight;
     }
 
     public LaserStyle getLaserStyle() {
@@ -171,6 +177,22 @@ public class MNScanConfig implements Serializable {
         this.bgColor = bgColor;
     }
 
+    public int getGridScanLineColumn() {
+        return gridScanLineColumn;
+    }
+
+    public int getGridScanLineHeight() {
+        return gridScanLineHeight;
+    }
+
+    public void setGridScanLineColumn(int gridScanLineColumn) {
+        this.gridScanLineColumn = gridScanLineColumn;
+    }
+
+    public void setGridScanLineHeight(int gridScanLineHeight) {
+        this.gridScanLineHeight = gridScanLineHeight;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -184,6 +206,10 @@ public class MNScanConfig implements Serializable {
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
         private int customShadeViewLayoutID;
         private String bgColor;
+        //网格扫描线的列数
+        private int gridScanLineColumn;
+        //网格扫描线的高度
+        private int gridScanLineHeight;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -247,6 +273,16 @@ public class MNScanConfig implements Serializable {
 
         public Builder setBgColor(String bgColor) {
             this.bgColor = bgColor;
+            return this;
+        }
+
+        public Builder setGridScanLineColumn(int gridScanLineColumn) {
+            this.gridScanLineColumn = gridScanLineColumn;
+            return this;
+        }
+
+        public Builder setGridScanLineHeight(int gridScanLineHeight) {
+            this.gridScanLineHeight = gridScanLineHeight;
             return this;
         }
 

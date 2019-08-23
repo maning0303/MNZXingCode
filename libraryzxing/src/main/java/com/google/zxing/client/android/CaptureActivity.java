@@ -322,6 +322,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             exitAnime = R.anim.mn_scan_activity_bottom_out;
         }
 
+        //网格扫描线相关配置
+        viewfinderView.setGridScannerColumn(mnScanConfig.getGridScanLineColumn());
+        viewfinderView.setGridScannerHeight(mnScanConfig.getGridScanLineHeight());
+
         //自定义View
         int customShadeViewLayoutID = mnScanConfig.getCustomShadeViewLayoutID();
         if (customShadeViewLayoutID > 0 && customViewBindCallback != null) {

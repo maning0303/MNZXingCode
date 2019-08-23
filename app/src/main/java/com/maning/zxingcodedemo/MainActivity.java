@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
                 })
                 //背景颜色
                 .setBgColor("#33FF0000")
+                //网格扫描线的列数
+                .setGridScanLineColumn(30)
+                //网格高度
+                .setGridScanLineHeight(150)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

@@ -100,8 +100,9 @@ public final class ViewfinderView extends View {
         //四角线块
         cornerLineH = CommonUtils.dip2px(context, 2);
         cornerLineW = CommonUtils.dip2px(context, 14);
-        gridColumn = 20;
-        gridHeight = 200;
+        //网格扫描线先关配置
+        gridColumn = 24;
+        gridHeight = 0;
     }
 
     /**
@@ -131,6 +132,26 @@ public final class ViewfinderView extends View {
      */
     public void setMaskColor(int maskColor) {
         this.maskColor = maskColor;
+    }
+
+    /**
+     * 网格扫描列数
+     *
+     * @param gridColumn
+     */
+    public void setGridScannerColumn(int gridColumn) {
+        if (gridColumn > 0) {
+            this.gridColumn = gridColumn;
+        }
+    }
+
+    /**
+     * 网格扫描高度，默认扫描框的高度
+     *
+     * @param gridHeight
+     */
+    public void setGridScannerHeight(int gridHeight) {
+        this.gridHeight = gridHeight;
     }
 
     /**
@@ -230,7 +251,9 @@ public final class ViewfinderView extends View {
      * @param frame
      */
     private void drawGridScanner(Canvas canvas, Rect frame) {
-        gridHeight = frame.bottom - frame.top;
+        if (gridHeight <= 0) {
+            gridHeight = frame.bottom - frame.top;
+        }
         int stroke = 2;
         paintLaser.setStrokeWidth(stroke);
         //计算Y轴开始位置

@@ -29,7 +29,6 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.google.zxing.client.android.camera.CameraManager;
@@ -54,7 +53,9 @@ public final class ViewfinderView extends View {
     private int laserColor;
 
     private Rect frame;
-    private static String hintMsg;
+    private String hintMsg;
+    private String hintTextColor = "#FFFFFF";
+    private int hintTextSize = 14;
     private int linePosition = 0;
     private int margin;
     private int laserLineW;
@@ -82,7 +83,7 @@ public final class ViewfinderView extends View {
         hintMsg = resources.getString(R.string.mn_scan_hint_text);
         //文字
         paintText.setColor(Color.WHITE);
-        paintText.setTextSize(CommonUtils.dip2px(context, 14));
+        paintText.setTextSize(CommonUtils.sp2px(context, hintTextSize));
         paintText.setTextAlign(Paint.Align.CENTER);
         //四角
         paintLine.setColor(laserColor);
@@ -156,14 +157,22 @@ public final class ViewfinderView extends View {
 
     /**
      * 设置文案
-     *
-     * @param msg
      */
-    public void setHintText(String msg) {
-        hintMsg = msg;
-        if (TextUtils.isEmpty(hintMsg)) {
-            hintMsg = "";
+    public void setHintText(String hintMsg, String hintTextColor, int hintTextSize) {
+        //文字
+        if (!TextUtils.isEmpty(hintMsg)) {
+            this.hintMsg = hintMsg;
         }
+        //文字颜色
+        if (!TextUtils.isEmpty(hintTextColor)) {
+            this.hintTextColor = hintTextColor;
+        }
+        //文字大小
+        if (hintTextSize > 0) {
+            this.hintTextSize = hintTextSize;
+        }
+        paintText.setColor(Color.parseColor(this.hintTextColor));
+        paintText.setTextSize(CommonUtils.sp2px(context, this.hintTextSize));
     }
 
     public void setCameraManager(CameraManager cameraManager) {

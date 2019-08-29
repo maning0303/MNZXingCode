@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scanCode(View view) {
-        requestCameraPerm();
+        //需要判断有没有权限
         MNScanConfig scanConfig = new MNScanConfig.Builder()
                 //设置完成震动
                 .isShowVibrate(false)
@@ -74,12 +74,16 @@ public class MainActivity extends AppCompatActivity {
                 .isShowBeep(true)
                 //显示相册功能
                 .isShowPhotoAlbum(true)
+                //显示闪光灯
+                .isShowLightController(true)
                 //打开扫描页面的动画
                 .setActivityOpenAnime(R.anim.activity_anmie_in)
                 //退出扫描页面动画
                 .setActivityExitAnime(R.anim.activity_anmie_out)
                 //自定义文案
-                .setScanHintText("请将二维码放入框中...")
+                .setScanHintText("请将二维码放入框中")
+                .setScanHintTextColor("#FFFF00")
+                .setScanHintTextSize(16)
                 //扫描线的颜色
                 .setScanColor("#FFFF00")
                 //是否显示缩放控制器
@@ -88,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
                 .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
                 //扫描线样式
                 .setLaserStyle(MNScanConfig.LaserStyle.Grid)
+                //背景颜色
+                .setBgColor("#33FF0000")
+                //网格扫描线的列数
+                .setGridScanLineColumn(30)
+                //网格高度
+                .setGridScanLineHeight(150)
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                     @Override
@@ -144,12 +154,6 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 })
-                //背景颜色
-                .setBgColor("#33FF0000")
-                //网格扫描线的列数
-                .setGridScanLineColumn(30)
-                //网格高度
-                .setGridScanLineHeight(150)
                 .builder();
         MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
             @Override

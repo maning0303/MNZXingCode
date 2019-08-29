@@ -1,15 +1,15 @@
-#   ZXingCode 二维码扫描
+#   ZXingCode 快速集成二维码扫描
 
-##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层（ZXing 3.3.3）
+##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层（ZXing 3.4.0）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ##  功能：
     1：生成二维码（带Logo）
     2：二维码扫描
     3：相册中选取图片识别
-    4：开启闪光灯
+    4：闪光灯开关
     5: 相机可以调整焦距放大缩小
-    6: 完全自定义遮罩层
+    6: 完全自定义遮罩层，高度自定义
 
 ## 截图:
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
@@ -74,18 +74,32 @@
                             .isShowBeep(true)
                             //显示相册功能
                             .isShowPhotoAlbum(true)
+                            //显示闪光灯
+                            .isShowLightController(true)
                             //打开扫描页面的动画
                             .setActivityOpenAnime(R.anim.activity_anmie_in)
                             //退出扫描页面动画
                             .setActivityExitAnime(R.anim.activity_anmie_out)
                             //自定义文案
-                            .setScanHintText("请将二维码放入框中...")
+                            .setScanHintText("请将二维码放入框中")
+                            //自定义文案颜色
+                            .setScanHintTextColor("#FFFF00")
+                            //自定义文案大小（单位sp）
+                            .setScanHintTextSize(16)
                             //扫描线的颜色
                             .setScanColor("#FFFF00")
                             //是否显示缩放控制器
                             .isShowZoomController(true)
                             //显示缩放控制器位置
                             .setZoomControllerLocation(MNScanConfig.ZoomControllerLocation.Bottom)
+                            //扫描线样式
+                            .setLaserStyle(MNScanConfig.LaserStyle.Grid)
+                            //背景颜色
+                            .setBgColor("#33FF0000")
+                            //网格扫描线的列数
+                            .setGridScanLineColumn(30)
+                            //网格高度
+                            .setGridScanLineHeight(150)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override
@@ -93,8 +107,6 @@
                                     //TODO:通过findviewById 获取View
                                 }
                             })
-                            //背景颜色
-                            .setBgColor("#33FF0000")
                             .builder();
             MNScanManager.startScan(this, scanConfig, new MNScanCallback() {
                 @Override
@@ -149,8 +161,11 @@
 ```
 
 ## 版本记录：
-    v2.1.1:（未发布）
-        1.网格扫描线支持设置列数和高度
+    v2.1.1(未发布):
+        1.支持网格扫描线设置列数和高度
+        2.支持隐藏默认闪光灯开关
+        3.支持修改提示文案颜色和大小
+        4.UI优化显示
 
     v2.1.0:
         1.支持自定义遮罩层

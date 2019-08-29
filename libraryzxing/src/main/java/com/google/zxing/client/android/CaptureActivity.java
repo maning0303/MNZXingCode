@@ -24,7 +24,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -307,7 +306,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         zoomControllerFlag = mnScanConfig.isShowZoomController();
         zoomControllerLocation = mnScanConfig.getZoomControllerLocation();
 
-        viewfinderView.setHintText(mnScanConfig.getScanHintText());
+        //扫描文字配置
+        viewfinderView.setHintText(mnScanConfig.getScanHintText(), mnScanConfig.getScanHintTextColor(), mnScanConfig.getScanHintTextSize());
+
+        //扫描线相关配置
         if (!TextUtils.isEmpty(scanColor)) {
             viewfinderView.setLaserColor(Color.parseColor(scanColor));
         }
@@ -315,14 +317,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (!TextUtils.isEmpty(maskColor)) {
             viewfinderView.setMaskColor(Color.parseColor(maskColor));
         }
-        if (!mnScanConfig.isShowPhotoAlbum()) {
-            btn_photo.setVisibility(View.GONE);
-        }
-        if (exitAnime == 0) {
-            exitAnime = R.anim.mn_scan_activity_bottom_out;
-        }
-
-        //网格扫描线相关配置
         viewfinderView.setGridScannerColumn(mnScanConfig.getGridScanLineColumn());
         viewfinderView.setGridScannerHeight(mnScanConfig.getGridScanLineHeight());
 
@@ -338,6 +332,23 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         } else {
             rl_default_menu.setVisibility(View.VISIBLE);
         }
+
+        //闪光灯配置
+        boolean showLightController = mnScanConfig.isShowLightController();
+        if (showLightController) {
+            btn_scan_light.setVisibility(View.VISIBLE);
+        } else {
+            btn_scan_light.setVisibility(View.GONE);
+        }
+
+        //其他配置
+        if (!mnScanConfig.isShowPhotoAlbum()) {
+            btn_photo.setVisibility(View.GONE);
+        }
+        if (exitAnime == 0) {
+            exitAnime = R.anim.mn_scan_activity_bottom_out;
+        }
+
     }
 
     /**

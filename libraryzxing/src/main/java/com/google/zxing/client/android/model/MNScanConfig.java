@@ -42,6 +42,10 @@ public class MNScanConfig implements Serializable {
     private LaserStyle laserStyle;
     //扫描提示文案
     private String scanHintText;
+    //扫描提示文案颜色
+    private String scanHintTextColor;
+    //扫描提示文案字体大小
+    private int scanHintTextSize;
     //开启Activity动画
     private int activityOpenAnime;
     //关闭Activity动画
@@ -58,6 +62,8 @@ public class MNScanConfig implements Serializable {
     private int gridScanLineColumn;
     //网格扫描线的高度
     private int gridScanLineHeight;
+    //显示闪光灯
+    private boolean showLightController = true;
 
     private MNScanConfig() {
 
@@ -79,6 +85,9 @@ public class MNScanConfig implements Serializable {
         bgColor = builder.bgColor;
         gridScanLineColumn = builder.gridScanLineColumn;
         gridScanLineHeight = builder.gridScanLineHeight;
+        showLightController = builder.showLightController;
+        scanHintTextColor = builder.scanHintTextColor;
+        scanHintTextSize = builder.scanHintTextSize;
     }
 
     public LaserStyle getLaserStyle() {
@@ -193,6 +202,30 @@ public class MNScanConfig implements Serializable {
         this.gridScanLineHeight = gridScanLineHeight;
     }
 
+    public boolean isShowLightController() {
+        return showLightController;
+    }
+
+    public void setShowLightController(boolean showLightController) {
+        this.showLightController = showLightController;
+    }
+
+    public String getScanHintTextColor() {
+        return scanHintTextColor;
+    }
+
+    public void setScanHintTextColor(String scanHintTextColor) {
+        this.scanHintTextColor = scanHintTextColor;
+    }
+
+    public int getScanHintTextSize() {
+        return scanHintTextSize;
+    }
+
+    public void setScanHintTextSize(int scanHintTextSize) {
+        this.scanHintTextSize = scanHintTextSize;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -210,6 +243,11 @@ public class MNScanConfig implements Serializable {
         private int gridScanLineColumn;
         //网格扫描线的高度
         private int gridScanLineHeight;
+        private boolean showLightController = true;
+        //扫描提示文案颜色
+        private String scanHintTextColor;
+        //扫描提示文案字体大小
+        private int scanHintTextSize;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -283,6 +321,21 @@ public class MNScanConfig implements Serializable {
 
         public Builder setGridScanLineHeight(int gridScanLineHeight) {
             this.gridScanLineHeight = gridScanLineHeight;
+            return this;
+        }
+
+        public Builder isShowLightController(boolean showLightController) {
+            this.showLightController = showLightController;
+            return this;
+        }
+
+        public Builder setScanHintTextColor(String scanHintTextColor) {
+            this.scanHintTextColor = scanHintTextColor;
+            return this;
+        }
+
+        public Builder setScanHintTextSize(int scanHintTextSize) {
+            this.scanHintTextSize = scanHintTextSize;
             return this;
         }
 

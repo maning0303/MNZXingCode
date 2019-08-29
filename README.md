@@ -34,7 +34,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.0'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.1'
 	}
 ```
 
@@ -161,7 +161,7 @@
 ```
 
 ## 版本记录：
-    v2.1.1(未发布):
+    v2.1.1:
         1.支持网格扫描线设置列数和高度
         2.支持隐藏默认闪光灯开关
         3.支持修改提示文案颜色和大小

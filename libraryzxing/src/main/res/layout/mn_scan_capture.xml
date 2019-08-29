@@ -47,9 +47,8 @@
 
             <ImageView
                 android:id="@+id/iv_scan_light"
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
-                android:scaleType="fitCenter"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/mn_icon_scan_flash_light_off" />
 
             <TextView
@@ -59,7 +58,7 @@
                 android:layout_marginTop="6dp"
                 android:text="打开手电筒"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp" />
+                android:textSize="12dp" />
 
         </LinearLayout>
         <!--关闭-->
@@ -72,8 +71,8 @@
             android:paddingRight="16dp">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/mn_icon_scan_close" />
 
@@ -88,12 +87,11 @@
             android:paddingLeft="16dp"
             android:paddingRight="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="相册"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/mn_icon_scan_photo" />
 
         </LinearLayout>
     </RelativeLayout>
@@ -121,8 +119,8 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/mn_scan_zoom_bg"
             android:gravity="center"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -169,8 +167,8 @@
             android:background="@drawable/mn_scan_zoom_bg"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:visibility="gone"
             tools:visibility="visible">
 

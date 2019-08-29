@@ -82,7 +82,7 @@ public final class ViewfinderView extends View {
         hintMsg = resources.getString(R.string.mn_scan_hint_text);
         //文字
         paintText.setColor(Color.WHITE);
-        paintText.setTextSize(CommonUtils.sp2px(context, 14));
+        paintText.setTextSize(CommonUtils.dip2px(context, 14));
         paintText.setTextAlign(Paint.Align.CENTER);
         //四角
         paintLine.setColor(laserColor);

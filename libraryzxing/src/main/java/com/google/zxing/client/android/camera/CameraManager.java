@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.google.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.camera.open.OpenCamera;
 import com.google.zxing.client.android.camera.open.OpenCameraInterface;
 
@@ -45,7 +46,7 @@ public final class CameraManager {
     private static final int MIN_FRAME_WIDTH = 240;
     private static final int MIN_FRAME_HEIGHT = 240;
     private static final int MAX_FRAME_WIDTH = 675;
-    private static final int MAX_FRAME_HEIGHT = 675;
+    private static final int MAX_FRAME_HEIGHT = 675; // = 5/8 * 1080
 
     private final Context context;
     private final CameraConfigurationManager configManager;
@@ -253,6 +254,10 @@ public final class CameraManager {
 
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;
+            //高度偏移值
+            if (CaptureActivity.getScanConfig() != null) {
+                topOffset = topOffset - CaptureActivity.getScanConfig().getScanFrameHeightOffect();
+            }
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
             Log.d(TAG, "Calculated framing rect: " + framingRect);
         }
@@ -360,9 +365,15 @@ public final class CameraManager {
         if (rect == null) {
             return null;
         }
-        // Go ahead and assume it's YUV rather than die.
+        if (CaptureActivity.getScanConfig() != null && CaptureActivity.getScanConfig().isFullScreenScan()) {
+            //识别区域改为全屏
+            return new PlanarYUVLuminanceSource(data, width, height, 0, 0,
+                    width, height, false);
+        }
+        //识别区域是中间区域
         return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
                 rect.width(), rect.height(), false);
+
     }
 
 }

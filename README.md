@@ -100,6 +100,10 @@
                             .setGridScanLineColumn(30)
                             //网格高度
                             .setGridScanLineHeight(150)
+                            //高度偏移值（单位px）
+                            .setScanFrameHeightOffect(150)
+                            //是否全屏扫描
+                            .setFullScreenScan(true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override
@@ -161,6 +165,10 @@
 ```
 
 ## 版本记录：
+    v2.1.2（未发布）:
+        1.支持设置扫描框高度偏移值
+        2.支持设置全屏扫描（默认只扫描扫描框内的二维码）
+
     v2.1.1:
         1.支持网格扫描线设置列数和高度
         2.支持隐藏默认闪光灯开关
@@ -172,26 +180,6 @@
         2.支持修改背景色
         3.优化扫描图片相关
         4.内部检查读写权限
-
-    v2.0.1:
-        1.再次修复8.0-Only fullscreen ...错误
-        2.优化权限，内部检查相机权限
-
-    v2.0.0:
-        1.添加缩放控制器，可以缩放相机焦距
-        2.缩放控制器方向：左，右，下
-        
-    v1.1.9:
-        1.添加退出动画配置
-        2.修复activity动画黑色背景问题
-        
-    v1.1.8:
-        1.扫描线动画处理
-        2.优化UI
-        
-    v1.1.7:
-        1.图片识别二维码对图片进行压缩处理，防止OOM
-        2.优化界面显示
 
 
 ## 感谢：

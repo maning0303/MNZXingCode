@@ -121,6 +121,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     //自定义遮罩View
     private static MNCustomViewBindCallback customViewBindCallback;
 
+    private MNScanConfig mnScanConfig;
+
     public static void setMnCustomViewBindCallback(MNCustomViewBindCallback mnCustomViewBindCallback) {
         customViewBindCallback = mnCustomViewBindCallback;
     }
@@ -294,9 +296,10 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void initIntent() {
-        Intent intent = getIntent();
-
-        MNScanConfig mnScanConfig = (MNScanConfig) intent.getSerializableExtra(MNScanManager.INTENT_KEY_CONFIG_MODEL);
+        mnScanConfig = (MNScanConfig) getIntent().getSerializableExtra(MNScanManager.INTENT_KEY_CONFIG_MODEL);
+        if (mnScanConfig == null) {
+            mnScanConfig = new MNScanConfig.Builder().builder();
+        }
 
         String scanColor = mnScanConfig.getScanColor();
         String maskColor = mnScanConfig.getBgColor();
@@ -730,6 +733,18 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    //----------------对内方法
+    /**
+     * 获取配置信息
+     * @return
+     */
+    public static MNScanConfig getScanConfig() {
+        if (sActivityRef != null && sActivityRef.get() != null) {
+            return sActivityRef.get().mnScanConfig;
+        }
+        return null;
     }
 
 

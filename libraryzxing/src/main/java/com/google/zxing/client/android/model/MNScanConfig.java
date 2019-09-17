@@ -64,6 +64,10 @@ public class MNScanConfig implements Serializable {
     private int gridScanLineHeight;
     //显示闪光灯
     private boolean showLightController = true;
+    //扫描框高度偏移值：+向上偏移，-向下偏移 （单位px）
+    private int scanFrameHeightOffect;
+    //是否需要全屏扫描，默认值扫描扫描框中的二维码
+    private boolean isFullScreenScan = false;
 
     private MNScanConfig() {
 
@@ -88,6 +92,8 @@ public class MNScanConfig implements Serializable {
         showLightController = builder.showLightController;
         scanHintTextColor = builder.scanHintTextColor;
         scanHintTextSize = builder.scanHintTextSize;
+        scanFrameHeightOffect = builder.scanFrameHeightOffect;
+        isFullScreenScan = builder.isFullScreenScan;
     }
 
     public LaserStyle getLaserStyle() {
@@ -226,6 +232,22 @@ public class MNScanConfig implements Serializable {
         this.scanHintTextSize = scanHintTextSize;
     }
 
+    public int getScanFrameHeightOffect() {
+        return scanFrameHeightOffect;
+    }
+
+    public void setScanFrameHeightOffect(int scanFrameHeightOffect) {
+        this.scanFrameHeightOffect = scanFrameHeightOffect;
+    }
+
+    public boolean isFullScreenScan() {
+        return isFullScreenScan;
+    }
+
+    public void setFullScreenScan(boolean fullScreenScan) {
+        isFullScreenScan = fullScreenScan;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -248,6 +270,10 @@ public class MNScanConfig implements Serializable {
         private String scanHintTextColor;
         //扫描提示文案字体大小
         private int scanHintTextSize;
+        //扫描框高度偏移值：+向上偏移，-向下偏移
+        private int scanFrameHeightOffect = 0;
+        //是否需要全屏扫描，默认值扫描扫描框中的二维码
+        private boolean isFullScreenScan = false;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -336,6 +362,16 @@ public class MNScanConfig implements Serializable {
 
         public Builder setScanHintTextSize(int scanHintTextSize) {
             this.scanHintTextSize = scanHintTextSize;
+            return this;
+        }
+
+        public Builder setScanFrameHeightOffect(int scanFrameHeightOffect) {
+            this.scanFrameHeightOffect = scanFrameHeightOffect;
+            return this;
+        }
+
+        public Builder setFullScreenScan(boolean fullScreenScan) {
+            isFullScreenScan = fullScreenScan;
             return this;
         }
 

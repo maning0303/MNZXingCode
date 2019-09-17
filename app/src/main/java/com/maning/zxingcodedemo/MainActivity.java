@@ -98,10 +98,17 @@ public class MainActivity extends AppCompatActivity {
                 .setGridScanLineColumn(30)
                 //网格高度
                 .setGridScanLineHeight(150)
+                //高度偏移值（单位px）
+                .setScanFrameHeightOffect(150)
+                //是否全屏扫描,默认只扫描扫描框内的二维码
+                .setFullScreenScan(true)
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                     @Override
                     public void onBindView(View customView) {
+                        if(customView == null){
+                            return;
+                        }
                         ImageView iv_back = customView.findViewById(R.id.iv_back);
                         ImageView iv_photo = customView.findViewById(R.id.iv_photo);
                         LinearLayout btn_scan_light = customView.findViewById(R.id.btn_scan_light);

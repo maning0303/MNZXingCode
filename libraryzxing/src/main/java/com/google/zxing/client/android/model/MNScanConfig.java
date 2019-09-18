@@ -65,7 +65,7 @@ public class MNScanConfig implements Serializable {
     //显示闪光灯
     private boolean showLightController = true;
     //扫描框高度偏移值：+向上偏移，-向下偏移 （单位px）
-    private int scanFrameHeightOffect;
+    private int scanFrameHeightOffsets;
     //是否需要全屏扫描，默认值扫描扫描框中的二维码
     private boolean isFullScreenScan = false;
 
@@ -92,24 +92,8 @@ public class MNScanConfig implements Serializable {
         showLightController = builder.showLightController;
         scanHintTextColor = builder.scanHintTextColor;
         scanHintTextSize = builder.scanHintTextSize;
-        scanFrameHeightOffect = builder.scanFrameHeightOffect;
+        scanFrameHeightOffsets = builder.scanFrameHeightOffsets;
         isFullScreenScan = builder.isFullScreenScan;
-    }
-
-    public LaserStyle getLaserStyle() {
-        return laserStyle;
-    }
-
-    public void setLaserStyle(LaserStyle laserStyle) {
-        this.laserStyle = laserStyle;
-    }
-
-    public boolean isShowZoomController() {
-        return showZoomController;
-    }
-
-    public void setShowZoomController(boolean showZoomController) {
-        this.showZoomController = showZoomController;
     }
 
     public boolean isShowPhotoAlbum() {
@@ -128,8 +112,20 @@ public class MNScanConfig implements Serializable {
         return scanColor;
     }
 
+    public LaserStyle getLaserStyle() {
+        return laserStyle;
+    }
+
     public String getScanHintText() {
         return scanHintText;
+    }
+
+    public String getScanHintTextColor() {
+        return scanHintTextColor;
+    }
+
+    public int getScanHintTextSize() {
+        return scanHintTextSize;
     }
 
     public int getActivityOpenAnime() {
@@ -140,56 +136,20 @@ public class MNScanConfig implements Serializable {
         return activityExitAnime;
     }
 
-    public void setActivityExitAnime(int activityExitAnime) {
-        this.activityExitAnime = activityExitAnime;
-    }
-
-    public void setShowPhotoAlbum(boolean showPhotoAlbum) {
-        this.showPhotoAlbum = showPhotoAlbum;
-    }
-
-    public void setShowBeep(boolean showBeep) {
-        this.showBeep = showBeep;
-    }
-
-    public void setShowVibrate(boolean showVibrate) {
-        this.showVibrate = showVibrate;
-    }
-
-    public void setScanColor(String scanColor) {
-        this.scanColor = scanColor;
-    }
-
-    public void setScanHintText(String scanHintText) {
-        this.scanHintText = scanHintText;
-    }
-
-    public void setActivityOpenAnime(int activityOpenAnime) {
-        this.activityOpenAnime = activityOpenAnime;
+    public boolean isShowZoomController() {
+        return showZoomController;
     }
 
     public ZoomControllerLocation getZoomControllerLocation() {
         return zoomControllerLocation;
     }
 
-    public void setZoomControllerLocation(ZoomControllerLocation zoomControllerLocation) {
-        this.zoomControllerLocation = zoomControllerLocation;
-    }
-
     public int getCustomShadeViewLayoutID() {
         return customShadeViewLayoutID;
     }
 
-    public void setCustomShadeViewLayoutID(int customShadeViewLayoutID) {
-        this.customShadeViewLayoutID = customShadeViewLayoutID;
-    }
-
     public String getBgColor() {
         return bgColor;
-    }
-
-    public void setBgColor(String bgColor) {
-        this.bgColor = bgColor;
     }
 
     public int getGridScanLineColumn() {
@@ -200,52 +160,16 @@ public class MNScanConfig implements Serializable {
         return gridScanLineHeight;
     }
 
-    public void setGridScanLineColumn(int gridScanLineColumn) {
-        this.gridScanLineColumn = gridScanLineColumn;
-    }
-
-    public void setGridScanLineHeight(int gridScanLineHeight) {
-        this.gridScanLineHeight = gridScanLineHeight;
-    }
-
     public boolean isShowLightController() {
         return showLightController;
     }
 
-    public void setShowLightController(boolean showLightController) {
-        this.showLightController = showLightController;
-    }
-
-    public String getScanHintTextColor() {
-        return scanHintTextColor;
-    }
-
-    public void setScanHintTextColor(String scanHintTextColor) {
-        this.scanHintTextColor = scanHintTextColor;
-    }
-
-    public int getScanHintTextSize() {
-        return scanHintTextSize;
-    }
-
-    public void setScanHintTextSize(int scanHintTextSize) {
-        this.scanHintTextSize = scanHintTextSize;
-    }
-
-    public int getScanFrameHeightOffect() {
-        return scanFrameHeightOffect;
-    }
-
-    public void setScanFrameHeightOffect(int scanFrameHeightOffect) {
-        this.scanFrameHeightOffect = scanFrameHeightOffect;
+    public int getScanFrameHeightOffsets() {
+        return scanFrameHeightOffsets;
     }
 
     public boolean isFullScreenScan() {
         return isFullScreenScan;
-    }
-
-    public void setFullScreenScan(boolean fullScreenScan) {
-        isFullScreenScan = fullScreenScan;
     }
 
     public static class Builder {
@@ -254,7 +178,6 @@ public class MNScanConfig implements Serializable {
         private boolean showVibrate = true;
         private String scanColor;
         private LaserStyle laserStyle = LaserStyle.Line;
-        private String scanHintText;
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
         private boolean showZoomController = true;
@@ -265,13 +188,16 @@ public class MNScanConfig implements Serializable {
         private int gridScanLineColumn;
         //网格扫描线的高度
         private int gridScanLineHeight;
+        //闪光灯
         private boolean showLightController = true;
+        //扫描提示文案
+        private String scanHintText = "将二维码放入框内，即可自动扫描";
         //扫描提示文案颜色
         private String scanHintTextColor;
         //扫描提示文案字体大小
         private int scanHintTextSize;
         //扫描框高度偏移值：+向上偏移，-向下偏移
-        private int scanFrameHeightOffect = 0;
+        private int scanFrameHeightOffsets = 0;
         //是否需要全屏扫描，默认值扫描扫描框中的二维码
         private boolean isFullScreenScan = false;
 
@@ -365,8 +291,8 @@ public class MNScanConfig implements Serializable {
             return this;
         }
 
-        public Builder setScanFrameHeightOffect(int scanFrameHeightOffect) {
-            this.scanFrameHeightOffect = scanFrameHeightOffect;
+        public Builder setScanFrameHeightOffsets(int scanFrameHeightOffsets) {
+            this.scanFrameHeightOffsets = scanFrameHeightOffsets;
             return this;
         }
 

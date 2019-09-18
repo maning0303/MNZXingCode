@@ -9,10 +9,11 @@
     3：相册中选取图片识别
     4：闪光灯开关
     5: 相机可以调整焦距放大缩小
-    6: 完全自定义遮罩层，高度自定义
+    6: 完全自定义遮罩层
 
 ## 截图:
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_000.png)
+![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
 ![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.png)
 
 #### 完全自定义遮罩层
@@ -100,9 +101,9 @@
                             .setGridScanLineColumn(30)
                             //网格高度
                             .setGridScanLineHeight(150)
-                            //高度偏移值（单位px）
-                            .setScanFrameHeightOffect(150)
-                            //是否全屏扫描
+                            //高度偏移值（单位px）+向上偏移，-向下偏移
+                            .setScanFrameHeightOffsets(150)
+                            //是否全屏范围扫描
                             .setFullScreenScan(true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
@@ -167,7 +168,7 @@
 ## 版本记录：
     v2.1.2（未发布）:
         1.支持设置扫描框高度偏移值
-        2.支持设置全屏扫描（默认只扫描扫描框内的二维码）
+        2.支持设置全屏范围扫描（默认只扫描扫描框内的二维码）
 
     v2.1.1:
         1.支持网格扫描线设置列数和高度

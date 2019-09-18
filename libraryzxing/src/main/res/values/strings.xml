@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="mn_scan_hint_text">将二维码放入框内，即可自动扫描</string>
-
-</resources>

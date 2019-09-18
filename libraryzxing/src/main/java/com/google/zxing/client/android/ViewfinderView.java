@@ -80,7 +80,7 @@ public final class ViewfinderView extends View {
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.mn_scan_viewfinder_mask);
         laserColor = resources.getColor(R.color.mn_scan_viewfinder_laser);
-        hintMsg = resources.getString(R.string.mn_scan_hint_text);
+        hintMsg = "将二维码放入框内，即可自动扫描";
         //文字
         paintText.setColor(Color.WHITE);
         paintText.setTextSize(CommonUtils.sp2px(context, hintTextSize));
@@ -162,6 +162,8 @@ public final class ViewfinderView extends View {
         //文字
         if (!TextUtils.isEmpty(hintMsg)) {
             this.hintMsg = hintMsg;
+        } else {
+            this.hintMsg = "";
         }
         //文字颜色
         if (!TextUtils.isEmpty(hintTextColor)) {

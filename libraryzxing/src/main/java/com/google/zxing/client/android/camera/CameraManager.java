@@ -256,7 +256,7 @@ public final class CameraManager {
             int topOffset = (screenResolution.y - height) / 2;
             //高度偏移值
             if (CaptureActivity.getScanConfig() != null) {
-                topOffset = topOffset - CaptureActivity.getScanConfig().getScanFrameHeightOffect();
+                topOffset = topOffset - CaptureActivity.getScanConfig().getScanFrameHeightOffsets();
             }
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
             Log.d(TAG, "Calculated framing rect: " + framingRect);

@@ -108,21 +108,11 @@ final class CameraConfigurationManager {
     display.getSize(theScreenResolution);
     screenResolution = theScreenResolution;
 
-    /** 因为换成了竖屏显示，所以不替换屏幕宽高得出的预览图是变形的 */
-    Point screenResolutionForCamera = new Point();
-    screenResolutionForCamera.x = screenResolution.x;
-    screenResolutionForCamera.y = screenResolution.y;
-
-    if (screenResolution.x < screenResolution.y) {
-      screenResolutionForCamera.x = screenResolution.y;
-      screenResolutionForCamera.y = screenResolution.x;
-    }
-
-    Log.i(TAG, "Screen resolution in current orientation: " + screenResolution);
-    cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolutionForCamera);
-    Log.i(TAG, "Camera resolution: " + cameraResolution);
-    bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolutionForCamera);
-    Log.i(TAG, "Best available preview size: " + bestPreviewSize);
+    Log.i(TAG, ">>>>>>>Screen resolution in current orientation: " + screenResolution);
+    cameraResolution = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);
+    Log.i(TAG, ">>>>>>>Camera resolution: " + cameraResolution);
+    bestPreviewSize = CameraConfigurationUtils.findBestPreviewSizeValue(parameters, screenResolution);
+    Log.i(TAG, ">>>>>>>Best available preview size: " + bestPreviewSize);
 
     boolean isScreenPortrait = screenResolution.x < screenResolution.y;
     boolean isPreviewSizePortrait = bestPreviewSize.x < bestPreviewSize.y;
@@ -132,7 +122,7 @@ final class CameraConfigurationManager {
     } else {
       previewSizeOnScreen = new Point(bestPreviewSize.y, bestPreviewSize.x);
     }
-    Log.i(TAG, "Preview size on screen: " + previewSizeOnScreen);
+    Log.i(TAG, ">>>>>>>Preview size on screen: " + previewSizeOnScreen);
   }
 
   @SuppressWarnings("deprecation")

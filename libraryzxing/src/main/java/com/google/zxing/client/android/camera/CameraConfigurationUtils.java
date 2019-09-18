@@ -44,7 +44,7 @@ public final class CameraConfigurationUtils {
   private static final int MIN_PREVIEW_PIXELS = 480 * 320; // normal screen
   private static final float MAX_EXPOSURE_COMPENSATION = 1.5f;
   private static final float MIN_EXPOSURE_COMPENSATION = 0.0f;
-  private static final double MAX_ASPECT_DISTORTION = 0.15;
+  private static final double MAX_ASPECT_DISTORTION = 0.05;
   private static final int MIN_FPS = 10;
   private static final int MAX_FPS = 20;
   private static final int AREA_PER_1000 = 400;
@@ -61,22 +61,22 @@ public final class CameraConfigurationUtils {
     if (autoFocus) {
       if (safeMode || disableContinuous) {
         focusMode = findSettableValue("focus mode",
-                                       supportedFocusModes,
-                                       Camera.Parameters.FOCUS_MODE_AUTO);
+                supportedFocusModes,
+                Camera.Parameters.FOCUS_MODE_AUTO);
       } else {
         focusMode = findSettableValue("focus mode",
-                                      supportedFocusModes,
-                                      Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
-                                      Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
-                                      Camera.Parameters.FOCUS_MODE_AUTO);
+                supportedFocusModes,
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
+                Camera.Parameters.FOCUS_MODE_AUTO);
       }
     }
     // Maybe selected auto-focus but not available, so fall through here:
     if (!safeMode && focusMode == null) {
       focusMode = findSettableValue("focus mode",
-                                    supportedFocusModes,
-                                    Camera.Parameters.FOCUS_MODE_MACRO,
-                                    Camera.Parameters.FOCUS_MODE_EDOF);
+              supportedFocusModes,
+              Camera.Parameters.FOCUS_MODE_MACRO,
+              Camera.Parameters.FOCUS_MODE_EDOF);
     }
     if (focusMode != null) {
       if (focusMode.equals(parameters.getFocusMode())) {
@@ -92,13 +92,13 @@ public final class CameraConfigurationUtils {
     String flashMode;
     if (on) {
       flashMode = findSettableValue("flash mode",
-                                    supportedFlashModes,
-                                    Camera.Parameters.FLASH_MODE_TORCH,
-                                    Camera.Parameters.FLASH_MODE_ON);
+              supportedFlashModes,
+              Camera.Parameters.FLASH_MODE_TORCH,
+              Camera.Parameters.FLASH_MODE_ON);
     } else {
       flashMode = findSettableValue("flash mode",
-                                    supportedFlashModes,
-                                    Camera.Parameters.FLASH_MODE_OFF);
+              supportedFlashModes,
+              Camera.Parameters.FLASH_MODE_OFF);
     }
     if (flashMode != null) {
       if (flashMode.equals(parameters.getFlashMode())) {
@@ -159,7 +159,7 @@ public final class CameraConfigurationUtils {
         } else {
           Log.i(TAG, "Setting FPS range to " + Arrays.toString(suitableFPSRange));
           parameters.setPreviewFpsRange(suitableFPSRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
-                                        suitableFPSRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+                  suitableFPSRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
         }
       }
     }
@@ -189,7 +189,7 @@ public final class CameraConfigurationUtils {
 
   private static List<Camera.Area> buildMiddleArea(int areaPer1000) {
     return Collections.singletonList(
-        new Camera.Area(new Rect(-areaPer1000, -areaPer1000, areaPer1000, areaPer1000), 1));
+            new Camera.Area(new Rect(-areaPer1000, -areaPer1000, areaPer1000, areaPer1000), 1));
   }
 
   public static void setVideoStabilization(Camera.Parameters parameters) {
@@ -211,8 +211,8 @@ public final class CameraConfigurationUtils {
       return;
     }
     String sceneMode = findSettableValue("scene mode",
-                                         parameters.getSupportedSceneModes(),
-                                         Camera.Parameters.SCENE_MODE_BARCODE);
+            parameters.getSupportedSceneModes(),
+            Camera.Parameters.SCENE_MODE_BARCODE);
     if (sceneMode != null) {
       parameters.setSceneMode(sceneMode);
     }
@@ -263,14 +263,14 @@ public final class CameraConfigurationUtils {
       return;
     }
     String colorMode = findSettableValue("color effect",
-                                         parameters.getSupportedColorEffects(),
-                                         Camera.Parameters.EFFECT_NEGATIVE);
+            parameters.getSupportedColorEffects(),
+            Camera.Parameters.EFFECT_NEGATIVE);
     if (colorMode != null) {
       parameters.setColorEffect(colorMode);
     }
   }
 
-  public static Point findBestPreviewSizeValue(Camera.Parameters parameters, Point screenResolution) {
+  public static Point findBestPreviewSizeValue(Camera.Parameters parameters,final Point screenResolution) {
 
     List<Camera.Size> rawSupportedSizes = parameters.getSupportedPreviewSizes();
     if (rawSupportedSizes == null) {
@@ -282,6 +282,7 @@ public final class CameraConfigurationUtils {
       return new Point(defaultSize.width, defaultSize.height);
     }
 
+
     if (Log.isLoggable(TAG, Log.INFO)) {
       StringBuilder previewSizesString = new StringBuilder();
       for (Camera.Size size : rawSupportedSizes) {
@@ -290,10 +291,16 @@ public final class CameraConfigurationUtils {
       Log.i(TAG, "Supported preview sizes: " + previewSizesString);
     }
 
-    double screenAspectRatio = screenResolution.x / (double) screenResolution.y;
-
+    double screenAspectRatio;
+    if(screenResolution.x < screenResolution.y){
+      screenAspectRatio = screenResolution.x / (double) screenResolution.y;
+    }else{
+      screenAspectRatio = screenResolution.y / (double) screenResolution.x;
+    }
+    Log.i(TAG, "screenAspectRatio: " + screenAspectRatio);
     // Find a suitable size, with max resolution
     int maxResolution = 0;
+
     Camera.Size maxResPreviewSize = null;
     for (Camera.Size size : rawSupportedSizes) {
       int realWidth = size.width;
@@ -304,10 +311,14 @@ public final class CameraConfigurationUtils {
       }
 
       boolean isCandidatePortrait = realWidth < realHeight;
-      int maybeFlippedWidth = isCandidatePortrait ? realHeight : realWidth;
-      int maybeFlippedHeight = isCandidatePortrait ? realWidth : realHeight;
+      int maybeFlippedWidth = isCandidatePortrait ? realWidth: realHeight ;
+      int maybeFlippedHeight = isCandidatePortrait ? realHeight : realWidth;
+      Log.i(TAG, String.format("maybeFlipped:%d * %d",maybeFlippedWidth,maybeFlippedHeight));
+
       double aspectRatio = maybeFlippedWidth / (double) maybeFlippedHeight;
+      Log.i(TAG, "aspectRatio: " + aspectRatio);
       double distortion = Math.abs(aspectRatio - screenAspectRatio);
+      Log.i(TAG, "distortion: " + distortion);
       if (distortion > MAX_ASPECT_DISTORTION) {
         continue;
       }

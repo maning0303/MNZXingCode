@@ -5,8 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 210
-        versionName "2.1.0"
+        versionCode 212
+        versionName "2.1.2"
     }
     buildTypes {
         release {
@@ -26,5 +26,4 @@ dependencies {
 
 //    implementation 'com.github.maning0303:MNZXingCode:V2.1.1'
     implementation project(':libraryzxing')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

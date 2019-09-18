@@ -35,7 +35,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.1'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.2'
 	}
 ```
 
@@ -166,7 +166,7 @@
 ```
 
 ## 版本记录：
-    v2.1.2（未发布）:
+    v2.1.2:
         1.支持设置扫描框高度偏移值
         2.支持设置全屏范围扫描（默认只扫描扫描框内的二维码）
 

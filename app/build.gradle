@@ -24,6 +24,6 @@ dependencies {
     //颜色选择器
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
 
-//    implementation 'com.github.maning0303:MNZXingCode:V2.1.1'
+//    implementation 'com.github.maning0303:MNZXingCode:V2.1.2'
     implementation project(':libraryzxing')
 }

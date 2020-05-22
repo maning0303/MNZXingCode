@@ -146,7 +146,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                         .show(mBtnColorPickerText, new ColorPickerPopup.ColorPickerObserver() {
                             @Override
                             public void onColorPicked(int color) {
-                                colorText = "#" + Integer.toHexString(color);
+                                colorText = getHexString(color);
                                 mBtnColorPickerText.setBackgroundColor(color);
                             }
                         });
@@ -164,7 +164,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                         .show(mBtnColorPickerLine, new ColorPickerPopup.ColorPickerObserver() {
                             @Override
                             public void onColorPicked(int color) {
-                                colorLine = "#" + Integer.toHexString(color);
+                                colorLine = getHexString(color);
                                 mBtnColorPickerLine.setBackgroundColor(color);
                             }
                         });
@@ -182,12 +182,19 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                         .show(mBtnColorPickerBg, new ColorPickerPopup.ColorPickerObserver() {
                             @Override
                             public void onColorPicked(int color) {
-                                colorBackground = "#" + Integer.toHexString(color);
+                                colorBackground = getHexString(color);
                                 mBtnColorPickerBg.setBackgroundColor(color);
                             }
                         });
                 break;
         }
+    }
+
+    private String getHexString(int color) {
+        String s = "#";
+        int colorStr = (color & 0xff000000) | (color & 0x00ff0000) | (color & 0x0000ff00) | (color & 0x000000ff);
+        s = s + Integer.toHexString(colorStr);
+        return s;
     }
 
     public void scanCode(View view) {

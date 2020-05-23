@@ -2,6 +2,8 @@ package com.google.zxing.client.android.utils;
 
 import android.content.Context;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 /**
  * Created by maning on 2017/11/9.
@@ -53,6 +55,19 @@ public class CommonUtils {
     public static int px2sp(Context context, float pxValue) {
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
+    }
+
+    public static int getScreenWidth(Context context) {
+        try {
+            final WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            final DisplayMetrics outMetrics = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(outMetrics);
+            return outMetrics.widthPixels;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
 }

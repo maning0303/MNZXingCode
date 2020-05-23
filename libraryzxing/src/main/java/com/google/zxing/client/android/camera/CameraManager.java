@@ -43,10 +43,10 @@ public final class CameraManager {
 
     private static final String TAG = CameraManager.class.getSimpleName();
 
-    private static final int MIN_FRAME_WIDTH = 240;
-    private static final int MIN_FRAME_HEIGHT = 240;
-    private static final int MAX_FRAME_WIDTH = 675;
-    private static final int MAX_FRAME_HEIGHT = 675; // = 5/8 * 1080
+    private static int MIN_FRAME_WIDTH = 240;
+    private static int MIN_FRAME_HEIGHT = 240;
+    private static int MAX_FRAME_WIDTH = 800;
+    private static int MAX_FRAME_HEIGHT = 800; // = 5/8 * 1080
 
     private final Context context;
     private final CameraConfigurationManager configManager;
@@ -249,6 +249,8 @@ public final class CameraManager {
                 return null;
             }
 
+            MIN_FRAME_WIDTH = 2 * screenResolution.x / 10;
+            MAX_FRAME_WIDTH = 9 * screenResolution.x / 10;
             int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
             int height = width;
 
@@ -264,8 +266,22 @@ public final class CameraManager {
         return framingRect;
     }
 
+    /**
+     * 扫描框大小
+     *
+     * @param resolution
+     * @param hardMin
+     * @param hardMax
+     * @return
+     */
     private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
-        int dim = 5 * resolution / 8; // Target 5/8 of each dimension
+        int dim;
+        //判断是不是全屏模式
+        if (CaptureActivity.getScanConfig() != null && CaptureActivity.getScanConfig().isFullScreenScan()) {
+            dim = 9 * resolution / 10;
+        } else {
+            dim = 7 * resolution / 10;
+        }
         if (dim < hardMin) {
             return hardMin;
         }

@@ -22,6 +22,7 @@ public class MNScanConfig implements Serializable {
         Bottom,
         Left,
         Right,
+        None,
     }
 
     //枚举类型：扫描线样式
@@ -52,6 +53,8 @@ public class MNScanConfig implements Serializable {
     private int activityExitAnime;
     //是否显示缩放控制器
     private boolean showZoomController = true;
+    //是否支持手势缩放，默认支持
+    private boolean isSupportZoom = true;
     //控制器位置
     private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
     //自定义View
@@ -94,6 +97,7 @@ public class MNScanConfig implements Serializable {
         scanHintTextSize = builder.scanHintTextSize;
         scanFrameHeightOffsets = builder.scanFrameHeightOffsets;
         isFullScreenScan = builder.isFullScreenScan;
+        isSupportZoom = builder.isSupportZoom;
     }
 
     public boolean isShowPhotoAlbum() {
@@ -172,6 +176,10 @@ public class MNScanConfig implements Serializable {
         return isFullScreenScan;
     }
 
+    public boolean isSupportZoom() {
+        return isSupportZoom;
+    }
+
     public static class Builder {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
@@ -200,6 +208,8 @@ public class MNScanConfig implements Serializable {
         private int scanFrameHeightOffsets = 0;
         //是否需要全屏扫描，默认值扫描扫描框中的二维码
         private boolean isFullScreenScan = false;
+        //是否支持手势缩放，默认支持
+        private boolean isSupportZoom = true;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -301,6 +311,10 @@ public class MNScanConfig implements Serializable {
             return this;
         }
 
+        public Builder setSupportZoom(boolean supportZoom) {
+            isSupportZoom = supportZoom;
+            return this;
+        }
     }
 
 }

@@ -67,6 +67,8 @@ public final class ViewfinderView extends View {
     //扫描线风格：0线，1网格
     private MNScanConfig.LaserStyle laserStyle = MNScanConfig.LaserStyle.Line;
 
+    private MNScanConfig mnScanConfig;
+
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -155,6 +157,11 @@ public final class ViewfinderView extends View {
         this.gridHeight = gridHeight;
     }
 
+
+    public void setScanConfig(MNScanConfig mnScanConfig) {
+        this.mnScanConfig = mnScanConfig;
+    }
+
     /**
      * 设置文案
      */
@@ -181,6 +188,8 @@ public final class ViewfinderView extends View {
         this.cameraManager = cameraManager;
     }
 
+
+
     @SuppressLint("DrawAllocation")
     @Override
     public void onDraw(Canvas canvas) {
@@ -197,11 +206,6 @@ public final class ViewfinderView extends View {
 
         // 半透明背景
         paint.setColor(maskColor);
-        canvas.drawRect(0, 0, width, frame.top, paint);
-        canvas.drawRect(0, frame.top, frame.left, frame.bottom + 1, paint);
-        canvas.drawRect(frame.right + 1, frame.top, width, frame.bottom + 1, paint);
-        canvas.drawRect(0, frame.bottom + 1, width, height, paint);
-
         //文字
         canvas.drawText(hintMsg, width / 2, frame.top - CommonUtils.dip2px(context, 24), paintText);
 
@@ -209,18 +213,27 @@ public final class ViewfinderView extends View {
         //四角线块
         int rectH = cornerLineW;
         int rectW = cornerLineH;
-        //左上角
-        canvas.drawRect(frame.left, frame.top, frame.left + rectW, frame.top + rectH, paintLine);
-        canvas.drawRect(frame.left, frame.top, frame.left + rectH, frame.top + rectW, paintLine);
-        //右上角
-        canvas.drawRect(frame.right - rectW, frame.top, frame.right + 1, frame.top + rectH, paintLine);
-        canvas.drawRect(frame.right - rectH, frame.top, frame.right + 1, frame.top + rectW, paintLine);
-        //左下角
-        canvas.drawRect(frame.left, frame.bottom - rectH, frame.left + rectW, frame.bottom + 1, paintLine);
-        canvas.drawRect(frame.left, frame.bottom - rectW, frame.left + rectH, frame.bottom + 1, paintLine);
-        //右下角
-        canvas.drawRect(frame.right - rectW, frame.bottom - rectH, frame.right + 1, frame.bottom + 1, paintLine);
-        canvas.drawRect(frame.right - rectH, frame.bottom - rectW, frame.right + 1, frame.bottom + 1, paintLine);
+        //判断是不是全屏模式
+        if (mnScanConfig != null && mnScanConfig.isFullScreenScan()) {
+            canvas.drawRect(0, 0, width, height, paint);
+        } else {
+            canvas.drawRect(0, 0, width, frame.top, paint);
+            canvas.drawRect(0, frame.top, frame.left, frame.bottom + 1, paint);
+            canvas.drawRect(frame.right + 1, frame.top, width, frame.bottom + 1, paint);
+            canvas.drawRect(0, frame.bottom + 1, width, height, paint);
+            //左上角
+            canvas.drawRect(frame.left, frame.top, frame.left + rectW, frame.top + rectH, paintLine);
+            canvas.drawRect(frame.left, frame.top, frame.left + rectH, frame.top + rectW, paintLine);
+            //右上角
+            canvas.drawRect(frame.right - rectW, frame.top, frame.right + 1, frame.top + rectH, paintLine);
+            canvas.drawRect(frame.right - rectH, frame.top, frame.right + 1, frame.top + rectW, paintLine);
+            //左下角
+            canvas.drawRect(frame.left, frame.bottom - rectH, frame.left + rectW, frame.bottom + 1, paintLine);
+            canvas.drawRect(frame.left, frame.bottom - rectW, frame.left + rectH, frame.bottom + 1, paintLine);
+            //右下角
+            canvas.drawRect(frame.right - rectW, frame.bottom - rectH, frame.right + 1, frame.bottom + 1, paintLine);
+            canvas.drawRect(frame.right - rectH, frame.bottom - rectW, frame.right + 1, frame.bottom + 1, paintLine);
+        }
 
         //中间的线：动画
         if (linePosition <= 0) {

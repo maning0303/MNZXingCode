@@ -49,7 +49,14 @@
                 android:text="是否显示闪光灯" />
 
             <CheckBox
-                android:id="@+id/cb_zoom"
+                android:id="@+id/cb_support_zoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="是否支持手势缩放" />
+
+            <CheckBox
+                android:id="@+id/cb_zoom_control_show"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
@@ -264,6 +271,14 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/rb_zoom_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:checked="true"
+                        android:text="左边" />
+
+                    <RadioButton
                         android:id="@+id/rb_zoom_right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -274,7 +289,6 @@
                         android:id="@+id/rb_zoom_bottom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
                         android:text="下边" />
 
                 </RadioGroup>

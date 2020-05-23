@@ -115,13 +115,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private boolean beepFlag = true;
     private boolean vibrateFlag = true;
     private boolean zoomControllerFlag = true;
+    private boolean supportZoomFlag = true;
     private int exitAnime = 0;
     private MNScanConfig.ZoomControllerLocation zoomControllerLocation;
+    private String noCodeHint = "未发现二维码";
 
     //自定义遮罩View
     private static MNCustomViewBindCallback customViewBindCallback;
 
-    private MNScanConfig mnScanConfig;
+    private static MNScanConfig mnScanConfig;
 
     public static void setMnCustomViewBindCallback(MNCustomViewBindCallback mnCustomViewBindCallback) {
         customViewBindCallback = mnCustomViewBindCallback;
@@ -306,9 +308,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         beepFlag = mnScanConfig.isShowBeep();
         vibrateFlag = mnScanConfig.isShowVibrate();
         exitAnime = mnScanConfig.getActivityExitAnime();
+        supportZoomFlag = mnScanConfig.isSupportZoom();
         zoomControllerFlag = mnScanConfig.isShowZoomController();
         zoomControllerLocation = mnScanConfig.getZoomControllerLocation();
 
+        viewfinderView.setScanConfig(mnScanConfig);
         //扫描文字配置
         viewfinderView.setHintText(mnScanConfig.getScanHintText(), mnScanConfig.getScanHintTextColor(), mnScanConfig.getScanHintTextSize());
 
@@ -397,7 +401,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                         public void run() {
                             btn_dialog_bg.setVisibility(View.GONE);
                             if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
-                                Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CaptureActivity.this, noCodeHint, Toast.LENGTH_SHORT).show();
                             } else {
                                 finishSuccess(decodeQRCodeFromBitmap);
                             }
@@ -649,25 +653,38 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             return;
         }
         //显示
-        if (zoomControllerFlag) {
+        if (supportZoomFlag) {
             int size10 = CommonUtils.dip2px(context, 10);
+            int size24 = CommonUtils.dip2px(context, 24);
 
             if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left) {
                 //垂直方向
                 RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
                 layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
-                layoutParamsVertical.setMargins(framingRect.left - size10 - layoutParamsVertical.width, framingRect.top + size10, 0, 0);
+                int left = framingRect.left - size10 - size24;
+                if (left < size10) {
+                    left = size10;
+                }
+                layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
-                mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+                if (zoomControllerFlag) {
+                    mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+                }
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
                 //垂直方向
                 RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
                 layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
-                layoutParamsVertical.setMargins(framingRect.right + size10, framingRect.top + size10, 0, 0);
+                int left = framingRect.right + size10;
+                if (left + size10 + size24 > CommonUtils.getScreenWidth(context)) {
+                    left = CommonUtils.getScreenWidth(context) - size10 - size24;
+                }
+                layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
-                mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+                if (zoomControllerFlag) {
+                    mLlRoomControllerVertical.setVisibility(View.VISIBLE);
+                }
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
                 //横向
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLlRoomController.getLayoutParams();
@@ -675,7 +692,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 layoutParams.setMargins(0, framingRect.bottom + size10, 0, 0);
                 mLlRoomController.setLayoutParams(layoutParams);
 
-                mLlRoomController.setVisibility(View.VISIBLE);
+                if (zoomControllerFlag) {
+                    mLlRoomController.setVisibility(View.VISIBLE);
+                }
             }
         }
 
@@ -701,7 +720,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             //当手指离开的时候
             moveX = event.getX();
             moveY = event.getY();
-            if (!zoomControllerFlag) {
+            if (!supportZoomFlag) {
                 return super.onTouchEvent(event);
             }
             if (startY - moveY > 50) {
@@ -736,15 +755,17 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     //----------------对内方法
+
     /**
      * 获取配置信息
+     *
      * @return
      */
     public static MNScanConfig getScanConfig() {
-        if (sActivityRef != null && sActivityRef.get() != null) {
-            return sActivityRef.get().mnScanConfig;
-        }
-        return null;
+//        if (sActivityRef != null && sActivityRef.get() != null) {
+//            return sActivityRef.get().mnScanConfig;
+//        }
+        return mnScanConfig;
     }
 
 

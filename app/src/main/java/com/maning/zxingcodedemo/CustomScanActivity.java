@@ -34,7 +34,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     /**
      * 是否显示缩放控制器
      */
-    private CheckBox mCbZoom;
+    private CheckBox mCbZoomControlShow;
     /**
      * 是否需要全屏扫描识别（默认值扫描扫描框内二维码）
      */
@@ -95,6 +95,14 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     private String colorText = "#FFFFFF00";
     private String colorLine = "#FFFFFF00";
     private String colorBackground = "#33FF0000";
+    /**
+     * 左边
+     */
+    private RadioButton mRbZoomLeft;
+    /**
+     * 是否支持手势缩放
+     */
+    private CheckBox mCbSupportZoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +114,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     private void initView() {
         mCbPhoto = (CheckBox) findViewById(R.id.cb_photo);
         mCbLight = (CheckBox) findViewById(R.id.cb_light);
-        mCbZoom = (CheckBox) findViewById(R.id.cb_zoom);
+        mCbZoomControlShow = (CheckBox) findViewById(R.id.cb_zoom_control_show);
         mCbFullscreenScan = (CheckBox) findViewById(R.id.cb_fullscreen_scan);
         mCbVibrate = (CheckBox) findViewById(R.id.cb_vibrate);
         mCbBeep = (CheckBox) findViewById(R.id.cb_beep);
@@ -126,6 +134,8 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
         mRbScanlineGrid = (RadioButton) findViewById(R.id.rb_scanline_grid);
         mRbZoomRight = (RadioButton) findViewById(R.id.rb_zoom_right);
         mRbZoomBottom = (RadioButton) findViewById(R.id.rb_zoom_bottom);
+        mRbZoomLeft = (RadioButton) findViewById(R.id.rb_zoom_left);
+        mCbSupportZoom = (CheckBox) findViewById(R.id.cb_support_zoom);
     }
 
     @Override
@@ -218,10 +228,12 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                 .setScanHintTextSize(TextUtils.isEmpty(mEtHintTextSize.getText().toString()) ? 14 : Integer.parseInt(mEtHintTextSize.getText().toString()))
                 //扫描线的颜色
                 .setScanColor(colorLine)
+                //是否支持手势缩放
+                .setSupportZoom(mCbSupportZoom.isChecked())
                 //是否显示缩放控制器
-                .isShowZoomController(mCbZoom.isChecked())
+                .isShowZoomController(mCbZoomControlShow.isChecked())
                 //显示缩放控制器位置
-                .setZoomControllerLocation(mRbZoomBottom.isChecked() ? MNScanConfig.ZoomControllerLocation.Bottom : MNScanConfig.ZoomControllerLocation.Right)
+                .setZoomControllerLocation(mRbZoomBottom.isChecked() ? MNScanConfig.ZoomControllerLocation.Bottom : (mRbZoomLeft.isChecked() ? MNScanConfig.ZoomControllerLocation.Left : MNScanConfig.ZoomControllerLocation.Right))
                 //扫描线样式
                 .setLaserStyle(mRbScanlineGrid.isChecked() ? MNScanConfig.LaserStyle.Grid : MNScanConfig.LaserStyle.Line)
                 //背景颜色

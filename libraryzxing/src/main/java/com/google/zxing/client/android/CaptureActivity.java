@@ -22,7 +22,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import android.widget.Toast;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
+import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
@@ -52,6 +55,7 @@ import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.other.MNCustomViewBindCallback;
 import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.ImageUtils;
+import com.google.zxing.client.android.utils.StatusBarUtil;
 import com.google.zxing.client.android.utils.ZXingUtils;
 import com.google.zxing.client.android.view.VerticalSeekBar;
 
@@ -119,6 +123,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private int exitAnime = 0;
     private MNScanConfig.ZoomControllerLocation zoomControllerLocation;
     private String noCodeHint = "未发现二维码";
+    private boolean hasScanComplete = false;
 
     //自定义遮罩View
     private static MNCustomViewBindCallback customViewBindCallback;
@@ -144,8 +149,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         setContentView(R.layout.mn_scan_capture);
         sActivityRef = new WeakReference<>(this);
         context = this;
+        initStatusBar();
         initView();
         initIntent();
+    }
+
+    private void initStatusBar() {
+        StatusBarUtil.setTransparentForWindow(this);
     }
 
     private void initView() {
@@ -303,8 +313,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             mnScanConfig = new MNScanConfig.Builder().builder();
         }
 
-        String scanColor = mnScanConfig.getScanColor();
-        String maskColor = mnScanConfig.getBgColor();
         beepFlag = mnScanConfig.isShowBeep();
         vibrateFlag = mnScanConfig.isShowVibrate();
         exitAnime = mnScanConfig.getActivityExitAnime();
@@ -313,19 +321,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         zoomControllerLocation = mnScanConfig.getZoomControllerLocation();
 
         viewfinderView.setScanConfig(mnScanConfig);
-        //扫描文字配置
-        viewfinderView.setHintText(mnScanConfig.getScanHintText(), mnScanConfig.getScanHintTextColor(), mnScanConfig.getScanHintTextSize());
-
-        //扫描线相关配置
-        if (!TextUtils.isEmpty(scanColor)) {
-            viewfinderView.setLaserColor(Color.parseColor(scanColor));
-        }
-        viewfinderView.setLaserStyle(mnScanConfig.getLaserStyle());
-        if (!TextUtils.isEmpty(maskColor)) {
-            viewfinderView.setMaskColor(Color.parseColor(maskColor));
-        }
-        viewfinderView.setGridScannerColumn(mnScanConfig.getGridScanLineColumn());
-        viewfinderView.setGridScannerHeight(mnScanConfig.getGridScanLineHeight());
 
         //自定义View
         int customShadeViewLayoutID = mnScanConfig.getCustomShadeViewLayoutID();
@@ -481,14 +476,68 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
+        if(hasScanComplete){
+            return;
+        }
+        hasScanComplete = true;
         lastResult = rawResult;
-        //播放声音和震动
         beepManager.playBeepSoundAndVibrate();
-        //关闭页面
-        finishSuccess(lastResult.getText());
-        //图片显示：测试才显示
-        ivScreenshot.setImageBitmap(barcode);
+        viewfinderView.setResultPoint(rawResult, scaleFactor);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //关闭页面
+                finishSuccess(lastResult.getText());
+            }
+        }, 50);
+        //测试显示图片
+//        drawResultPoints(barcode, scaleFactor, rawResult);
+    }
 
+    /**
+     * Superimpose a line for 1D or dots for 2D to highlight the key features of the barcode.
+     *
+     * @param barcode     A bitmap of the captured image.
+     * @param scaleFactor amount by which thumbnail was scaled
+     * @param rawResult   The decoded results which contains the points to draw.
+     */
+    private void drawResultPoints(Bitmap barcode, float scaleFactor, Result rawResult) {
+        ResultPoint[] points = rawResult.getResultPoints();
+        if (points != null && points.length > 0) {
+            Canvas canvas = new Canvas(barcode);
+            Paint paint = new Paint();
+            paint.setColor(getResources().getColor(R.color.mn_scan_viewfinder_laser));
+            if (points.length == 2) {
+                paint.setStrokeWidth(4.0f);
+                drawLine(canvas, paint, points[0], points[1], scaleFactor);
+            } else if (points.length == 4 &&
+                    (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
+                            rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13)) {
+                // Hacky special case -- draw two lines, for the barcode and metadata
+                drawLine(canvas, paint, points[0], points[1], scaleFactor);
+                drawLine(canvas, paint, points[2], points[3], scaleFactor);
+            } else {
+                paint.setStrokeWidth(10.0f);
+                for (ResultPoint point : points) {
+                    if (point != null) {
+                        canvas.drawPoint(scaleFactor * point.getX(), scaleFactor * point.getY(), paint);
+                    }
+                }
+            }
+        }
+        //图片显示：测试才显示
+        ivScreenshot.setVisibility(View.VISIBLE);
+        ivScreenshot.setImageBitmap(barcode);
+    }
+
+    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
+        if (a != null && b != null) {
+            canvas.drawLine(scaleFactor * a.getX(),
+                    scaleFactor * a.getY(),
+                    scaleFactor * b.getX(),
+                    scaleFactor * b.getY(),
+                    paint);
+        }
     }
 
     private void finishFailed(String errorMsg) {

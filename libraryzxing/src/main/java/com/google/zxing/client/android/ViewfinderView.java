@@ -20,10 +20,12 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -31,9 +33,15 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
@@ -46,11 +54,21 @@ public final class ViewfinderView extends View {
     private Context context;
     private CameraManager cameraManager;
     private final Paint paint;
+    private Paint paintResultPoint;
     private Paint paintText;
     private Paint paintLine;
     private Paint paintLaser;
     private int maskColor;
     private int laserColor;
+
+    private Result resultPoint;
+    private float scaleFactor;
+    private boolean showResultPoint;
+    private int pointColor;
+    private int pointBorderColor;
+    private float resultPointRadiusCircle = 60;
+    private float resultPointRadiusCorners = 60;
+    private float resultPointStrokeWidth = 10;
 
     private Rect frame;
     private String hintMsg;
@@ -76,12 +94,15 @@ public final class ViewfinderView extends View {
 
         // Initialize these once for performance rather than calling them every time in onDraw().
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintResultPoint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintLaser = new Paint(Paint.ANTI_ALIAS_FLAG);
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.mn_scan_viewfinder_mask);
         laserColor = resources.getColor(R.color.mn_scan_viewfinder_laser);
+        pointColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point);
+        pointBorderColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
         hintMsg = "将二维码放入框内，即可自动扫描";
         //文字
         paintText.setColor(Color.WHITE);
@@ -91,6 +112,7 @@ public final class ViewfinderView extends View {
         paintLine.setColor(laserColor);
         //扫描线
         paintLaser.setColor(laserColor);
+        paintResultPoint.setColor(laserColor);
         //初始化数据大小
         initSize();
     }
@@ -158,8 +180,40 @@ public final class ViewfinderView extends View {
     }
 
 
-    public void setScanConfig(MNScanConfig mnScanConfig) {
-        this.mnScanConfig = mnScanConfig;
+    public void setScanConfig(MNScanConfig scanConfig) {
+        this.mnScanConfig = scanConfig;
+
+        initResultPointConfigs();
+
+        //扫描文字配置
+        setHintText(mnScanConfig.getScanHintText(), mnScanConfig.getScanHintTextColor(), mnScanConfig.getScanHintTextSize());
+
+        //扫描线相关配置
+        if (!TextUtils.isEmpty(mnScanConfig.getScanColor())) {
+            setLaserColor(Color.parseColor(mnScanConfig.getScanColor()));
+        }
+        setLaserStyle(mnScanConfig.getLaserStyle());
+
+        if (!TextUtils.isEmpty(mnScanConfig.getBgColor())) {
+            setMaskColor(Color.parseColor(mnScanConfig.getBgColor()));
+        }
+        setGridScannerColumn(mnScanConfig.getGridScanLineColumn());
+        setGridScannerHeight(mnScanConfig.getGridScanLineHeight());
+    }
+
+    private void initResultPointConfigs() {
+        showResultPoint = mnScanConfig.isShowResultPoint();
+        resultPointRadiusCorners = mnScanConfig.getResultPointCorners();
+        resultPointRadiusCircle = mnScanConfig.getResultPointRadiusCircle();
+        resultPointStrokeWidth = mnScanConfig.getResultPointStrokeWidth();
+        String resultPointColor = mnScanConfig.getResultPointColor();
+        String resultPointStrokeColor = mnScanConfig.getResultPointStrokeColor();
+        if(!TextUtils.isEmpty(resultPointColor)){
+            pointColor = Color.parseColor(resultPointColor);
+        }
+        if(!TextUtils.isEmpty(resultPointStrokeColor)){
+            pointBorderColor = Color.parseColor(resultPointStrokeColor);
+        }
     }
 
     /**
@@ -189,7 +243,6 @@ public final class ViewfinderView extends View {
     }
 
 
-
     @SuppressLint("DrawAllocation")
     @Override
     public void onDraw(Canvas canvas) {
@@ -206,8 +259,6 @@ public final class ViewfinderView extends View {
 
         // 半透明背景
         paint.setColor(maskColor);
-        //文字
-        canvas.drawText(hintMsg, width / 2, frame.top - CommonUtils.dip2px(context, 24), paintText);
 
         paintLine.setShader(null);
         //四角线块
@@ -235,6 +286,9 @@ public final class ViewfinderView extends View {
             canvas.drawRect(frame.right - rectH, frame.bottom - rectW, frame.right + 1, frame.bottom + 1, paintLine);
         }
 
+        //文字
+        canvas.drawText(hintMsg, width / 2, frame.top - CommonUtils.dip2px(context, 24), paintText);
+
         //中间的线：动画
         if (linePosition <= 0) {
             linePosition = frame.top + margin;
@@ -245,6 +299,8 @@ public final class ViewfinderView extends View {
         } else if (laserStyle == MNScanConfig.LaserStyle.Grid) {
             drawGridScanner(canvas, frame);
         }
+        //结果点
+        drawableResultPoint(canvas);
         //动画刷新
         startAnimation();
     }
@@ -344,5 +400,70 @@ public final class ViewfinderView extends View {
     public void drawViewfinder() {
         postInvalidate();
     }
+
+    public void setResultPoint(Result result, float scaleFactor) {
+        this.resultPoint = result;
+        this.scaleFactor = scaleFactor;
+        postInvalidate();
+    }
+
+    public void drawableResultPoint(Canvas canvas) {
+        if(!showResultPoint){
+           return;
+        }
+        if (resultPoint == null) {
+            return;
+        }
+        ResultPoint[] points = resultPoint.getResultPoints();
+        if (points == null || points.length == 0) {
+            return;
+        }
+        if (points.length == 2 || points.length == 3 || points.length == 4) {
+            //计算右上角点
+            ResultPoint pointRight = points[0];
+            ResultPoint pointBottom = points[0];
+            float maxX = points[0].getX();
+            float maxY = points[0].getY();
+            for (int i = 0; i < points.length; i++) {
+                ResultPoint point = points[i];
+                if (maxX < point.getX()) {
+                    maxX = point.getX();
+                    pointRight = point;
+                }
+                if (maxY < point.getY()) {
+                    maxY = point.getY();
+                    pointBottom = point;
+                }
+            }
+            float centerX = pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2;
+            float centerY = pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2;
+            //判断是不是全屏模式
+            if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
+                centerX += frame.left;
+                centerY += frame.top;
+            }
+            paintResultPoint.setStyle(Paint.Style.STROKE);
+            paintResultPoint.setColor(pointBorderColor);
+            paintResultPoint.setStrokeWidth(resultPointStrokeWidth);
+            RectF rect0 = new RectF(
+                    centerX - resultPointRadiusCircle,
+                    centerY - resultPointRadiusCircle,
+                    centerX + resultPointRadiusCircle,
+                    centerY + resultPointRadiusCircle);
+            rect0.inset(resultPointStrokeWidth / 2, resultPointStrokeWidth / 2);
+            canvas.drawRoundRect(rect0, resultPointRadiusCorners, resultPointRadiusCorners, paintResultPoint);
+            paintResultPoint.setStyle(Paint.Style.FILL);
+            paintResultPoint.setColor(pointColor);
+            paintResultPoint.setStrokeWidth(0);
+            RectF rect = new RectF(
+                    centerX - resultPointRadiusCircle,
+                    centerY - resultPointRadiusCircle,
+                    centerX + resultPointRadiusCircle,
+                    centerY + resultPointRadiusCircle);
+            rect.inset(resultPointStrokeWidth, resultPointStrokeWidth);
+            canvas.drawRoundRect(rect, resultPointRadiusCorners, resultPointRadiusCorners, paintResultPoint);
+        }
+    }
+
 
 }

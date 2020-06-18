@@ -29,83 +29,102 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--菜单-->
-    <RelativeLayout
-        android:id="@+id/rl_default_menu"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!--闪光灯-->
-        <LinearLayout
-            android:id="@+id/btn_scan_light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_scan_light"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/mn_icon_scan_flash_light_off" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="#00000000"
+            tools:ignore="MissingConstraints" />
 
-            <TextView
-                android:id="@+id/tv_scan_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="打开手电筒"
-                android:textColor="#FFFFFF"
-                android:textSize="12dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        </LinearLayout>
-        <!--关闭-->
-        <LinearLayout
-            android:id="@+id/btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="16dp">
+            <!--菜单-->
+            <RelativeLayout
+                android:id="@+id/rl_default_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!--闪光灯-->
+                <LinearLayout
+                    android:id="@+id/btn_scan_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/mn_icon_scan_close" />
+                    <ImageView
+                        android:id="@+id/iv_scan_light"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/mn_icon_scan_flash_light_off" />
 
-        </LinearLayout>
-        <!--相册-->
-        <LinearLayout
-            android:id="@+id/btn_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="20dp">
+                    <TextView
+                        android:id="@+id/tv_scan_light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="打开手电筒"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12dp" />
 
-            <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/mn_icon_scan_photo" />
+                </LinearLayout>
+                <!--关闭-->
+                <LinearLayout
+                    android:id="@+id/btn_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="16dp">
 
-        </LinearLayout>
-    </RelativeLayout>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/mn_icon_scan_close" />
 
-    <!--自定义遮罩-->
-    <LinearLayout
-        android:id="@+id/ll_custom_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
+                </LinearLayout>
+                <!--相册-->
+                <LinearLayout
+                    android:id="@+id/btn_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="20dp">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/mn_icon_scan_photo" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!--自定义遮罩-->
+            <LinearLayout
+                android:id="@+id/ll_custom_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
+
 
     <!--放大缩小控件-->
     <RelativeLayout

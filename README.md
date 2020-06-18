@@ -105,6 +105,9 @@
                             .setScanFrameHeightOffsets(150)
                             //是否全屏范围扫描
                             .setFullScreenScan(true)
+                            //二维码标记点
+                            .isShowResultPoint(mCbScanPoint.isChecked())
+                            .setResultPointConfigs(60, 30, 10, "#FFFFFFFF", "#7000A81F")
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override
@@ -166,6 +169,11 @@
 ```
 
 ## 版本记录：
+    v2.1.3:
+        1.全屏模式去掉扫描框
+        2.手势缩放镜头单独字段控制
+        3.添加扫描二维码标记功能，支持圆角内外边框
+
     v2.1.2:
         1.支持设置扫描框高度偏移值
         2.支持设置全屏范围扫描（默认只扫描扫描框内的二维码）

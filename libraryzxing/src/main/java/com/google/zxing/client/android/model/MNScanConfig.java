@@ -71,6 +71,18 @@ public class MNScanConfig implements Serializable {
     private int scanFrameHeightOffsets;
     //是否需要全屏扫描，默认值扫描扫描框中的二维码
     private boolean isFullScreenScan = false;
+    //是否显示扫描中心点
+    private boolean isShowResultPoint = false;
+    //扫描二维码中心点显示半径
+    private int resultPointRadiusCircle = 0;
+    //扫描二维码中心点显示圆角
+    private int resultPointCorners = 0;
+    //扫描二维码中心点显示描边
+    private int resultPointStrokeWidth = 0;
+    //扫描二维码中心点显示描边颜色
+    private String resultPointStrokeColor;
+    //扫描二维码中心点显示颜色
+    private String resultPointColor;
 
     private MNScanConfig() {
 
@@ -98,6 +110,37 @@ public class MNScanConfig implements Serializable {
         scanFrameHeightOffsets = builder.scanFrameHeightOffsets;
         isFullScreenScan = builder.isFullScreenScan;
         isSupportZoom = builder.isSupportZoom;
+        isShowResultPoint = builder.isShowResultPoint;
+        resultPointRadiusCircle = builder.resultPointRadiusCircle;
+        resultPointCorners = builder.resultPointCorners;
+        resultPointStrokeWidth = builder.resultPointStrokeWidth;
+        resultPointStrokeColor = builder.resultPointStrokeColor;
+        resultPointColor = builder.resultPointColor;
+
+    }
+
+    public boolean isShowResultPoint() {
+        return isShowResultPoint;
+    }
+
+    public int getResultPointRadiusCircle() {
+        return resultPointRadiusCircle;
+    }
+
+    public int getResultPointCorners() {
+        return resultPointCorners;
+    }
+
+    public int getResultPointStrokeWidth() {
+        return resultPointStrokeWidth;
+    }
+
+    public String getResultPointStrokeColor() {
+        return resultPointStrokeColor;
+    }
+
+    public String getResultPointColor() {
+        return resultPointColor;
     }
 
     public boolean isShowPhotoAlbum() {
@@ -210,9 +253,39 @@ public class MNScanConfig implements Serializable {
         private boolean isFullScreenScan = false;
         //是否支持手势缩放，默认支持
         private boolean isSupportZoom = true;
+        //是否显示扫描中心点
+        private boolean isShowResultPoint = false;
+        //扫描二维码中心点显示半径
+        private int resultPointRadiusCircle = 0;
+        //扫描二维码中心点显示圆角
+        private int resultPointCorners = 0;
+        //扫描二维码中心点显示描边
+        private int resultPointStrokeWidth = 0;
+        //扫描二维码中心点显示描边颜色
+        private String resultPointStrokeColor;
+        //扫描二维码中心点显示颜色
+        private String resultPointColor;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
+        }
+
+        public Builder isShowResultPoint(boolean isShowResultPoint) {
+            this.isShowResultPoint = isShowResultPoint;
+            return this;
+        }
+
+        public Builder setResultPointConfigs(int resultPointRadiusCircle,
+                                             int resultPointCorners,
+                                             int resultPointStrokeWidth,
+                                             String resultPointStrokeColor,
+                                             String resultPointColor) {
+            this.resultPointRadiusCircle = resultPointRadiusCircle;
+            this.resultPointCorners = resultPointCorners;
+            this.resultPointStrokeWidth = resultPointStrokeWidth;
+            this.resultPointStrokeColor = resultPointStrokeColor;
+            this.resultPointColor = resultPointColor;
+            return this;
         }
 
         public Builder setLaserStyle(LaserStyle laserStyle) {

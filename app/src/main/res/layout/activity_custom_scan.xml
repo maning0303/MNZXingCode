@@ -90,6 +90,13 @@
                 android:checked="false"
                 android:text="是否完全自定义遮罩层" />
 
+            <CheckBox
+                android:id="@+id/cb_scan_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="是否显示扫描结果点" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

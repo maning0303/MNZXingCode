@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -94,7 +95,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
 
     private String colorText = "#FFFFFF00";
     private String colorLine = "#FFFFFF00";
-    private String colorBackground = "#33FF0000";
+    private String colorBackground = "#22FF0000";
     /**
      * 左边
      */
@@ -103,6 +104,10 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
      * 是否支持手势缩放
      */
     private CheckBox mCbSupportZoom;
+    /**
+     * 是否显示扫描结果点
+     */
+    private CheckBox mCbScanPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +141,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
         mRbZoomBottom = (RadioButton) findViewById(R.id.rb_zoom_bottom);
         mRbZoomLeft = (RadioButton) findViewById(R.id.rb_zoom_left);
         mCbSupportZoom = (CheckBox) findViewById(R.id.cb_support_zoom);
+        mCbScanPoint = (CheckBox) findViewById(R.id.cb_scan_point);
     }
 
     @Override
@@ -201,10 +207,9 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     }
 
     private String getHexString(int color) {
-        String s = "#";
-        int colorStr = (color & 0xff000000) | (color & 0x00ff0000) | (color & 0x0000ff00) | (color & 0x000000ff);
-        s = s + Integer.toHexString(colorStr);
-        return s;
+        String format = String.format("#%X", color);
+        Log.e("=====", "format:" + format);
+        return format;
     }
 
     public void scanCode(View view) {
@@ -246,6 +251,9 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                 .setScanFrameHeightOffsets(TextUtils.isEmpty(mEtScanOffsets.getText().toString()) ? 0 : Integer.parseInt(mEtScanOffsets.getText().toString()))
                 //是否全屏扫描,默认只扫描扫描框内的二维码
                 .setFullScreenScan(mCbFullscreenScan.isChecked())
+                //二维码标记点
+                .isShowResultPoint(mCbScanPoint.isChecked())
+                .setResultPointConfigs(60, 30, 10, "#FFFFFFFF", "#7000A81F")
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(mCbCustomView.isChecked() ? R.layout.layout_custom_view : 0, new MNCustomViewBindCallback() {
                     @Override

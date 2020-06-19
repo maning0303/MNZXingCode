@@ -97,6 +97,13 @@
                 android:checked="true"
                 android:text="是否显示扫描结果点" />
 
+            <CheckBox
+                android:id="@+id/cb_status_dark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="是否状态栏黑色字体" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,6 +228,28 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="#33FF0000" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="状态栏颜色："
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/btn_color_statusbar_bg"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="#00000000" />
 
             </LinearLayout>
 

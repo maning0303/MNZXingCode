@@ -96,6 +96,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     private String colorText = "#FFFFFF00";
     private String colorLine = "#FFFFFF00";
     private String colorBackground = "#22FF0000";
+    private String colorStatusBar = "#00000000";
     /**
      * 左边
      */
@@ -108,6 +109,11 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
      * 是否显示扫描结果点
      */
     private CheckBox mCbScanPoint;
+    /**
+     * 是否状态栏黑色字体
+     */
+    private CheckBox mCbStatusDark;
+    private TextView mBtnColorStatusbarBg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +148,9 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
         mRbZoomLeft = (RadioButton) findViewById(R.id.rb_zoom_left);
         mCbSupportZoom = (CheckBox) findViewById(R.id.cb_support_zoom);
         mCbScanPoint = (CheckBox) findViewById(R.id.cb_scan_point);
+        mCbStatusDark = (CheckBox) findViewById(R.id.cb_status_dark);
+        mBtnColorStatusbarBg = (TextView) findViewById(R.id.btn_color_statusbar_bg);
+        mBtnColorStatusbarBg.setOnClickListener(this);
     }
 
     @Override
@@ -203,6 +212,24 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                             }
                         });
                 break;
+            case R.id.btn_color_statusbar_bg:
+                new ColorPickerPopup.Builder(this)
+                        .initialColor(Color.parseColor(colorStatusBar))
+                        .enableBrightness(true)
+                        .enableAlpha(true)
+                        .okTitle("选择颜色")
+                        .cancelTitle("取消")
+                        .showIndicator(true)
+                        .showValue(true)
+                        .build()
+                        .show(mBtnColorStatusbarBg, new ColorPickerPopup.ColorPickerObserver() {
+                            @Override
+                            public void onColorPicked(int color) {
+                                colorStatusBar = getHexString(color);
+                                mBtnColorStatusbarBg.setBackgroundColor(color);
+                            }
+                        });
+                break;
         }
     }
 
@@ -254,6 +281,8 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
                 //二维码标记点
                 .isShowResultPoint(mCbScanPoint.isChecked())
                 .setResultPointConfigs(60, 30, 10, "#FFFFFFFF", "#7000A81F")
+                //状态栏设置
+                .setStatusBarConfigs(colorStatusBar, mCbStatusDark.isChecked())
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(mCbCustomView.isChecked() ? R.layout.layout_custom_view : 0, new MNCustomViewBindCallback() {
                     @Override

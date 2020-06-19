@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -103,6 +104,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
     private RelativeLayout rl_default_menu;
     private LinearLayout ll_custom_view;
+    private View fakeStatusBar;
 
     private ResizeAbleSurfaceView surfaceView;
     private ImageView mIvScanZoomIn;
@@ -151,13 +153,27 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         setContentView(R.layout.mn_scan_capture);
         sActivityRef = new WeakReference<>(this);
         context = this;
-        initStatusBar();
         initView();
         initIntent();
+        initStatusBar();
     }
 
     private void initStatusBar() {
-//        StatusBarUtil.setTransparentForWindow(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            StatusBarUtil.setTransparentForWindow(this);
+            int statusBarHeight = StatusBarUtil.getStatusBarHeight(context);
+            ViewGroup.LayoutParams fakeStatusBarLayoutParams = fakeStatusBar.getLayoutParams();
+            fakeStatusBarLayoutParams.height = statusBarHeight;
+            fakeStatusBar.setLayoutParams(fakeStatusBarLayoutParams);
+            //状态栏文字颜色
+            if(mnScanConfig.isStatusBarDarkMode()){
+                StatusBarUtil.setDarkMode(this);
+            }
+            //状态栏颜色
+            String statusBarColor = mnScanConfig.getStatusBarColor();
+            fakeStatusBar.setBackgroundColor(Color.parseColor(statusBarColor));
+
+        }
     }
 
     private void initView() {
@@ -172,6 +188,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
         rl_default_menu = (RelativeLayout) findViewById(R.id.rl_default_menu);
         ll_custom_view = (LinearLayout) findViewById(R.id.ll_custom_view);
+        fakeStatusBar = (View) findViewById(R.id.fakeStatusBar);
 
         btn_dialog_bg.setVisibility(View.GONE);
         rl_default_menu.setVisibility(View.GONE);
@@ -478,7 +495,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-        if(hasScanComplete){
+        if (hasScanComplete) {
             return;
         }
         hasScanComplete = true;
@@ -615,7 +632,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             return;
         }
         try {
-            cameraManager.openDriver(surfaceHolder,surfaceView);
+            cameraManager.openDriver(surfaceHolder, surfaceView);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null) {
                 handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);

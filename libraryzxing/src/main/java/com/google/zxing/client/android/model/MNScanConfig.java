@@ -83,6 +83,10 @@ public class MNScanConfig implements Serializable {
     private String resultPointStrokeColor;
     //扫描二维码中心点显示颜色
     private String resultPointColor;
+    //状态栏颜色
+    private String statusBarColor = "#00000000";
+    //状态栏是否显示黑色字体
+    private boolean statusBarDarkMode = false;
 
     private MNScanConfig() {
 
@@ -116,7 +120,17 @@ public class MNScanConfig implements Serializable {
         resultPointStrokeWidth = builder.resultPointStrokeWidth;
         resultPointStrokeColor = builder.resultPointStrokeColor;
         resultPointColor = builder.resultPointColor;
+        statusBarColor = builder.statusBarColor;
+        statusBarDarkMode = builder.statusBarDarkMode;
 
+    }
+
+    public String getStatusBarColor() {
+        return statusBarColor;
+    }
+
+    public boolean isStatusBarDarkMode() {
+        return statusBarDarkMode;
     }
 
     public boolean isShowResultPoint() {
@@ -265,9 +279,20 @@ public class MNScanConfig implements Serializable {
         private String resultPointStrokeColor;
         //扫描二维码中心点显示颜色
         private String resultPointColor;
+        //状态栏颜色
+        private String statusBarColor = "#00000000";
+        //状态栏是否显示黑色字体
+        private boolean statusBarDarkMode = false;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
+        }
+
+        public Builder setStatusBarConfigs(String statusBarColor,
+                                           boolean statusBarDarkMode) {
+            this.statusBarColor = statusBarColor;
+            this.statusBarDarkMode = statusBarDarkMode;
+            return this;
         }
 
         public Builder isShowResultPoint(boolean isShowResultPoint) {

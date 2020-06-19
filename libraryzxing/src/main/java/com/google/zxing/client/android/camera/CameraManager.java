@@ -28,6 +28,7 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.camera.open.OpenCamera;
 import com.google.zxing.client.android.camera.open.OpenCameraInterface;
+import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
 
 import java.io.IOException;
 
@@ -77,7 +78,7 @@ public final class CameraManager {
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public synchronized void openDriver(SurfaceHolder holder) throws IOException {
+    public synchronized void openDriver(SurfaceHolder holder, ResizeAbleSurfaceView surfaceView) throws IOException {
         OpenCamera theCamera = camera;
         if (theCamera == null) {
             theCamera = OpenCameraInterface.open(requestedCameraId);
@@ -121,6 +122,14 @@ public final class CameraManager {
         }
         cameraObject.setPreviewDisplay(holder);
 
+        //重新设置相机预览大小
+        int surfaceViewHeightDefault = surfaceView.getHeight();
+        Point previewSizeOnScreen = configManager.getPreviewSizeOnScreen();
+        int width = previewSizeOnScreen.x;
+        int height = previewSizeOnScreen.y;
+        int surfaceViewHeight = surfaceViewHeightDefault;
+        int surfaceViewWidth = surfaceViewHeight * width / height;
+        surfaceView.resize(surfaceViewWidth,surfaceViewHeight);
     }
 
     public boolean isZoomSupported() {

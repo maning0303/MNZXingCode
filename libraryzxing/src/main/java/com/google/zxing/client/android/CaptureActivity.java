@@ -48,6 +48,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.camera.CameraConfigurationUtils;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
@@ -57,6 +58,7 @@ import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.ImageUtils;
 import com.google.zxing.client.android.utils.StatusBarUtil;
 import com.google.zxing.client.android.utils.ZXingUtils;
+import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
 import com.google.zxing.client.android.view.VerticalSeekBar;
 
 import java.lang.ref.WeakReference;
@@ -102,7 +104,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private RelativeLayout rl_default_menu;
     private LinearLayout ll_custom_view;
 
-    private SurfaceView surfaceView;
+    private ResizeAbleSurfaceView surfaceView;
     private ImageView mIvScanZoomIn;
     private ImageView mIvScanZoomOut;
     private SeekBar mSeekBarZoom;
@@ -155,11 +157,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void initStatusBar() {
-        StatusBarUtil.setTransparentForWindow(this);
+//        StatusBarUtil.setTransparentForWindow(this);
     }
 
     private void initView() {
-        surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        surfaceView = (ResizeAbleSurfaceView) findViewById(R.id.preview_view);
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
         btn_scan_light = (LinearLayout) findViewById(R.id.btn_scan_light);
         iv_scan_light = (ImageView) findViewById(R.id.iv_scan_light);
@@ -592,6 +594,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         // do nothing
+        Log.i(TAG, "surfaceChanged: " + width + "  " + height);
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -612,7 +615,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             return;
         }
         try {
-            cameraManager.openDriver(surfaceHolder);
+            cameraManager.openDriver(surfaceHolder,surfaceView);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null) {
                 handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);

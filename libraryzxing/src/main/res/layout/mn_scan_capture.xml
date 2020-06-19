@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <SurfaceView
+    <com.google.zxing.client.android.view.ResizeAbleSurfaceView
         android:id="@+id/preview_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,4 +1,4 @@
-#   ZXingCode 快速集成二维码扫描，支持AndroidX
+#   MNZXingCode 快速集成二维码扫描
 
 ##  快速集成二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层（ZXing 3.4.0）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
@@ -12,17 +12,17 @@
     6: 完全自定义遮罩层
 
 ## 截图:
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_000.jpeg)
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
 
 #### 默认扫描
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_002.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_002.jpeg)
 
 #### 自定义颜色扫描样式等
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
 
 #### 完全自定义遮罩层
-![image](https://github.com/maning0303/ZXingCodeDemo/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
 
 ## 如何添加
 ### Gradle添加：
@@ -40,7 +40,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.2'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.3'
 	}
 ```
 
@@ -202,8 +202,11 @@
 ## 感谢：
 
 [zxing](https://github.com/zxing/zxing)
+
 [BGAQRCode-Android](https://github.com/bingoogolapple/BGAQRCode-Android)
-[Ye-Miao](https://github.com/Ye-Miao)
+
+[StatusBarUtil](https://github.com/Ye-Miao/StatusBarUtil)
+
 感谢所有开源的人；
 
 

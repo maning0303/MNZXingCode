@@ -108,6 +108,8 @@
                             //二维码标记点
                             .isShowResultPoint(mCbScanPoint.isChecked())
                             .setResultPointConfigs(60, 30, 10, "#FFFFFFFF", "#7000A81F")
+                            //状态栏设置：颜色，是否黑色字体
+                            .setStatusBarConfigs("#00000000", true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override
@@ -173,6 +175,7 @@
         1.全屏模式去掉扫描框
         2.手势缩放镜头单独字段控制
         3.添加扫描二维码标记功能，支持圆角内外边框
+        4.状态栏支持设置颜色和字体颜色
 
     v2.1.2:
         1.支持设置扫描框高度偏移值

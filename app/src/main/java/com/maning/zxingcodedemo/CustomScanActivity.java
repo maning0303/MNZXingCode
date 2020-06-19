@@ -236,6 +236,10 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     private String getHexString(int color) {
         String format = String.format("#%X", color);
         Log.e("=====", "format:" + format);
+        if("#0".equals(format)){
+            format = "#00000000";
+            Log.e("=====", "format:" + format);
+        }
         return format;
     }
 

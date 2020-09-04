@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,8 +23,9 @@ import com.google.zxing.client.android.utils.CommonUtils;
  * @date : 2020-09-04
  * @desc :
  */
-public class ZoomControllerView extends FrameLayout {
+public class ZoomControllerView extends FrameLayout implements View.OnTouchListener {
 
+    private MNScanConfig scanConfig;
     private ImageView mIvScanZoomIn;
     private ImageView mIvScanZoomOut;
     private SeekBar mSeekBarZoom;
@@ -58,6 +61,13 @@ public class ZoomControllerView extends FrameLayout {
 
     private void initView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.mn_scan_zoom_controller, this);
+
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("======", "onClick----");
+            }
+        });
 
         mIvScanZoomIn = (ImageView) view.findViewById(R.id.iv_scan_zoom_in);
         mIvScanZoomOut = (ImageView) view.findViewById(R.id.iv_scan_zoom_out);
@@ -139,6 +149,8 @@ public class ZoomControllerView extends FrameLayout {
 
             }
         });
+
+        setOnTouchListener(this);
     }
 
     public void zoomOut(int value) {
@@ -165,16 +177,16 @@ public class ZoomControllerView extends FrameLayout {
         }
     }
 
-
-    public void updateZoomController(boolean supportZoomFlag, boolean zoomControllerFlag, Rect framingRect, MNScanConfig.ZoomControllerLocation zoomControllerLocation) {
+    public void updateZoomController(MNScanConfig scanConfig, Rect framingRect) {
+        this.scanConfig = scanConfig;
         if (framingRect == null) {
             return;
         }
         //显示
-        if (supportZoomFlag) {
+        if (scanConfig.isSupportZoom()) {
             int size10 = CommonUtils.dip2px(getContext(), 10);
             int size24 = CommonUtils.dip2px(getContext(), 24);
-
+            MNScanConfig.ZoomControllerLocation zoomControllerLocation = scanConfig.getZoomControllerLocation();
             if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left) {
                 //垂直方向
                 RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
@@ -186,7 +198,7 @@ public class ZoomControllerView extends FrameLayout {
                 layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
-                if (zoomControllerFlag) {
+                if (scanConfig.isShowZoomController()) {
                     mLlRoomControllerVertical.setVisibility(View.VISIBLE);
                 }
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
@@ -200,7 +212,7 @@ public class ZoomControllerView extends FrameLayout {
                 layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
-                if (zoomControllerFlag) {
+                if (scanConfig.isShowZoomController()) {
                     mLlRoomControllerVertical.setVisibility(View.VISIBLE);
                 }
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
@@ -210,7 +222,7 @@ public class ZoomControllerView extends FrameLayout {
                 layoutParams.setMargins(0, framingRect.bottom + size10, 0, 0);
                 mLlRoomController.setLayoutParams(layoutParams);
 
-                if (zoomControllerFlag) {
+                if (scanConfig.isShowZoomController()) {
                     mLlRoomController.setVisibility(View.VISIBLE);
                 }
             }
@@ -220,4 +232,56 @@ public class ZoomControllerView extends FrameLayout {
     }
 
 
+    //手指按下的点为(x1, y1)手指离开屏幕的点为(x2, y2)
+    float startX = 0;
+    float startY = 0;
+    float moveX = 0;
+    float moveY = 0;
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (!scanConfig.isSupportZoom()) {
+            return super.onTouchEvent(event);
+        }
+        //继承了Activity的onTouchEvent方法，直接监听点击事件
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            //当手指按下的时候
+            startX = event.getX();
+            startY = event.getY();
+        }
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            //当手指离开的时候
+            moveX = event.getX();
+            moveY = event.getY();
+            MNScanConfig.ZoomControllerLocation zoomControllerLocation = scanConfig.getZoomControllerLocation();
+            if (startY - moveY > 50) {
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left
+                        || zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
+                    //垂直方向
+                    //向上滑
+                    zoomIn(1);
+                }
+            } else if (moveY - startY > 50) {
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left
+                        || zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
+                    //垂直方向
+                    //向下滑
+                    zoomOut(1);
+                }
+            } else if (startX - moveX > 50) {
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
+                    //垂直方向
+                    //向左滑
+                    zoomOut(1);
+                }
+            } else if (moveX - startX > 50) {
+                if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
+                    //垂直方向
+                    //向右滑
+                    zoomIn(1);
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -129,6 +129,11 @@
 
 
     <!--放大缩小控件-->
+    <com.google.zxing.client.android.view.ZoomControllerView
+        android:id="@+id/zoom_controller_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -58,6 +58,7 @@ import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.ImageUtils;
 import com.google.zxing.client.android.utils.StatusBarUtil;
 import com.google.zxing.client.android.utils.ZXingUtils;
+import com.google.zxing.client.android.view.ProgressDialog;
 import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
 import com.google.zxing.client.android.view.VerticalSeekBar;
 import com.google.zxing.client.android.view.ZoomControllerView;
@@ -102,7 +103,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private TextView tv_scan_light;
     private LinearLayout btn_close;
     private LinearLayout btn_photo;
-    private RelativeLayout btn_dialog_bg;
     private ImageView ivScreenshot;
 
     private RelativeLayout rl_default_menu;
@@ -177,13 +177,11 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         tv_scan_light = (TextView) findViewById(R.id.tv_scan_light);
         btn_close = (LinearLayout) findViewById(R.id.btn_close);
         btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
-        btn_dialog_bg = (RelativeLayout) findViewById(R.id.btn_dialog_bg);
         ivScreenshot = (ImageView) findViewById(R.id.ivScreenshot);
         rl_default_menu = (RelativeLayout) findViewById(R.id.rl_default_menu);
         ll_custom_view = (LinearLayout) findViewById(R.id.ll_custom_view);
         fakeStatusBar = (View) findViewById(R.id.fakeStatusBar);
 
-        btn_dialog_bg.setVisibility(View.GONE);
         rl_default_menu.setVisibility(View.GONE);
         ll_custom_view.setVisibility(View.GONE);
 
@@ -209,7 +207,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 finishCancle();
             }
         });
-
         btn_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,12 +214,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         });
 
-        btn_dialog_bg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         mZoomControllerView = (ZoomControllerView) findViewById(R.id.zoom_controller_view);
         mZoomControllerView.setOnZoomControllerListener(new ZoomControllerView.OnZoomControllerListener() {
             @Override
@@ -329,7 +320,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             if (data == null) {
                 return;
             }
-            btn_dialog_bg.setVisibility(View.VISIBLE);
+            ProgressDialog.show(context);
             //需要压缩图片
             final String picturePath = ImageUtils.getImageAbsolutePath(context, data.getData());
             new Thread(new Runnable() {
@@ -339,7 +330,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            btn_dialog_bg.setVisibility(View.GONE);
+                            ProgressDialog.dismissDialog();
                             if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
                                 Toast.makeText(CaptureActivity.this, noCodeHint, Toast.LENGTH_SHORT).show();
                             } else {

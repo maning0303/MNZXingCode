@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><!--LoadingDialog-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btn_dialog_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="#00000000"
+    android:gravity="center"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/mn_scan_dialog_bg"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.zxing.client.android.utils.MProgressWheel
+            android:id="@+id/progress_wheel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:mn_barColor="#FFFFFF"
+            app:mn_barWidth="2dp"
+            app:mn_fillRadius="true"
+            app:mn_progressIndeterminate="true" />
+
+    </LinearLayout>
+
+</RelativeLayout>

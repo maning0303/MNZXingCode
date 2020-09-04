@@ -3,8 +3,6 @@ package com.google.zxing.client.android.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,15 +43,15 @@ public class ZoomControllerView extends FrameLayout {
     }
 
 
-    public ZoomControllerView(@NonNull Context context) {
+    public ZoomControllerView(Context context) {
         this(context, null);
     }
 
-    public ZoomControllerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ZoomControllerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ZoomControllerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ZoomControllerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }

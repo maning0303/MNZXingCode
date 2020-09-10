@@ -177,11 +177,17 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
         }
     }
 
-    public void updateZoomController(MNScanConfig scanConfig, Rect framingRect) {
-        this.scanConfig = scanConfig;
-        if (framingRect == null) {
+    public void setScanConfig(MNScanConfig config){
+        scanConfig = config;
+    }
+
+    public void updateZoomController(Rect framingRect) {
+        if (framingRect == null || scanConfig == null) {
             return;
         }
+        //重新赋值
+        framingRect.top = (getHeight() - (framingRect.right - framingRect.left)) / 2 - scanConfig.getScanFrameHeightOffsets();
+        framingRect.bottom = framingRect.top + (framingRect.right - framingRect.left);
         //显示
         if (scanConfig.isSupportZoom()) {
             int size10 = CommonUtils.dip2px(getContext(), 10);

@@ -237,20 +237,24 @@ public final class ViewfinderView extends View {
         this.cameraManager = cameraManager;
     }
 
-
     @SuppressLint("DrawAllocation")
     @Override
     public void onDraw(Canvas canvas) {
         if (cameraManager == null) {
             return; // not ready yet, early draw before done configuring
         }
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        int txtMargin = CommonUtils.dip2px(context, 30);
+
         frame = cameraManager.getFramingRect();
         Rect previewFrame = cameraManager.getFramingRectInPreview();
         if (frame == null || previewFrame == null) {
             return;
         }
-        int width = canvas.getWidth();
-        int height = canvas.getHeight();
+        //重新赋值
+        frame.top = (height - (frame.right - frame.left)) / 2 - mnScanConfig.getScanFrameHeightOffsets();
+        frame.bottom = frame.top + (frame.right - frame.left);
 
         // 半透明背景
         paint.setColor(maskColor);
@@ -282,7 +286,11 @@ public final class ViewfinderView extends View {
         }
 
         //文字
-        canvas.drawText(hintMsg, width / 2, frame.top - CommonUtils.dip2px(context, 24), paintText);
+        if (mnScanConfig.isSupportZoom() && mnScanConfig.isShowZoomController() && mnScanConfig.getZoomControllerLocation() == MNScanConfig.ZoomControllerLocation.Bottom) {
+            canvas.drawText(hintMsg, width / 2, frame.top - txtMargin, paintText);
+        } else {
+            canvas.drawText(hintMsg, width / 2, frame.bottom + txtMargin, paintText);
+        }
 
         //中间的线：动画
         if (linePosition <= 0) {

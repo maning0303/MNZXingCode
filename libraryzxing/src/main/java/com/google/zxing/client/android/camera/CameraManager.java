@@ -28,7 +28,9 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.camera.open.OpenCamera;
 import com.google.zxing.client.android.camera.open.OpenCameraInterface;
+import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
+import com.google.zxing.client.android.view.ScanSurfaceView;
 
 import java.io.IOException;
 
@@ -129,7 +131,7 @@ public final class CameraManager {
         int height = previewSizeOnScreen.y;
         int surfaceViewHeight = surfaceViewHeightDefault;
         int surfaceViewWidth = surfaceViewHeight * width / height;
-        surfaceView.resize(surfaceViewWidth,surfaceViewHeight);
+        surfaceView.resize(surfaceViewWidth, surfaceViewHeight);
     }
 
     public boolean isZoomSupported() {
@@ -265,10 +267,10 @@ public final class CameraManager {
 
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;
-            //高度偏移值
-            if (CaptureActivity.getScanConfig() != null) {
-                topOffset = topOffset - CaptureActivity.getScanConfig().getScanFrameHeightOffsets();
-            }
+//            //高度偏移值
+//            if (ScanSurfaceView.scanConfig != null) {
+//                topOffset = topOffset - ScanSurfaceView.scanConfig.getScanFrameHeightOffsets();
+//            }
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
             Log.d(TAG, "Calculated framing rect: " + framingRect);
         }
@@ -286,7 +288,7 @@ public final class CameraManager {
     private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
         int dim;
         //判断是不是全屏模式
-        if (CaptureActivity.getScanConfig() != null && CaptureActivity.getScanConfig().isFullScreenScan()) {
+        if (ScanSurfaceView.scanConfig != null && ScanSurfaceView.scanConfig.isFullScreenScan()) {
             dim = 9 * resolution / 10;
         } else {
             dim = 7 * resolution / 10;
@@ -390,7 +392,7 @@ public final class CameraManager {
         if (rect == null) {
             return null;
         }
-        if (CaptureActivity.getScanConfig() != null && CaptureActivity.getScanConfig().isFullScreenScan()) {
+        if (ScanSurfaceView.scanConfig != null && ScanSurfaceView.scanConfig.isFullScreenScan()) {
             //识别区域改为全屏
             return new PlanarYUVLuminanceSource(data, width, height, 0, 0,
                     width, height, false);

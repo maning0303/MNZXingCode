@@ -22,7 +22,7 @@ import com.google.zxing.client.android.other.MNScanCallback;
 
 import top.defaults.colorpicker.ColorPickerPopup;
 
-public class CustomScanActivity extends AppCompatActivity implements View.OnClickListener {
+public class CustomActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * 是否显示相册功能
@@ -118,7 +118,7 @@ public class CustomScanActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_scan);
+        setContentView(R.layout.activity_custom);
         initView();
     }
 

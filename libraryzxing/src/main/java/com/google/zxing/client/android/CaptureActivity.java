@@ -71,7 +71,6 @@ public class CaptureActivity extends Activity {
     private Context context;
     private View fakeStatusBar;
     private ScanSurfaceView scanSurfaceView;
-    private ZoomControllerView mZoomControllerView;
     private ScanActionMenuView mActionMenuView;
 
     //闪光灯是否打开
@@ -150,18 +149,6 @@ public class CaptureActivity extends Activity {
 
             @Override
             public void onCameraInitSuccess() {
-                //刷新控制器
-                mZoomControllerView.updateZoomController(mnScanConfig, scanSurfaceView.getCameraManager().getFramingRect());
-            }
-        });
-
-        mZoomControllerView = (ZoomControllerView) findViewById(R.id.zoom_controller_view);
-        mZoomControllerView.setOnZoomControllerListener(new ZoomControllerView.OnZoomControllerListener() {
-            @Override
-            public void onZoom(int progress) {
-                if (scanSurfaceView.getCameraManager() != null) {
-                    scanSurfaceView.getCameraManager().setZoom(progress);
-                }
             }
         });
 
@@ -402,21 +389,6 @@ public class CaptureActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
     }
-
-    //----------------对内方法
-
-    /**
-     * 获取配置信息
-     *
-     * @return
-     */
-    public static MNScanConfig getScanConfig() {
-//        if (sActivityRef != null && sActivityRef.get() != null) {
-//            return sActivityRef.get().mnScanConfig;
-//        }
-        return mnScanConfig;
-    }
-
 
     //---------对外提供方法----------
 

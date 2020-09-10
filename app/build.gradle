@@ -26,4 +26,5 @@ dependencies {
 
 //    implementation 'com.github.maning0303:MNZXingCode:V2.1.2'
     implementation project(':libraryzxing')
+    implementation 'com.android.support.constraint:constraint-layout:2.0.1'
 }

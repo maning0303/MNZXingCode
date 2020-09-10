@@ -28,6 +28,15 @@
             android:text="自定义扫描"
             android:textColor="#FFFFFF" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:onClick="customActivity"
+            android:text="自定义Activity"
+            android:textColor="#FFFFFF" />
+
         <TextView
             android:id="@+id/tv_show"
             android:layout_width="wrap_content"

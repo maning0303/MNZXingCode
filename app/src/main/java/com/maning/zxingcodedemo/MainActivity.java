@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void customScan(View view) {
-        startActivity(new Intent(this, CustomScanActivity.class));
+        startActivity(new Intent(this, CustomActivity.class));
     }
 
     public void createQRImage(View view) {
@@ -117,5 +117,9 @@ public class MainActivity extends AppCompatActivity {
                 showToast("取消扫码");
                 break;
         }
+    }
+
+    public void customActivity(View view) {
+        startActivity(new Intent(this, ScanActivity.class));
     }
 }

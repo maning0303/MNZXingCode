@@ -262,7 +262,7 @@ public class MNScanConfig implements Serializable {
         //扫描提示文案字体大小
         private int scanHintTextSize;
         //扫描框高度偏移值：+向上偏移，-向下偏移
-        private int scanFrameHeightOffsets = 0;
+        private int scanFrameHeightOffsets = 100;
         //是否需要全屏扫描，默认值扫描扫描框中的二维码
         private boolean isFullScreenScan = false;
         //是否支持手势缩放，默认支持

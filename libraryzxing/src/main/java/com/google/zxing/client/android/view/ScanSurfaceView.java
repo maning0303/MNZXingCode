@@ -29,7 +29,7 @@ import java.util.Collection;
 public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callback {
 
     private static final String TAG = "ScanSurfaceView";
-    private MNScanConfig scanConfig;
+    public static MNScanConfig scanConfig;
     private ResizeAbleSurfaceView surfaceView;
     private ViewfinderView viewfinderView;
     private CameraManager cameraManager;
@@ -41,6 +41,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     private String characterSet;
     private boolean hasScanComplete = false;
     private boolean hasSurface = false;
+    private ZoomControllerView zoomControllerView;
 
     public ScanSurfaceView(Context context) {
         this(context, null);
@@ -59,6 +60,16 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         View view = LayoutInflater.from(getContext()).inflate(R.layout.mn_scan_surface_view, this);
         surfaceView = view.findViewById(R.id.preview_view);
         viewfinderView = view.findViewById(R.id.viewfinder_view);
+        zoomControllerView = view.findViewById(R.id.zoom_controller_view);
+
+        zoomControllerView.setOnZoomControllerListener(new ZoomControllerView.OnZoomControllerListener() {
+            @Override
+            public void onZoom(int progress) {
+                if (getCameraManager() != null) {
+                    getCameraManager().setZoom(progress);
+                }
+            }
+        });
     }
 
     public void init(Activity activity) {
@@ -68,9 +79,13 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         scanSurfaceViewHandler = new ScanSurfaceViewHandler(this, decodeFormats, null, characterSet, cameraManager);
     }
 
-    public void setScanConfig(MNScanConfig scanConfig) {
-        this.scanConfig = scanConfig;
-        viewfinderView.setScanConfig(this.scanConfig);
+    public void setScanConfig(MNScanConfig config) {
+        if (config == null) {
+            config = new MNScanConfig.Builder().builder();
+        }
+        ScanSurfaceView.scanConfig = config;
+        viewfinderView.setScanConfig(ScanSurfaceView.scanConfig);
+        zoomControllerView.setScanConfig(ScanSurfaceView.scanConfig);
     }
 
     public void setOnScanSurfaceViewCallback(OnScanSurfaceViewCallback callback) {
@@ -166,10 +181,12 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
             Log.e(TAG, "open camera fail：" + e.toString());
             displayFrameworkBugMessageAndExit("初始化相机失败");
         }
-        //刷新控制器
+        //初始化完成
         if (onScanSurfaceViewCallback != null) {
             onScanSurfaceViewCallback.onCameraInitSuccess();
         }
+        //刷新控制器
+        zoomControllerView.updateZoomController(getCameraManager().getFramingRect());
     }
 
     private void displayFrameworkBugMessageAndExit(String msg) {
@@ -182,12 +199,13 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         if (inactivityTimer != null) {
             inactivityTimer.shutdown();
         }
+        scanConfig = null;
     }
 
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+        surfaceView.resize(width, height);
     }
 
     @Override

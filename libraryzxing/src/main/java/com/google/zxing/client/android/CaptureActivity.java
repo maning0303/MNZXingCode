@@ -28,36 +28,28 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.client.android.camera.CameraManager;
-import com.google.zxing.client.android.manager.BeepManager;
-import com.google.zxing.client.android.manager.InactivityTimer;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.other.MNCustomViewBindCallback;
+import com.google.zxing.client.android.other.OnScanSurfaceViewCallback;
 import com.google.zxing.client.android.utils.ImageUtils;
 import com.google.zxing.client.android.utils.StatusBarUtil;
 import com.google.zxing.client.android.utils.ZXingUtils;
 import com.google.zxing.client.android.view.ProgressDialog;
-import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
 import com.google.zxing.client.android.view.ScanActionMenuView;
+import com.google.zxing.client.android.view.ScanSurfaceView;
 import com.google.zxing.client.android.view.ZoomControllerView;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
@@ -67,7 +59,7 @@ import java.util.Map;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
+public class CaptureActivity extends Activity {
 
     //用来保存当前Activity
     private static WeakReference<CaptureActivity> sActivityRef;
@@ -77,41 +69,21 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private static final int REQUEST_CODE_PERMISSION_STORAGE = 10012;
 
     private Context context;
-    private ResizeAbleSurfaceView surfaceView;
-    private ViewfinderView viewfinderView;
+    private View fakeStatusBar;
+    private ScanSurfaceView scanSurfaceView;
     private ZoomControllerView mZoomControllerView;
     private ScanActionMenuView mActionMenuView;
-    private View fakeStatusBar;
 
-    private CameraManager cameraManager;
-    private CaptureActivityHandler handler;
-    private InactivityTimer inactivityTimer;
-    private BeepManager beepManager;
-    private Result lastResult;
-    private boolean hasSurface;
-    private Collection<BarcodeFormat> decodeFormats;
-    private String characterSet;
-
-    //传递数据
     //闪光灯是否打开
     private boolean is_light_on = false;
-    private String noCodeHint = "未发现二维码";
-    private boolean hasScanComplete = false;
 
     //自定义遮罩View
     private static MNCustomViewBindCallback customViewBindCallback;
     private static MNScanConfig mnScanConfig;
+    private Handler UIHandler = new Handler(Looper.getMainLooper());
 
     public static void setMnCustomViewBindCallback(MNCustomViewBindCallback mnCustomViewBindCallback) {
         customViewBindCallback = mnCustomViewBindCallback;
-    }
-
-    public Handler getHandler() {
-        return handler;
-    }
-
-    public CameraManager getCameraManager() {
-        return cameraManager;
     }
 
     @Override
@@ -124,6 +96,17 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         initView();
         initIntent();
         initStatusBar();
+        initPermission();
+    }
+
+    private void initPermission() {
+        //检查相机权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                //没有相机权限
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_PERMISSION_CAMERA);
+            }
+        }
     }
 
     private void initStatusBar() {
@@ -145,21 +128,39 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
     private void initView() {
-        surfaceView = (ResizeAbleSurfaceView) findViewById(R.id.preview_view);
-        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
-        hasSurface = false;
-        inactivityTimer = new InactivityTimer(this);
-        beepManager = new BeepManager(this);
-
-
         fakeStatusBar = (View) findViewById(R.id.fakeStatusBar);
+
+        scanSurfaceView = (ScanSurfaceView) findViewById(R.id.scan_surface_view);
+        scanSurfaceView.init(this);
+        scanSurfaceView.setOnScanSurfaceViewCallback(new OnScanSurfaceViewCallback() {
+            @Override
+            public void onHandleDecode(final String resultTxt, Bitmap barcode) {
+                UIHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        finishSuccess(resultTxt);
+                    }
+                }, 100);
+            }
+
+            @Override
+            public void onFail(String msg) {
+                finishFailed(msg);
+            }
+
+            @Override
+            public void onCameraInitSuccess() {
+                //刷新控制器
+                mZoomControllerView.updateZoomController(mnScanConfig, scanSurfaceView.getCameraManager().getFramingRect());
+            }
+        });
 
         mZoomControllerView = (ZoomControllerView) findViewById(R.id.zoom_controller_view);
         mZoomControllerView.setOnZoomControllerListener(new ZoomControllerView.OnZoomControllerListener() {
             @Override
             public void onZoom(int progress) {
-                if (cameraManager != null) {
-                    cameraManager.setZoom(progress);
+                if (scanSurfaceView.getCameraManager() != null) {
+                    scanSurfaceView.getCameraManager().setZoom(progress);
                 }
             }
         });
@@ -190,7 +191,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private void openLight() {
         if (!is_light_on) {
             is_light_on = true;
-            cameraManager.openLight();
+            scanSurfaceView.getCameraManager().openLight();
             mActionMenuView.openLight();
         }
     }
@@ -198,7 +199,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private void closeLight() {
         if (is_light_on) {
             is_light_on = false;
-            cameraManager.offLight();
+            scanSurfaceView.getCameraManager().offLight();
             mActionMenuView.closeLight();
         }
     }
@@ -208,7 +209,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         if (mnScanConfig == null) {
             mnScanConfig = new MNScanConfig.Builder().builder();
         }
-        viewfinderView.setScanConfig(mnScanConfig);
+        scanSurfaceView.setScanConfig(mnScanConfig);
         mActionMenuView.setScanConfig(mnScanConfig, customViewBindCallback);
     }
 
@@ -255,7 +256,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                         public void run() {
                             ProgressDialog.dismissDialog();
                             if (TextUtils.isEmpty(decodeQRCodeFromBitmap)) {
-                                Toast.makeText(CaptureActivity.this, noCodeHint, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CaptureActivity.this, "未发现二维码", Toast.LENGTH_SHORT).show();
                             } else {
                                 finishSuccess(decodeQRCodeFromBitmap);
                             }
@@ -270,61 +271,25 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     @Override
     protected void onResume() {
         super.onResume();
-        // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
-        // want to open the camera driver and measure the screen size if we're going to show the help on
-        // first launch. That led to bugs where the scanning rectangle was the wrong size and partially
-        // off screen.
-        if (handler != null && cameraManager != null && cameraManager.isOpen()) {
-            return;
-        }
-        cameraManager = new CameraManager(getApplication());
-        viewfinderView.setCameraManager(cameraManager);
-
-        handler = null;
-        lastResult = null;
-
-        resetStatusView();
-
-        beepManager.updatePrefs(mnScanConfig.isShowBeep(), mnScanConfig.isShowVibrate());
-
-        inactivityTimer.onResume();
-        decodeFormats = null;
-        characterSet = null;
-
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        if (hasSurface) {
-            // 防止sdk8的设备初始化预览异常
-            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            // The activity was paused but not stopped, so the surface still exists. Therefore
-            // surfaceCreated() won't be called, so init the camera here.
-            initCamera(surfaceHolder);
-        } else {
-            // Install the callback and wait for surfaceCreated() to init the camera.
-            surfaceHolder.addCallback(this);
+        if (scanSurfaceView != null) {
+            scanSurfaceView.onResume();
         }
     }
 
     @Override
     protected void onPause() {
-        if (handler != null) {
-            handler.quitSynchronously();
-            handler = null;
-        }
-        inactivityTimer.onPause();
-        beepManager.close();
-        cameraManager.closeDriver();
-        //historyManager = null; // Keep for onActivityResult
-        if (!hasSurface) {
-            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
-            SurfaceHolder surfaceHolder = surfaceView.getHolder();
-            surfaceHolder.removeCallback(this);
-        }
         super.onPause();
+        if (scanSurfaceView != null) {
+            scanSurfaceView.onPause();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        inactivityTimer.shutdown();
+        if (scanSurfaceView != null) {
+            scanSurfaceView.onDestroy();
+        }
+        UIHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -332,25 +297,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     public void onBackPressed() {
         //取消扫码
         finishCancle();
-    }
-
-    public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-        if (hasScanComplete) {
-            return;
-        }
-        hasScanComplete = true;
-        lastResult = rawResult;
-        beepManager.playBeepSoundAndVibrate();
-        viewfinderView.setResultPoint(rawResult, scaleFactor);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //关闭页面
-                finishSuccess(lastResult.getText());
-            }
-        }, 50);
-        //测试显示图片
-//        drawResultPoints(barcode, scaleFactor, rawResult);
     }
 
     /**
@@ -399,20 +345,19 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private void finishFailed(String errorMsg) {
         Intent intent = new Intent();
         intent.putExtra(MNScanManager.INTENT_KEY_RESULT_ERROR, errorMsg);
-        this.setResult(MNScanManager.RESULT_FAIL, intent);
-        this.finish();
+        setResult(MNScanManager.RESULT_FAIL, intent);
         finishFinal();
     }
 
     private void finishCancle() {
-        this.setResult(MNScanManager.RESULT_CANCLE, null);
+        setResult(MNScanManager.RESULT_CANCLE, null);
         finishFinal();
     }
 
     private void finishSuccess(String result) {
         Intent intent = new Intent();
         intent.putExtra(MNScanManager.INTENT_KEY_RESULT_SUCCESS, result);
-        this.setResult(MNScanManager.RESULT_SUCCESS, intent);
+        setResult(MNScanManager.RESULT_SUCCESS, intent);
         finishFinal();
     }
 
@@ -424,62 +369,9 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         //关闭
         closeLight();
         //关闭
-        this.finish();
+        finish();
         //关闭窗体动画显示
-        this.overridePendingTransition(0, mnScanConfig.getActivityExitAnime() == 0 ? R.anim.mn_scan_activity_bottom_out : mnScanConfig.getActivityExitAnime());
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        if (holder == null) {
-            Log.e(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
-        }
-        if (!hasSurface) {
-            hasSurface = true;
-            initCamera(holder);
-        }
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        hasSurface = false;
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // do nothing
-        Log.i(TAG, "surfaceChanged: " + width + "  " + height);
-    }
-
-    private void initCamera(SurfaceHolder surfaceHolder) {
-        //检查相机权限
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                //没有相机权限
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_PERMISSION_CAMERA);
-                return;
-            }
-        }
-        if (surfaceHolder == null) {
-            displayFrameworkBugMessageAndExit("初始化相机失败");
-            return;
-        }
-        if (cameraManager.isOpen()) {
-            Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
-            return;
-        }
-        try {
-            cameraManager.openDriver(surfaceHolder, surfaceView);
-            // Creating the handler starts the preview, which can also throw a RuntimeException.
-            if (handler == null) {
-                handler = new CaptureActivityHandler(this, decodeFormats, null, characterSet, cameraManager);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "open camera fail：" + e.toString());
-            displayFrameworkBugMessageAndExit("初始化相机失败");
-        }
-        //刷新控制器
-        updateZoomController();
+        overridePendingTransition(0, mnScanConfig.getActivityExitAnime() == 0 ? R.anim.mn_scan_activity_bottom_out : mnScanConfig.getActivityExitAnime());
     }
 
 
@@ -492,7 +384,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     onResume();
                 } else {
                     // Permission Denied 权限被拒绝
-                    displayFrameworkBugMessageAndExit("初始化相机失败,权限被拒绝");
+                    Toast.makeText(context, "初始化相机失败,相机权限被拒绝", Toast.LENGTH_SHORT).show();
+                    finishFailed("初始化相机失败,相机权限被拒绝");
                 }
                 break;
             case REQUEST_CODE_PERMISSION_STORAGE:
@@ -501,41 +394,13 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                     getImageFromAlbum();
                 } else {
                     //缺少权限
-                    Toast.makeText(context, "缺少读写权限", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "打开相册失败,读写权限被拒绝", Toast.LENGTH_SHORT).show();
                 }
             default:
                 break;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-    }
-
-    private void displayFrameworkBugMessageAndExit(String errorMessage) {
-        finishFailed(errorMessage);
-    }
-
-    public void restartPreviewAfterDelay(long delayMS) {
-        if (handler != null) {
-            handler.sendEmptyMessageDelayed(R.id.restart_preview, delayMS);
-        }
-        resetStatusView();
-    }
-
-    private void resetStatusView() {
-        viewfinderView.setVisibility(View.VISIBLE);
-        lastResult = null;
-    }
-
-    public void drawViewfinder() {
-        viewfinderView.drawViewfinder();
-    }
-
-
-    private void updateZoomController() {
-        if (cameraManager == null) {
-            return;
-        }
-        mZoomControllerView.updateZoomController(mnScanConfig,cameraManager.getFramingRect());
     }
 
     //----------------对内方法

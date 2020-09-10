@@ -24,6 +24,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
 import com.google.zxing.client.android.CaptureActivity;
+import com.google.zxing.client.android.view.ScanSurfaceView;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -40,18 +41,18 @@ public class DecodeThread extends Thread {
   public static final String BARCODE_BITMAP = "barcode_bitmap";
   public static final String BARCODE_SCALED_FACTOR = "barcode_scaled_factor";
 
-  private final CaptureActivity activity;
   private final Map<DecodeHintType,Object> hints;
   private Handler handler;
   private final CountDownLatch handlerInitLatch;
+  private ScanSurfaceView scanSurfaceView;
 
-  public DecodeThread(CaptureActivity activity,
-               Collection<BarcodeFormat> decodeFormats,
-               Map<DecodeHintType,?> baseHints,
-               String characterSet,
-               ResultPointCallback resultPointCallback) {
+  public DecodeThread(ScanSurfaceView scanSurfaceView,
+                      Collection<BarcodeFormat> decodeFormats,
+                      Map<DecodeHintType,?> baseHints,
+                      String characterSet,
+                      ResultPointCallback resultPointCallback) {
 
-    this.activity = activity;
+    this.scanSurfaceView = scanSurfaceView;
     handlerInitLatch = new CountDownLatch(1);
 
     hints = new EnumMap<>(DecodeHintType.class);
@@ -102,7 +103,7 @@ public class DecodeThread extends Thread {
   @Override
   public void run() {
     Looper.prepare();
-    handler = new DecodeHandler(activity, hints);
+    handler = new DecodeHandler(scanSurfaceView, hints);
     handlerInitLatch.countDown();
     Looper.loop();
   }

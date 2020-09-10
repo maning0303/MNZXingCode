@@ -20,12 +20,10 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -33,16 +31,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
@@ -209,10 +203,10 @@ public final class ViewfinderView extends View {
         resultPointStrokeWidth = mnScanConfig.getResultPointStrokeWidth();
         String resultPointColor = mnScanConfig.getResultPointColor();
         String resultPointStrokeColor = mnScanConfig.getResultPointStrokeColor();
-        if(!TextUtils.isEmpty(resultPointColor)){
+        if (!TextUtils.isEmpty(resultPointColor)) {
             pointColor = Color.parseColor(resultPointColor);
         }
-        if(!TextUtils.isEmpty(resultPointStrokeColor)){
+        if (!TextUtils.isEmpty(resultPointStrokeColor)) {
             pointBorderColor = Color.parseColor(resultPointStrokeColor);
         }
     }
@@ -409,8 +403,8 @@ public final class ViewfinderView extends View {
     }
 
     public void drawableResultPoint(Canvas canvas) {
-        if(!showResultPoint){
-           return;
+        if (!showResultPoint) {
+            return;
         }
         if (resultPoint == null) {
             return;
@@ -436,8 +430,8 @@ public final class ViewfinderView extends View {
                     pointBottom = point;
                 }
             }
-            float centerX = pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2;
-            float centerY = pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2;
+            float centerX = pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2 + resultPointRadiusCircle;
+            float centerY = pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2 + resultPointRadiusCircle;
             //判断是不是全屏模式
             if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
                 centerX += frame.left;

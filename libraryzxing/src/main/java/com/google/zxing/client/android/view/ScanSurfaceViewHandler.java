@@ -28,7 +28,6 @@ import com.google.zxing.Result;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.decode.DecodeThread;
-import com.google.zxing.client.android.view.ScanSurfaceView;
 
 import java.util.Collection;
 import java.util.Map;

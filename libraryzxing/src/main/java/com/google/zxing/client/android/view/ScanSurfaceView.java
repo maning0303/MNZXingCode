@@ -12,9 +12,7 @@ import android.widget.FrameLayout;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.google.zxing.client.android.CaptureActivityHandler;
 import com.google.zxing.client.android.R;
-import com.google.zxing.client.android.ViewfinderView;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
@@ -38,7 +36,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
     private OnScanSurfaceViewCallback onScanSurfaceViewCallback;
-    private CaptureActivityHandler captureActivityHandler;
+    private ScanSurfaceViewHandler scanSurfaceViewHandler;
     private Collection<BarcodeFormat> decodeFormats;
     private String characterSet;
     private boolean hasScanComplete = false;
@@ -67,7 +65,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         inactivityTimer = new InactivityTimer(activity);
         beepManager = new BeepManager(activity);
         cameraManager = new CameraManager(getContext().getApplicationContext());
-        captureActivityHandler = new CaptureActivityHandler(this, decodeFormats, null, characterSet, cameraManager);
+        scanSurfaceViewHandler = new ScanSurfaceViewHandler(this, decodeFormats, null, characterSet, cameraManager);
     }
 
     public void setScanConfig(MNScanConfig scanConfig) {
@@ -87,8 +85,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         return cameraManager;
     }
 
-    public CaptureActivityHandler getCaptureHandler() {
-        return captureActivityHandler;
+    public ScanSurfaceViewHandler getCaptureHandler() {
+        return scanSurfaceViewHandler;
     }
 
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
@@ -105,9 +103,9 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void onPause() {
-        if (captureActivityHandler != null) {
-            captureActivityHandler.quitSynchronously();
-            captureActivityHandler = null;
+        if (scanSurfaceViewHandler != null) {
+            scanSurfaceViewHandler.quitSynchronously();
+            scanSurfaceViewHandler = null;
         }
         inactivityTimer.onPause();
         beepManager.close();
@@ -120,10 +118,10 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void onResume() {
-        if (captureActivityHandler != null && cameraManager != null && cameraManager.isOpen()) {
+        if (scanSurfaceViewHandler != null && cameraManager != null && cameraManager.isOpen()) {
             return;
         }
-        captureActivityHandler = null;
+        scanSurfaceViewHandler = null;
 
         viewfinderView.setCameraManager(cameraManager);
         viewfinderView.setVisibility(View.VISIBLE);
@@ -161,8 +159,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         try {
             cameraManager.openDriver(surfaceHolder, surfaceView);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
-            if (captureActivityHandler == null) {
-                captureActivityHandler = new CaptureActivityHandler(this, decodeFormats, null, characterSet, cameraManager);
+            if (scanSurfaceViewHandler == null) {
+                scanSurfaceViewHandler = new ScanSurfaceViewHandler(this, decodeFormats, null, characterSet, cameraManager);
             }
         } catch (Exception e) {
             Log.e(TAG, "open camera fail：" + e.toString());

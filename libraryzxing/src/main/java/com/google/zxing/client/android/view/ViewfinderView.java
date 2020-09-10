@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing.client.android;
+package com.google.zxing.client.android.view;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -36,6 +36,7 @@ import android.view.View;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;

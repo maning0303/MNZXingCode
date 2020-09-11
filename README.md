@@ -140,6 +140,69 @@
                 }
             });
 
+
+            //自定义Activity
+            //1.xml添加：
+            <com.google.zxing.client.android.view.ScanSurfaceView
+                    android:id="@+id/scan_surface_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            //2.Activity实例代码：
+            public class ScanActivity extends AppCompatActivity {
+
+                private ScanSurfaceView mScanSurfaceView;
+
+                @Override
+                protected void onCreate(Bundle savedInstanceState) {
+                    super.onCreate(savedInstanceState);
+                    setContentView(R.layout.activity_scan);
+                    initView();
+                }
+
+                private void initView() {
+                    mScanSurfaceView = (ScanSurfaceView) findViewById(R.id.scan_surface_view);
+                    mScanSurfaceView.init(this);
+                    MNScanConfig scanConfig = new MNScanConfig.Builder()
+                            .setSupportZoom(false)
+                            .builder();
+                    mScanSurfaceView.setScanConfig(scanConfig);
+                    mScanSurfaceView.setOnScanCallback(new OnScanCallback() {
+                        @Override
+                        public void onScanSuccess(String resultTxt, Bitmap barcode) {
+                            Toast.makeText(ScanActivity.this, "成功：" + resultTxt, Toast.LENGTH_SHORT).show();
+                            //关闭页面
+                            finish();
+                        }
+
+                        @Override
+                        public void onFail(String msg) {
+                            Toast.makeText(ScanActivity.this, "失败：" + msg, Toast.LENGTH_SHORT).show();
+                            //关闭页面
+                            finish();
+                        }
+                    });
+                }
+
+                @Override
+                protected void onResume() {
+                    super.onResume();
+                    mScanSurfaceView.onResume();
+                }
+
+                @Override
+                protected void onPause() {
+                    super.onPause();
+                    mScanSurfaceView.onPause();
+                }
+
+                @Override
+                protected void onDestroy() {
+                    super.onDestroy();
+                    mScanSurfaceView.onDestroy();
+                }
+            }
+
         3：生成二维码：
         	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
         	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
@@ -176,6 +239,10 @@
 ```
 
 ## 版本记录：
+    v2.1.4:
+        1.优化代码
+        2.可以自定义Activity添加扫描
+
     v2.1.3:
         1.全屏模式去掉扫描框
         2.手势缩放镜头单独字段控制

@@ -205,7 +205,6 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        surfaceView.resize(width, height);
     }
 
     @Override

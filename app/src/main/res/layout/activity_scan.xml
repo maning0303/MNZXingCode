@@ -9,6 +9,7 @@
     <com.google.zxing.client.android.view.ScanSurfaceView
         android:id="@+id/scan_surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

@@ -125,13 +125,25 @@ public final class CameraManager {
         cameraObject.setPreviewDisplay(holder);
 
         //重新设置相机预览大小
-        int surfaceViewHeightDefault = surfaceView.getHeight();
         Point previewSizeOnScreen = configManager.getPreviewSizeOnScreen();
+        int surfaceViewHeightDefault = surfaceView.getHeight();
+        int surfaceViewWidthDefault = surfaceView.getWidth();
         int width = previewSizeOnScreen.x;
         int height = previewSizeOnScreen.y;
-        int surfaceViewHeight = surfaceViewHeightDefault;
-        int surfaceViewWidth = surfaceViewHeight * width / height;
+
+        int surfaceViewWidth;
+        int surfaceViewHeight;
+        if ((float) surfaceViewHeightDefault / (float) height > (float) surfaceViewWidthDefault / (float) width) {
+            surfaceViewHeight = surfaceViewHeightDefault;
+            surfaceViewWidth = surfaceViewHeight * width / height;
+        } else {
+            surfaceViewWidth = surfaceViewWidthDefault;
+            surfaceViewHeight = surfaceViewWidth * height / width;
+        }
         surfaceView.resize(surfaceViewWidth, surfaceViewHeight);
+        Log.e(">>>>>>", "openDriver----surfaceView.getWidth():" + surfaceView.getWidth() + ",surfaceView.getHeight():" + surfaceView.getHeight());
+        Log.e(">>>>>>", "openDriver----previewSizeOnScreen：" + previewSizeOnScreen.toString());
+        Log.e(">>>>>>", "openDriver----修正--surfaceViewWidth：" + surfaceViewHeight + ",surfaceViewHeight:" + surfaceViewHeight);
     }
 
     public boolean isZoomSupported() {
@@ -260,7 +272,7 @@ public final class CameraManager {
                 return null;
             }
 
-            MIN_FRAME_WIDTH = 2 * screenResolution.x / 10;
+            MIN_FRAME_WIDTH = 3 * screenResolution.x / 10;
             MAX_FRAME_WIDTH = 9 * screenResolution.x / 10;
             int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
             int height = width;
@@ -291,7 +303,7 @@ public final class CameraManager {
         if (ScanSurfaceView.scanConfig != null && ScanSurfaceView.scanConfig.isFullScreenScan()) {
             dim = 9 * resolution / 10;
         } else {
-            dim = 7 * resolution / 10;
+            dim = 6 * resolution / 10;
         }
         if (dim < hardMin) {
             return hardMin;

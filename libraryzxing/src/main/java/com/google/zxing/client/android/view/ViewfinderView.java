@@ -243,18 +243,20 @@ public final class ViewfinderView extends View {
         if (cameraManager == null) {
             return; // not ready yet, early draw before done configuring
         }
-        int width = canvas.getWidth();
-        int height = canvas.getHeight();
-        int txtMargin = CommonUtils.dip2px(context, 30);
-
         frame = cameraManager.getFramingRect();
         Rect previewFrame = cameraManager.getFramingRectInPreview();
         if (frame == null || previewFrame == null) {
             return;
         }
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        int txtMargin = CommonUtils.dip2px(context, 30);
+
         //重新赋值
         frame.top = (height - (frame.right - frame.left)) / 2 - mnScanConfig.getScanFrameHeightOffsets();
         frame.bottom = frame.top + (frame.right - frame.left);
+        frame.left = (width - (frame.right - frame.left)) / 2;
+        frame.right = frame.left + (frame.right - frame.left);
 
         // 半透明背景
         paint.setColor(maskColor);

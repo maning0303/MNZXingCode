@@ -241,14 +241,13 @@ public class MNScanConfig implements Serializable {
         private boolean showPhotoAlbum = true;
         private boolean showBeep = true;
         private boolean showVibrate = true;
+        //扫描颜色
         private String scanColor;
+        private String bgColor;
         private LaserStyle laserStyle = LaserStyle.Line;
         private int activityOpenAnime = R.anim.mn_scan_activity_bottom_in;
         private int activityExitAnime = R.anim.mn_scan_activity_bottom_out;
-        private boolean showZoomController = true;
-        private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
         private int customShadeViewLayoutID;
-        private String bgColor;
         //网格扫描线的列数
         private int gridScanLineColumn;
         //网格扫描线的高度
@@ -267,6 +266,10 @@ public class MNScanConfig implements Serializable {
         private boolean isFullScreenScan = false;
         //是否支持手势缩放，默认支持
         private boolean isSupportZoom = true;
+        //是否显示缩放器
+        private boolean showZoomController = true;
+        //缩放器位置
+        private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
         //是否显示扫描中心点
         private boolean isShowResultPoint = false;
         //扫描二维码中心点显示半径

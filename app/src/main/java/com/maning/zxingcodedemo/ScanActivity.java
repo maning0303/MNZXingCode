@@ -24,7 +24,7 @@ public class ScanActivity extends AppCompatActivity {
         mScanSurfaceView = (ScanSurfaceView) findViewById(R.id.scan_surface_view);
         mScanSurfaceView.init(this);
         MNScanConfig scanConfig = new MNScanConfig.Builder()
-                .setSupportZoom(false)
+                .setSupportZoom(true)
                 .builder();
         mScanSurfaceView.setScanConfig(scanConfig);
         mScanSurfaceView.setOnScanCallback(new OnScanCallback() {

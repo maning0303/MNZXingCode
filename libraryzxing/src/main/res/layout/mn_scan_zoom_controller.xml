@@ -13,12 +13,12 @@
         <LinearLayout
             android:id="@+id/ll_room_controller"
             android:layout_width="240dp"
-            android:layout_height="24dp"
+            android:layout_height="20dp"
             android:layout_centerHorizontal="true"
             android:background="@drawable/mn_scan_zoom_bg"
             android:gravity="center"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -60,13 +60,13 @@
         <!--放大缩小竖向-->
         <LinearLayout
             android:id="@+id/ll_room_controller_vertical"
-            android:layout_width="24dp"
+            android:layout_width="20dp"
             android:layout_height="200dp"
             android:background="@drawable/mn_scan_zoom_bg"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:visibility="gone"
             tools:visibility="visible">
 

@@ -177,7 +177,7 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
         }
     }
 
-    public void setScanConfig(MNScanConfig config){
+    public void setScanConfig(MNScanConfig config) {
         scanConfig = config;
     }
 
@@ -190,18 +190,21 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
         framingRect.bottom = framingRect.top + (framingRect.right - framingRect.left);
         //显示
         if (scanConfig.isSupportZoom()) {
-            int size10 = CommonUtils.dip2px(getContext(), 10);
-            int size24 = CommonUtils.dip2px(getContext(), 24);
+            int frameWith = framingRect.bottom - framingRect.top;
+            int sizeMargin = CommonUtils.dip2px(getContext(), 10);
+            int sizeWidth = CommonUtils.dip2px(getContext(), 20);
+            int sizeHeight = (int) (frameWith * 0.9f);
+            int sizeTop = (int) (framingRect.top + (frameWith - sizeHeight) / 2f);
             MNScanConfig.ZoomControllerLocation zoomControllerLocation = scanConfig.getZoomControllerLocation();
             if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Left) {
                 //垂直方向
                 RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
-                layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
-                int left = framingRect.left - size10 - size24;
-                if (left < size10) {
-                    left = size10;
+                layoutParamsVertical.height = sizeHeight;
+                int left = framingRect.left - sizeMargin - sizeWidth;
+                if (left < sizeMargin) {
+                    left = sizeMargin;
                 }
-                layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
+                layoutParamsVertical.setMargins(left, sizeTop, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
                 if (scanConfig.isShowZoomController()) {
@@ -210,12 +213,12 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Right) {
                 //垂直方向
                 RelativeLayout.LayoutParams layoutParamsVertical = (RelativeLayout.LayoutParams) mLlRoomControllerVertical.getLayoutParams();
-                layoutParamsVertical.height = framingRect.bottom - framingRect.top - size10 * 2;
-                int left = framingRect.right + size10;
-                if (left + size10 + size24 > CommonUtils.getScreenWidth(getContext())) {
-                    left = CommonUtils.getScreenWidth(getContext()) - size10 - size24;
+                layoutParamsVertical.height = sizeHeight;
+                int left = framingRect.right + sizeMargin;
+                if (left + sizeMargin + sizeWidth > CommonUtils.getScreenWidth(getContext())) {
+                    left = CommonUtils.getScreenWidth(getContext()) - sizeMargin - sizeWidth;
                 }
-                layoutParamsVertical.setMargins(left, framingRect.top + size10, 0, 0);
+                layoutParamsVertical.setMargins(left, sizeTop, 0, 0);
                 mLlRoomControllerVertical.setLayoutParams(layoutParamsVertical);
 
                 if (scanConfig.isShowZoomController()) {
@@ -224,8 +227,8 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
             } else if (zoomControllerLocation == MNScanConfig.ZoomControllerLocation.Bottom) {
                 //横向
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mLlRoomController.getLayoutParams();
-                layoutParams.width = framingRect.right - framingRect.left - size10 * 2;
-                layoutParams.setMargins(0, framingRect.bottom + size10, 0, 0);
+                layoutParams.width = sizeHeight;
+                layoutParams.setMargins(0, framingRect.bottom + sizeMargin, 0, 0);
                 mLlRoomController.setLayoutParams(layoutParams);
 
                 if (scanConfig.isShowZoomController()) {

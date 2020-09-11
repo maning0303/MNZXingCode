@@ -17,7 +17,7 @@ import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.manager.BeepManager;
 import com.google.zxing.client.android.manager.InactivityTimer;
 import com.google.zxing.client.android.model.MNScanConfig;
-import com.google.zxing.client.android.other.OnScanSurfaceViewCallback;
+import com.google.zxing.client.android.other.OnScanCallback;
 
 import java.util.Collection;
 
@@ -35,7 +35,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     private CameraManager cameraManager;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-    private OnScanSurfaceViewCallback onScanSurfaceViewCallback;
+    private OnScanCallback onScanCallback;
     private ScanSurfaceViewHandler scanSurfaceViewHandler;
     private Collection<BarcodeFormat> decodeFormats;
     private String characterSet;
@@ -77,6 +77,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         beepManager = new BeepManager(activity);
         cameraManager = new CameraManager(getContext().getApplicationContext());
         scanSurfaceViewHandler = new ScanSurfaceViewHandler(this, decodeFormats, null, characterSet, cameraManager);
+        scanConfig = new MNScanConfig.Builder().builder();
     }
 
     public void setScanConfig(MNScanConfig config) {
@@ -88,8 +89,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         zoomControllerView.setScanConfig(ScanSurfaceView.scanConfig);
     }
 
-    public void setOnScanSurfaceViewCallback(OnScanSurfaceViewCallback callback) {
-        onScanSurfaceViewCallback = callback;
+    public void setOnScanCallback(OnScanCallback callback) {
+        onScanCallback = callback;
     }
 
     public ViewfinderView getViewfinderView() {
@@ -112,8 +113,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         beepManager.playBeepSoundAndVibrate();
         viewfinderView.setResultPoint(rawResult, scaleFactor);
         //结果返回
-        if (onScanSurfaceViewCallback != null) {
-            onScanSurfaceViewCallback.onHandleDecode(rawResult.getText(), barcode);
+        if (onScanCallback != null) {
+            onScanCallback.onScanSuccess(rawResult.getText(), barcode);
         }
     }
 
@@ -181,17 +182,13 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
             Log.e(TAG, "open camera fail：" + e.toString());
             displayFrameworkBugMessageAndExit("初始化相机失败");
         }
-        //初始化完成
-        if (onScanSurfaceViewCallback != null) {
-            onScanSurfaceViewCallback.onCameraInitSuccess();
-        }
         //刷新控制器
         zoomControllerView.updateZoomController(getCameraManager().getFramingRect());
     }
 
     private void displayFrameworkBugMessageAndExit(String msg) {
-        if (onScanSurfaceViewCallback != null) {
-            onScanSurfaceViewCallback.onFail(msg);
+        if (onScanCallback != null) {
+            onScanCallback.onFail(msg);
         }
     }
 

@@ -40,14 +40,13 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.other.MNCustomViewBindCallback;
-import com.google.zxing.client.android.other.OnScanSurfaceViewCallback;
+import com.google.zxing.client.android.other.OnScanCallback;
 import com.google.zxing.client.android.utils.ImageUtils;
 import com.google.zxing.client.android.utils.StatusBarUtil;
 import com.google.zxing.client.android.utils.ZXingUtils;
 import com.google.zxing.client.android.view.ProgressDialog;
 import com.google.zxing.client.android.view.ScanActionMenuView;
 import com.google.zxing.client.android.view.ScanSurfaceView;
-import com.google.zxing.client.android.view.ZoomControllerView;
 
 import java.lang.ref.WeakReference;
 
@@ -131,9 +130,9 @@ public class CaptureActivity extends Activity {
 
         scanSurfaceView = (ScanSurfaceView) findViewById(R.id.scan_surface_view);
         scanSurfaceView.init(this);
-        scanSurfaceView.setOnScanSurfaceViewCallback(new OnScanSurfaceViewCallback() {
+        scanSurfaceView.setOnScanCallback(new OnScanCallback() {
             @Override
-            public void onHandleDecode(final String resultTxt, Bitmap barcode) {
+            public void onScanSuccess(final String resultTxt, Bitmap barcode) {
                 UIHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -147,9 +146,6 @@ public class CaptureActivity extends Activity {
                 finishFailed(msg);
             }
 
-            @Override
-            public void onCameraInitSuccess() {
-            }
         });
 
         mActionMenuView = (ScanActionMenuView) findViewById(R.id.action_menu_view);

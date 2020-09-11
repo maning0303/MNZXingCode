@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.zxing.client.android.model.MNScanConfig;
-import com.google.zxing.client.android.other.OnScanSurfaceViewCallback;
+import com.google.zxing.client.android.other.OnScanCallback;
 import com.google.zxing.client.android.view.ScanSurfaceView;
 
 public class ScanActivity extends AppCompatActivity {
@@ -27,10 +27,9 @@ public class ScanActivity extends AppCompatActivity {
                 .setSupportZoom(false)
                 .builder();
         mScanSurfaceView.setScanConfig(scanConfig);
-
-        mScanSurfaceView.setOnScanSurfaceViewCallback(new OnScanSurfaceViewCallback() {
+        mScanSurfaceView.setOnScanCallback(new OnScanCallback() {
             @Override
-            public void onHandleDecode(String resultTxt, Bitmap barcode) {
+            public void onScanSuccess(String resultTxt, Bitmap barcode) {
                 Toast.makeText(ScanActivity.this, "成功：" + resultTxt, Toast.LENGTH_SHORT).show();
                 //关闭页面
                 finish();
@@ -41,10 +40,6 @@ public class ScanActivity extends AppCompatActivity {
                 Toast.makeText(ScanActivity.this, "失败：" + msg, Toast.LENGTH_SHORT).show();
                 //关闭页面
                 finish();
-            }
-
-            @Override
-            public void onCameraInitSuccess() {
             }
         });
     }

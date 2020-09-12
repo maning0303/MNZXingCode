@@ -1,6 +1,8 @@
 package com.google.zxing.client.android.utils;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -68,6 +70,18 @@ public class CommonUtils {
         }
 
         return 0;
+    }
+
+    public static int getTextWidth(String text, Paint paint){
+        Rect rect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), rect);
+        return rect.width();
+    }
+
+    public static int getTextHeight(String text, Paint paint){
+        Rect rect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), rect);
+        return rect.height();
     }
 
 }

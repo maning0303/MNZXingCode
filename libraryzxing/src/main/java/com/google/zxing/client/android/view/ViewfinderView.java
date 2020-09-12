@@ -51,6 +51,7 @@ public final class ViewfinderView extends View {
     private final Paint paint;
     private Paint paintResultPoint;
     private Paint paintText;
+    private Paint paintTextBg;
     private Paint paintLine;
     private Paint paintLaser;
     private int maskColor;
@@ -68,7 +69,7 @@ public final class ViewfinderView extends View {
     private Rect frame;
     private String hintMsg;
     private String hintTextColor = "#FFFFFF";
-    private int hintTextSize = 14;
+    private int hintTextSize = 13;
     private int linePosition = 0;
     private int margin;
     private int laserLineW;
@@ -91,6 +92,7 @@ public final class ViewfinderView extends View {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintResultPoint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintTextBg = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintLaser = new Paint(Paint.ANTI_ALIAS_FLAG);
         Resources resources = getResources();
@@ -103,6 +105,8 @@ public final class ViewfinderView extends View {
         paintText.setColor(Color.WHITE);
         paintText.setTextSize(CommonUtils.sp2px(context, hintTextSize));
         paintText.setTextAlign(Paint.Align.CENTER);
+        paintTextBg.setColor(laserColor);
+        paintTextBg.setTextAlign(Paint.Align.CENTER);
         //四角
         paintLine.setColor(laserColor);
         //扫描线
@@ -250,7 +254,7 @@ public final class ViewfinderView extends View {
         }
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        int txtMargin = CommonUtils.dip2px(context, 30);
+        int txtMargin = CommonUtils.dip2px(context, 20);
 
         //重新赋值
         frame.top = (height - (frame.right - frame.left)) / 2 - mnScanConfig.getScanFrameHeightOffsets();
@@ -289,11 +293,25 @@ public final class ViewfinderView extends View {
             canvas.drawRect(frame.right - rectH, frame.bottom - rectW, frame.right + 1, frame.bottom + 1, paintLine);
         }
 
+        //带有背景框的文字，暂时不做
+//        float textWidth = CommonUtils.getTextWidth(hintMsg, paintText);
+//        float textHeight = CommonUtils.getTextHeight(hintMsg, paintText);
+//        float startX = (width - textWidth) / 2 - CommonUtils.dip2px(context, 20);
+//        float startY = frame.bottom + txtMargin;
+//        float endX = startX + textWidth + CommonUtils.dip2px(context, 40);
+//        float endY = startY + textHeight + CommonUtils.dip2px(context, 12);
+//        RectF rectF = new RectF(startX, startY, endX, endY);
+//        canvas.drawRoundRect(rectF, 100, 100, paintTextBg);
+//        if (mnScanConfig.isSupportZoom() && mnScanConfig.isShowZoomController() && mnScanConfig.getZoomControllerLocation() == MNScanConfig.ZoomControllerLocation.Bottom) {
+//            canvas.drawText(hintMsg, width / 2, frame.top - txtMargin, paintText);
+//        } else {
+//            canvas.drawText(hintMsg, width / 2, startY + (rectF.height() - textHeight) + (rectF.height() - textHeight) / 2f, paintText);
+//        }
         //文字
         if (mnScanConfig.isSupportZoom() && mnScanConfig.isShowZoomController() && mnScanConfig.getZoomControllerLocation() == MNScanConfig.ZoomControllerLocation.Bottom) {
             canvas.drawText(hintMsg, width / 2, frame.top - txtMargin, paintText);
         } else {
-            canvas.drawText(hintMsg, width / 2, frame.bottom + txtMargin, paintText);
+            canvas.drawText(hintMsg, width / 2, frame.bottom + txtMargin + CommonUtils.getTextHeight(hintMsg, paintText), paintText);
         }
 
         //中间的线：动画
@@ -385,7 +403,7 @@ public final class ViewfinderView extends View {
         anim = ValueAnimator.ofInt(frame.top + margin, frame.bottom - margin);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.setRepeatMode(ValueAnimator.RESTART);
-        anim.setDuration(2000);
+        anim.setDuration(2400);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

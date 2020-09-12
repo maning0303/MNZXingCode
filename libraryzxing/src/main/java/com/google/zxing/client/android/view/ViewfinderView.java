@@ -258,17 +258,19 @@ public final class ViewfinderView extends View {
         frame.left = (width - (frame.right - frame.left)) / 2;
         frame.right = frame.left + (frame.right - frame.left);
 
-        // 半透明背景
-        paint.setColor(maskColor);
-
         paintLine.setShader(null);
         //四角线块
         int rectH = cornerLineW;
         int rectW = cornerLineH;
         //判断是不是全屏模式
         if (mnScanConfig != null && mnScanConfig.isFullScreenScan()) {
+            //全屏透明
+            paint.setColor(Color.TRANSPARENT);
             canvas.drawRect(0, 0, width, height, paint);
         } else {
+            // 半透明背景
+            paint.setColor(maskColor);
+
             canvas.drawRect(0, 0, width, frame.top, paint);
             canvas.drawRect(0, frame.top, frame.left, frame.bottom + 1, paint);
             canvas.drawRect(frame.right + 1, frame.top, width, frame.bottom + 1, paint);

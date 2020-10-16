@@ -40,7 +40,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.3'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.4'
 	}
 ```
 

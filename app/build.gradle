@@ -18,13 +18,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support.constraint:constraint-layout:2.0.1'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
 
     //颜色选择器
     implementation 'com.github.duanhong169:colorpicker:1.1.6'
 
-//    implementation 'com.github.maning0303:MNZXingCode:V2.1.2'
-    implementation project(':libraryzxing')
-    implementation 'com.android.support.constraint:constraint-layout:2.0.1'
+    implementation 'com.github.maning0303:MNZXingCode:V2.1.4'
+//    implementation project(':libraryzxing')
 }

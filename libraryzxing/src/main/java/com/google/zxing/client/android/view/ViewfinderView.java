@@ -120,7 +120,7 @@ public final class ViewfinderView extends View {
         //间距
         margin = CommonUtils.dip2px(context, 4);
         //扫描线的宽度
-        laserLineW = CommonUtils.dip2px(context, 3);
+        laserLineW = CommonUtils.dip2px(context, 4);
         //四角线块
         cornerLineH = CommonUtils.dip2px(context, 2);
         cornerLineW = CommonUtils.dip2px(context, 14);
@@ -271,7 +271,11 @@ public final class ViewfinderView extends View {
             //全屏透明
             paint.setColor(Color.TRANSPARENT);
             canvas.drawRect(0, 0, width, height, paint);
+            //扫描线的宽度
+            laserLineW = CommonUtils.dip2px(context, 4);
         } else {
+            //扫描线的宽度
+            laserLineW = CommonUtils.dip2px(context, 2);
             // 半透明背景
             paint.setColor(maskColor);
 

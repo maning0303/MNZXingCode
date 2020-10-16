@@ -12,7 +12,7 @@
     6: 完全自定义遮罩层
 
 ## 截图:
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpg)
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
 
 #### 默认扫描
@@ -243,7 +243,7 @@
         1.优化代码
         2.可以自定义Activity添加扫描
         3.全屏扫描背景色自动透明
-        4.扫描文件移动到扫描框下方
+        4.扫描文字移动到扫描框下方
 
     v2.1.3:
         1.全屏模式去掉扫描框

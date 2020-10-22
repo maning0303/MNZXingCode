@@ -29,7 +29,6 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
@@ -460,11 +459,6 @@ public final class ViewfinderView extends View {
         postInvalidate();
     }
 
-    /**
-     * TODO:显示有问题，内圈和外圈有间距
-     *
-     * @param canvas
-     */
     public void drawableResultPoint(Canvas canvas) {
         if (!showResultPoint) {
             return;

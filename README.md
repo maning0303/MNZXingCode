@@ -16,7 +16,7 @@
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
 
 #### 默认扫描
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_002.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_002.png)
 
 #### 自定义颜色扫描样式等
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
@@ -40,7 +40,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.4'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.5'
 	}
 ```
 

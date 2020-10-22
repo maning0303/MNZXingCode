@@ -16,6 +16,6 @@
 <resources>
     <color name="mn_scan_viewfinder_laser">#FFff3535</color>
     <color name="mn_scan_viewfinder_mask">#80000000</color>
-    <color name="mn_scan_viewfinder_laser_result_point">#72FF3535</color>
+    <color name="mn_scan_viewfinder_laser_result_point">#CCFF3535</color>
     <color name="mn_scan_viewfinder_laser_result_point_border">#FFFFFFFF</color>
 </resources>

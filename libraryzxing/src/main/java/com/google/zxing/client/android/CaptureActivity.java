@@ -138,7 +138,7 @@ public class CaptureActivity extends Activity {
                     public void run() {
                         finishSuccess(resultTxt);
                     }
-                }, 100);
+                }, 200);
             }
 
             @Override

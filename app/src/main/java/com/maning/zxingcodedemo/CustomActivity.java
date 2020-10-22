@@ -97,6 +97,8 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
     private String colorLine = "#FFFFFF00";
     private String colorBackground = "#22FF0000";
     private String colorStatusBar = "#00000000";
+    private String colorResultPoint = "#CCFFFF00";
+    private String colorResultPointStroke = "#FFFFFFFF";
     /**
      * 左边
      */
@@ -236,7 +238,7 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
     private String getHexString(int color) {
         String format = String.format("#%X", color);
         Log.e("=====", "format:" + format);
-        if("#0".equals(format)){
+        if ("#0".equals(format)) {
             format = "#00000000";
             Log.e("=====", "format:" + format);
         }
@@ -284,7 +286,8 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
                 .setFullScreenScan(mCbFullscreenScan.isChecked())
                 //二维码标记点
                 .isShowResultPoint(mCbScanPoint.isChecked())
-                .setResultPointConfigs(60, 30, 10, "#FFFFFFFF", "#7000A81F")
+                //单位dp
+                .setResultPointConfigs(36, 12, 3, colorResultPointStroke, colorResultPoint)
                 //状态栏设置
                 .setStatusBarConfigs(colorStatusBar, mCbStatusDark.isChecked())
                 //自定义遮罩

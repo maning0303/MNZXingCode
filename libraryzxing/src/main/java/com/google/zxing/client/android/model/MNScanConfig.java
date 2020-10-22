@@ -73,8 +73,8 @@ public class MNScanConfig implements Serializable {
     private boolean isFullScreenScan = false;
     //是否显示扫描中心点
     private boolean isShowResultPoint = false;
-    //扫描二维码中心点显示半径
-    private int resultPointRadiusCircle = 0;
+    //扫描二维码中心点宽高
+    private int resultPointWithdHeight = 0;
     //扫描二维码中心点显示圆角
     private int resultPointCorners = 0;
     //扫描二维码中心点显示描边
@@ -115,7 +115,7 @@ public class MNScanConfig implements Serializable {
         isFullScreenScan = builder.isFullScreenScan;
         isSupportZoom = builder.isSupportZoom;
         isShowResultPoint = builder.isShowResultPoint;
-        resultPointRadiusCircle = builder.resultPointRadiusCircle;
+        resultPointWithdHeight = builder.resultPointWithdHeight;
         resultPointCorners = builder.resultPointCorners;
         resultPointStrokeWidth = builder.resultPointStrokeWidth;
         resultPointStrokeColor = builder.resultPointStrokeColor;
@@ -137,8 +137,8 @@ public class MNScanConfig implements Serializable {
         return isShowResultPoint;
     }
 
-    public int getResultPointRadiusCircle() {
-        return resultPointRadiusCircle;
+    public int getResultPointWithdHeight() {
+        return resultPointWithdHeight;
     }
 
     public int getResultPointCorners() {
@@ -271,9 +271,9 @@ public class MNScanConfig implements Serializable {
         //缩放器位置
         private ZoomControllerLocation zoomControllerLocation = ZoomControllerLocation.Right;
         //是否显示扫描中心点
-        private boolean isShowResultPoint = false;
+        private boolean isShowResultPoint = true;
         //扫描二维码中心点显示半径
-        private int resultPointRadiusCircle = 0;
+        private int resultPointWithdHeight = 0;
         //扫描二维码中心点显示圆角
         private int resultPointCorners = 0;
         //扫描二维码中心点显示描边
@@ -303,12 +303,21 @@ public class MNScanConfig implements Serializable {
             return this;
         }
 
-        public Builder setResultPointConfigs(int resultPointRadiusCircle,
+        /**
+         * 设置扫描点大小圆角等（单位dp）
+         * @param resultPointWithdHeight
+         * @param resultPointCorners
+         * @param resultPointStrokeWidth
+         * @param resultPointStrokeColor
+         * @param resultPointColor
+         * @return
+         */
+        public Builder setResultPointConfigs(int resultPointWithdHeight,
                                              int resultPointCorners,
                                              int resultPointStrokeWidth,
                                              String resultPointStrokeColor,
                                              String resultPointColor) {
-            this.resultPointRadiusCircle = resultPointRadiusCircle;
+            this.resultPointWithdHeight = resultPointWithdHeight;
             this.resultPointCorners = resultPointCorners;
             this.resultPointStrokeWidth = resultPointStrokeWidth;
             this.resultPointStrokeColor = resultPointStrokeColor;

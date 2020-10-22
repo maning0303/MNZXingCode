@@ -20,13 +20,18 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -60,11 +65,11 @@ public final class ViewfinderView extends View {
     private Result resultPoint;
     private float scaleFactor;
     private boolean showResultPoint;
-    private int pointColor;
-    private int pointBorderColor;
-    private float resultPointRadiusCircle = 60;
-    private float resultPointRadiusCorners = 60;
-    private float resultPointStrokeWidth = 10;
+    private int resultPointColor;
+    private int resultPointStrokeColor;
+    private int resultPointWithdHeight;
+    private int resultPointRadiusCorners;
+    private int resultPointStrokeWidth;
 
     private Rect frame;
     private String hintMsg;
@@ -98,8 +103,8 @@ public final class ViewfinderView extends View {
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.mn_scan_viewfinder_mask);
         laserColor = resources.getColor(R.color.mn_scan_viewfinder_laser);
-        pointColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point);
-        pointBorderColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
+        resultPointColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point);
+        resultPointStrokeColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
         hintMsg = "将二维码放入框内，即可自动扫描";
         //文字
         paintText.setColor(Color.WHITE);
@@ -127,6 +132,10 @@ public final class ViewfinderView extends View {
         //网格扫描线先关配置
         gridColumn = 24;
         gridHeight = 0;
+        //扫描点大小
+        resultPointWithdHeight = CommonUtils.dip2px(context, 36);
+        resultPointRadiusCorners = CommonUtils.dip2px(context, 36);
+        resultPointStrokeWidth = CommonUtils.dip2px(context, 3);
     }
 
     /**
@@ -202,16 +211,31 @@ public final class ViewfinderView extends View {
 
     private void initResultPointConfigs() {
         showResultPoint = mnScanConfig.isShowResultPoint();
-        resultPointRadiusCorners = mnScanConfig.getResultPointCorners();
-        resultPointRadiusCircle = mnScanConfig.getResultPointRadiusCircle();
-        resultPointStrokeWidth = mnScanConfig.getResultPointStrokeWidth();
-        String resultPointColor = mnScanConfig.getResultPointColor();
-        String resultPointStrokeColor = mnScanConfig.getResultPointStrokeColor();
-        if (!TextUtils.isEmpty(resultPointColor)) {
-            pointColor = Color.parseColor(resultPointColor);
-        }
-        if (!TextUtils.isEmpty(resultPointStrokeColor)) {
-            pointBorderColor = Color.parseColor(resultPointStrokeColor);
+        if (showResultPoint) {
+            resultPointRadiusCorners = CommonUtils.dip2px(context, mnScanConfig.getResultPointCorners());
+            resultPointWithdHeight = CommonUtils.dip2px(context, mnScanConfig.getResultPointWithdHeight());
+            resultPointStrokeWidth = CommonUtils.dip2px(context, mnScanConfig.getResultPointStrokeWidth());
+            String resultPointColorStr = mnScanConfig.getResultPointColor();
+            String resultPointStrokeColorStr = mnScanConfig.getResultPointStrokeColor();
+            if (resultPointWithdHeight == 0) {
+                resultPointWithdHeight = CommonUtils.dip2px(context, 36);
+            }
+            if (resultPointRadiusCorners == 0) {
+                resultPointRadiusCorners = CommonUtils.dip2px(context, 36);
+            }
+            if (resultPointStrokeWidth == 0) {
+                resultPointStrokeWidth = CommonUtils.dip2px(context, 3);
+            }
+            if (!TextUtils.isEmpty(resultPointColorStr)) {
+                resultPointColor = Color.parseColor(resultPointColorStr);
+            } else {
+                resultPointColor = context.getResources().getColor(R.color.mn_scan_viewfinder_laser_result_point);
+            }
+            if (!TextUtils.isEmpty(resultPointStrokeColorStr)) {
+                resultPointStrokeColor = Color.parseColor(resultPointStrokeColorStr);
+            } else {
+                resultPointStrokeColor = context.getResources().getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
+            }
         }
     }
 
@@ -328,10 +352,10 @@ public final class ViewfinderView extends View {
         } else if (laserStyle == MNScanConfig.LaserStyle.Grid) {
             drawGridScanner(canvas, frame);
         }
-        //结果点
-        drawableResultPoint(canvas);
         //动画刷新
         startAnimation();
+        //结果点
+        drawableResultPoint(canvas);
     }
 
     /**
@@ -436,6 +460,11 @@ public final class ViewfinderView extends View {
         postInvalidate();
     }
 
+    /**
+     * TODO:显示有问题，内圈和外圈有间距
+     *
+     * @param canvas
+     */
     public void drawableResultPoint(Canvas canvas) {
         if (!showResultPoint) {
             return;
@@ -464,35 +493,43 @@ public final class ViewfinderView extends View {
                     pointBottom = point;
                 }
             }
-            float centerX = pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2 + resultPointRadiusCircle;
-            float centerY = pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2 + resultPointRadiusCircle;
+            int centerX = (int) (pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2);
+            int centerY = (int) (pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2);
             //判断是不是全屏模式
             if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
                 centerX += frame.left;
                 centerY += frame.top;
             }
             paintResultPoint.setStyle(Paint.Style.STROKE);
-            paintResultPoint.setColor(pointBorderColor);
-            paintResultPoint.setStrokeWidth(resultPointStrokeWidth);
-            RectF rect0 = new RectF(
-                    centerX - resultPointRadiusCircle,
-                    centerY - resultPointRadiusCircle,
-                    centerX + resultPointRadiusCircle,
-                    centerY + resultPointRadiusCircle);
-            rect0.inset(resultPointStrokeWidth / 2, resultPointStrokeWidth / 2);
-            canvas.drawRoundRect(rect0, resultPointRadiusCorners, resultPointRadiusCorners, paintResultPoint);
-            paintResultPoint.setStyle(Paint.Style.FILL);
-            paintResultPoint.setColor(pointColor);
-            paintResultPoint.setStrokeWidth(0);
-            RectF rect = new RectF(
-                    centerX - resultPointRadiusCircle,
-                    centerY - resultPointRadiusCircle,
-                    centerX + resultPointRadiusCircle,
-                    centerY + resultPointRadiusCircle);
-            rect.inset(resultPointStrokeWidth, resultPointStrokeWidth);
-            canvas.drawRoundRect(rect, resultPointRadiusCorners, resultPointRadiusCorners, paintResultPoint);
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setCornerRadius(resultPointRadiusCorners);
+            gradientDrawable.setStroke(resultPointStrokeWidth, resultPointStrokeColor);
+            gradientDrawable.setColor(resultPointColor);
+            gradientDrawable.setSize(resultPointWithdHeight, resultPointWithdHeight);
+            Bitmap bitmap = drawableToBitmap(gradientDrawable);
+            if (bitmap != null) {
+                canvas.drawBitmap(bitmap, centerX, centerY, paintResultPoint);
+            }
         }
     }
 
+    public Bitmap drawableToBitmap(Drawable drawable) {
+        // 取 drawable 的长宽
+        int w = drawable.getIntrinsicWidth();
+        int h = drawable.getIntrinsicHeight();
+
+        // 取 drawable 的颜色格式
+        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565;
+        // 建立对应 bitmap
+        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+        // 建立对应 bitmap 的画布
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, w, h);
+        // 把 drawable 内容画到画布中
+        drawable.draw(canvas);
+        return bitmap;
+    }
 
 }

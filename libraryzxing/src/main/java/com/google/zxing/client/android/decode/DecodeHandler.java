@@ -34,6 +34,7 @@ import com.google.zxing.client.android.view.ScanSurfaceView;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.Map;
 
 public class DecodeHandler extends Handler {
@@ -42,12 +43,12 @@ public class DecodeHandler extends Handler {
 
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
-    private ScanSurfaceView scanSurfaceView;
+    private WeakReference<ScanSurfaceView> mSurfaceViewRef;
 
-    public DecodeHandler(ScanSurfaceView scanSurfaceView, Map<DecodeHintType, Object> hints) {
+    public DecodeHandler(WeakReference<ScanSurfaceView> mSurfaceViewRef, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
-        this.scanSurfaceView = scanSurfaceView;
+        this.mSurfaceViewRef = mSurfaceViewRef;
     }
 
     @Override
@@ -88,7 +89,10 @@ public class DecodeHandler extends Handler {
             }
             data = rotatedData;
         }
-
+        ScanSurfaceView scanSurfaceView = mSurfaceViewRef.get();
+        if (scanSurfaceView == null) {
+            return;
+        }
         Result rawResult = null;
         PlanarYUVLuminanceSource source = scanSurfaceView.getCameraManager().buildLuminanceSource(data, width, height);
         if (source != null) {

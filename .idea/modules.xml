@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MNZXingCode.iml" filepath="$PROJECT_DIR$/MNZXingCode.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraryzxing/libraryzxing.iml" filepath="$PROJECT_DIR$/libraryzxing/libraryzxing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MNZXingCode.iml" filepath="$PROJECT_DIR$/MNZXingCode.iml" group="MNZXingCode" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MNZXingCode/app" />
+      <module fileurl="file://$PROJECT_DIR$/libraryzxing/libraryzxing.iml" filepath="$PROJECT_DIR$/libraryzxing/libraryzxing.iml" group="MNZXingCode/libraryzxing" />
     </modules>
   </component>
 </project>

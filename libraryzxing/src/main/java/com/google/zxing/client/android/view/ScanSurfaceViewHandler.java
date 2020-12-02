@@ -39,9 +39,9 @@ import java.util.Map;
  */
 public final class ScanSurfaceViewHandler extends Handler {
 
-    private final DecodeThread decodeThread;
+    private DecodeThread decodeThread;
     private State state;
-    private final CameraManager cameraManager;
+    private CameraManager cameraManager;
     private ScanSurfaceView scanSurfaceView;
 
     private enum State {
@@ -116,6 +116,13 @@ public final class ScanSurfaceViewHandler extends Handler {
             cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
             scanSurfaceView.getViewfinderView().drawViewfinder();
         }
+    }
+
+    public void destroyView() {
+        removeCallbacksAndMessages(null);
+        scanSurfaceView = null;
+        decodeThread.destroyView();
+        decodeThread = null;
     }
 
 }

@@ -526,4 +526,13 @@ public final class ViewfinderView extends View {
         return bitmap;
     }
 
+    public void destroyView(){
+        if(anim != null){
+            anim.removeAllUpdateListeners();
+            anim.cancel();
+            anim.end();
+            anim = null;
+        }
+    }
+
 }

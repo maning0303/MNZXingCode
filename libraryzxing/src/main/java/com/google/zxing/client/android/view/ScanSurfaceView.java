@@ -196,7 +196,25 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         if (inactivityTimer != null) {
             inactivityTimer.shutdown();
         }
+        if (scanSurfaceViewHandler != null) {
+            scanSurfaceViewHandler.destroyView();
+        }
+        if(cameraManager != null){
+            cameraManager.stopPreview();
+        }
+        if(viewfinderView != null){
+            viewfinderView.destroyView();
+        }
         scanConfig = null;
+        inactivityTimer = null;
+        scanSurfaceViewHandler = null;
+        onScanCallback = null;
+        beepManager = null;
+        cameraManager = null;
+        viewfinderView = null;
+        surfaceView = null;
+        decodeFormats = null;
+
     }
 
 

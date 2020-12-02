@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -81,6 +82,8 @@ public final class ViewfinderView extends View {
     private int cornerLineW;
     private int gridColumn;
     private int gridHeight;
+
+    private Canvas canvas;
 
     //扫描线风格：0线，1网格
     private MNScanConfig.LaserStyle laserStyle = MNScanConfig.LaserStyle.Line;
@@ -456,6 +459,14 @@ public final class ViewfinderView extends View {
     public void setResultPoint(Result result, float scaleFactor) {
         this.resultPoint = result;
         this.scaleFactor = scaleFactor;
+        postInvalidate();
+    }
+
+    public void cleanCanvas(){
+        resultPoint = null;
+        if(canvas != null){
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        }
         postInvalidate();
     }
 

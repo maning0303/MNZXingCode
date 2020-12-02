@@ -37,11 +37,12 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     private BeepManager beepManager;
     private OnScanCallback onScanCallback;
     private ScanSurfaceViewHandler scanSurfaceViewHandler;
+    private ZoomControllerView zoomControllerView;
+
     private Collection<BarcodeFormat> decodeFormats;
     private String characterSet;
-    private boolean hasScanComplete = false;
+    private boolean flagStop = false;
     private boolean hasSurface = false;
-    private ZoomControllerView zoomControllerView;
 
     public ScanSurfaceView(Context context) {
         this(context, null);
@@ -106,16 +107,30 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-        if (hasScanComplete) {
+        if (flagStop) {
             return;
         }
-        hasScanComplete = true;
+        flagStop = true;
         beepManager.playBeepSoundAndVibrate();
         viewfinderView.setResultPoint(rawResult, scaleFactor);
         //结果返回
         if (onScanCallback != null) {
             onScanCallback.onScanSuccess(rawResult.getText(), barcode);
         }
+    }
+
+    public void stopScan() {
+        flagStop = true;
+        cameraManager.stopPreview();
+        onPause();
+    }
+
+    public void restartScan() {
+        stopScan();
+        flagStop = false;
+        cameraManager.startPreview();
+        viewfinderView.cleanCanvas();
+        onResume();
     }
 
     public void onPause() {
@@ -126,6 +141,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         inactivityTimer.onPause();
         beepManager.close();
         cameraManager.closeDriver();
+        zoomControllerView.setVisibility(View.GONE);
         //historyManager = null; // Keep for onActivityResult
         if (!hasSurface) {
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -141,6 +157,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
 
         viewfinderView.setCameraManager(cameraManager);
         viewfinderView.setVisibility(View.VISIBLE);
+        zoomControllerView.setVisibility(View.VISIBLE);
 
         beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());
 
@@ -199,10 +216,10 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         if (scanSurfaceViewHandler != null) {
             scanSurfaceViewHandler.destroyView();
         }
-        if(cameraManager != null){
+        if (cameraManager != null) {
             cameraManager.stopPreview();
         }
-        if(viewfinderView != null){
+        if (viewfinderView != null) {
             viewfinderView.destroyView();
         }
         scanConfig = null;

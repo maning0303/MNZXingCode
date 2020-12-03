@@ -120,20 +120,15 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void stopScan() {
-        flagStop = true;
-        cameraManager.stopPreview();
         onPause();
     }
 
     public void restartScan() {
-        stopScan();
-        flagStop = false;
-        cameraManager.startPreview();
-        viewfinderView.cleanCanvas();
         onResume();
     }
 
     public void onPause() {
+        flagStop = true;
         if (scanSurfaceViewHandler != null) {
             scanSurfaceViewHandler.quitSynchronously();
             scanSurfaceViewHandler = null;
@@ -142,6 +137,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         beepManager.close();
         cameraManager.closeDriver();
         zoomControllerView.setVisibility(View.GONE);
+        viewfinderView.cleanCanvas();
         //historyManager = null; // Keep for onActivityResult
         if (!hasSurface) {
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -150,6 +146,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void onResume() {
+        flagStop = false;
+        viewfinderView.cleanCanvas();
         if (scanSurfaceViewHandler != null && cameraManager != null && cameraManager.isOpen()) {
             return;
         }

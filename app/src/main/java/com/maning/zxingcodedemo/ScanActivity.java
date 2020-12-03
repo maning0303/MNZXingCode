@@ -41,7 +41,7 @@ public class ScanActivity extends AppCompatActivity {
                         //重新开启扫描
                         mScanSurfaceView.restartScan();
                     }
-                }, 1000);
+                }, 2000);
 
             }
 

@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.other.MNScanCallback;
@@ -27,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText editText;
     private CheckBox checkbox;
+    private Spinner mSpColorBlack;
+    private Spinner mSpColorWhite;
+    private Spinner mSpMargin;
+
+    private int margin = 0;
+    private int color_black = Color.BLACK;
+    private int color_white = Color.WHITE;
 
 
     @Override
@@ -43,6 +54,73 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         editText = (EditText) findViewById(R.id.editText);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
+        mSpColorBlack = (Spinner) findViewById(R.id.sp_color_black);
+        mSpColorWhite = (Spinner) findViewById(R.id.sp_color_white);
+        mSpMargin = (Spinner) findViewById(R.id.sp_margin);
+        mSpMargin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                margin = Integer.parseInt(getResources().getStringArray(R.array.spinarr_margin)[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mSpColorBlack.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String str_color_black = getResources().getStringArray(R.array.spinarr_color_black)[position];
+                if (str_color_black.equals("黑色")) {
+                    color_black = Color.BLACK;
+                } else if (str_color_black.equals("白色")) {
+                    color_black = Color.WHITE;
+                } else if (str_color_black.equals("蓝色")) {
+                    color_black = Color.BLUE;
+                } else if (str_color_black.equals("绿色")) {
+                    color_black = Color.GREEN;
+                } else if (str_color_black.equals("黄色")) {
+                    color_black = Color.YELLOW;
+                } else if (str_color_black.equals("红色")) {
+                    color_black = Color.RED;
+                } else {
+                    color_black = Color.BLACK;
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        mSpColorWhite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String str_color_white = getResources().getStringArray(R.array.spinarr_color_white)[position];
+                if (str_color_white.equals("黑色")) {
+                    color_white = Color.BLACK;
+                } else if (str_color_white.equals("白色")) {
+                    color_white = Color.WHITE;
+                } else if (str_color_white.equals("蓝色")) {
+                    color_white = Color.BLUE;
+                } else if (str_color_white.equals("绿色")) {
+                    color_white = Color.GREEN;
+                } else if (str_color_white.equals("黄色")) {
+                    color_white = Color.YELLOW;
+                } else if (str_color_white.equals("红色")) {
+                    color_white = Color.RED;
+                } else {
+                    color_white = Color.WHITE;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     public void requestCameraPerm() {
@@ -77,13 +155,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Bitmap qrImage;
+        Bitmap logo = null;
         if (checkbox.isChecked()) {
-            Bitmap logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            qrImage = ZXingUtils.createQRCodeWithLogo(str, logo);
-        } else {
-            qrImage = ZXingUtils.createQRImage(str);
+            logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         }
-
+        qrImage = ZXingUtils.createQRCodeImage(str, 500, margin, color_black, color_white, logo);
         if (qrImage != null) {
             imageView.setImageBitmap(qrImage);
         } else {

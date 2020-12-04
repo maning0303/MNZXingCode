@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinarr_error_correction">
+        <item>H</item>
+        <item>Q</item>
+        <item>M </item>
+        <item>L </item>
+    </string-array>
+
+    <string-array name="spinarr_margin">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="spinarr_color_black">
+        <item>黑色</item>
+        <item>白色</item>
+        <item>蓝色</item>
+        <item>绿色</item>
+        <item>黄色</item>
+        <item>红色</item>
+    </string-array>
+
+    <string-array name="spinarr_color_white">
+        <item>白色</item>
+        <item>黑色</item>
+        <item>蓝色</item>
+        <item>绿色</item>
+        <item>黄色</item>
+        <item>红色</item>
+    </string-array>
+</resources>

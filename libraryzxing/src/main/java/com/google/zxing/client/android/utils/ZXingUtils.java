@@ -1,12 +1,9 @@
 package com.google.zxing.client.android.utils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.net.Uri;
-import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -20,9 +17,6 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -63,122 +57,106 @@ public class ZXingUtils {
         HINTS.put(DecodeHintType.CHARACTER_SET, "utf-8");
     }
 
-    /**
-     * 生成二维码，默认大小为500*500
-     *
-     * @param text 需要生成二维码的文字、网址等
-     * @return bitmap
-     */
-    public static Bitmap createQRImage(String text) {
-        return createQRImage(text, 500);
+    public static Bitmap createQRCodeImage(String content) {
+        return createQRCodeImage(content, 500, 0, Color.BLACK, Color.WHITE, null);
     }
 
-    //要转换的地址或字符串,可以是中文
-    public static Bitmap createQRImage(String url, int size) {
-        Bitmap resultBitmap = null;
-        try {
-            //判断URL合法性
-            if (url == null || "".equals(url) || url.length() < 1) {
-                return null;
-            }
-            Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
-            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-            hints.put(EncodeHintType.MARGIN, 0);  //边距
-            //图像数据转换，使用了矩阵转换
-            BitMatrix bitMatrix = new QRCodeWriter().encode(url, BarcodeFormat.QR_CODE, size, size, hints);
-
-            int[] pixels = new int[size * size];
-            //下面这里按照二维码的算法，逐个生成二维码的图片，
-            //两个for循环是图片横列扫描的结果
-            for (int y = 0; y < size; y++) {
-                for (int x = 0; x < size; x++) {
-                    if (bitMatrix.get(x, y)) {
-                        pixels[y * size + x] = 0xff000000;
-                    } else {
-                        pixels[y * size + x] = 0xffffffff;
-                    }
-                }
-            }
-            //生成二维码图片的格式，使用ARGB_8888
-            Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
-            resultBitmap = bitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultBitmap;
+    public static Bitmap createQRCodeImage(String content, int size) {
+        return createQRCodeImage(content, size, 0, Color.BLACK, Color.WHITE, null);
     }
 
-    /**
-     * 生成带logo的二维码，默认二维码的大小为500，logo为二维码的1/5
-     *
-     * @param text    需要生成二维码的文字、网址等
-     * @param mBitmap logo文件
-     * @return bitmap
-     */
-    public static Bitmap createQRCodeWithLogo(String text, Bitmap mBitmap) {
-        return createQRCodeWithLogo(text, 500, mBitmap);
+    public static Bitmap createQRCodeImage(String content, int size, int margin) {
+        return createQRCodeImage(content, size, margin, Color.BLACK, Color.WHITE, null);
+    }
+
+    public static Bitmap createQRCodeImage(String text, Bitmap mLogoBitmap) {
+        return createQRCodeImage(text, 500, 0, Color.BLACK, Color.WHITE, mLogoBitmap);
+    }
+
+    public static Bitmap createQRCodeImage(String text, int size, Bitmap mLogoBitmap) {
+        return createQRCodeImage(text, size, 0, Color.BLACK, Color.WHITE, mLogoBitmap);
+    }
+
+
+    public static Bitmap createQRCodeImage(String text, int size, int margin, Bitmap mLogoBitmap) {
+        return createQRCodeImage(text, size, margin, Color.BLACK, Color.WHITE, mLogoBitmap);
     }
 
     /**
      * 生成带logo的二维码，logo默认为二维码的1/5
      *
-     * @param text    需要生成二维码的文字、网址等
-     * @param size    需要生成二维码的大小（）
-     * @param mBitmap logo文件
+     * @param text        需要生成二维码的内容
+     * @param size        需要生成二维码的大小
+     * @param margin      二维码边距
+     * @param black_color 二维码颜色
+     * @param white_color 二维码背景颜色
+     * @param mLogoBitmap logo文件
      * @return bitmap
      */
-    public static Bitmap createQRCodeWithLogo(String text, int size, Bitmap mBitmap) {
+    public static Bitmap createQRCodeImage(String text, int size, int margin, int black_color, int white_color, Bitmap mLogoBitmap) {
         try {
             int IMAGE_HALFWIDTH = size / 10;
             Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
-            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-            hints.put(EncodeHintType.MARGIN, 0);  //边距
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.MARGIN, Math.max(margin, 0));
             /*
              * 设置容错级别，默认为ErrorCorrectionLevel.L
              * 因为中间加入logo所以建议你把容错级别调至H,否则可能会出现识别不了
              */
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            if (mLogoBitmap != null) {
+                hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            } else {
+                hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+            }
 
             BitMatrix bitMatrix = new QRCodeWriter().encode(text,
                     BarcodeFormat.QR_CODE, size, size, hints);
 
-            int width = bitMatrix.getWidth();//矩阵高度
-            int height = bitMatrix.getHeight();//矩阵宽度
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
             int halfW = width / 2;
             int halfH = height / 2;
 
-            Matrix m = new Matrix();
-            float sx = (float) 2 * IMAGE_HALFWIDTH / mBitmap.getWidth();
-            float sy = (float) 2 * IMAGE_HALFWIDTH
-                    / mBitmap.getHeight();
-            m.setScale(sx, sy);
-            //设置缩放信息
-            //将logo图片按martix设置的信息缩放
-            mBitmap = Bitmap.createBitmap(mBitmap, 0, 0,
-                    mBitmap.getWidth(), mBitmap.getHeight(), m, false);
+            if (mLogoBitmap != null) {
+                Matrix m = new Matrix();
+                float sx = (float) 2 * IMAGE_HALFWIDTH / mLogoBitmap.getWidth();
+                float sy = (float) 2 * IMAGE_HALFWIDTH / mLogoBitmap.getHeight();
+                m.setScale(sx, sy);
+                //设置缩放信息
+                //将logo图片按martix设置的信息缩放
+                mLogoBitmap = Bitmap.createBitmap(mLogoBitmap, 0, 0,
+                        mLogoBitmap.getWidth(), mLogoBitmap.getHeight(), m, false);
+            }
 
             int[] pixels = new int[size * size];
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
-                    if (x > halfW - IMAGE_HALFWIDTH && x < halfW + IMAGE_HALFWIDTH
-                            && y > halfH - IMAGE_HALFWIDTH
-                            && y < halfH + IMAGE_HALFWIDTH) {
-                        //该位置用于存放图片信息
-                        //记录图片每个像素信息
-                        pixels[y * width + x] = mBitmap.getPixel(x - halfW
-                                + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
+                    if (mLogoBitmap != null) {
+                        if (x > halfW - IMAGE_HALFWIDTH && x < halfW + IMAGE_HALFWIDTH
+                                && y > halfH - IMAGE_HALFWIDTH
+                                && y < halfH + IMAGE_HALFWIDTH) {
+                            //该位置用于存放图片信息
+                            //记录图片每个像素信息
+                            pixels[y * width + x] = mLogoBitmap.getPixel(x - halfW
+                                    + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
+                        } else {
+                            if (bitMatrix.get(x, y)) {
+                                pixels[y * size + x] = black_color;
+                            } else {
+                                pixels[y * size + x] = white_color;
+                            }
+                        }
                     } else {
                         if (bitMatrix.get(x, y)) {
-                            pixels[y * size + x] = 0xff000000;
+                            pixels[y * size + x] = black_color;
                         } else {
-                            pixels[y * size + x] = 0xffffffff;
+                            pixels[y * size + x] = white_color;
                         }
                     }
+
                 }
             }
-            Bitmap bitmap = Bitmap.createBitmap(size, size,
-                    Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
             return bitmap;
         } catch (WriterException e) {
@@ -269,4 +247,5 @@ public class ZXingUtils {
         }
         return formart;
     }
+
 }

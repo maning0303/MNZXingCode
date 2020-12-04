@@ -63,7 +63,8 @@
                 android:id="@+id/editText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8" />
+                android:layout_weight="0.8"
+                android:hint="输入要生成二维码的文本" />
 
             <CheckBox
                 android:id="@+id/checkbox"
@@ -71,6 +72,56 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
                 android:text="Logo" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="前景色：" />
+
+            <Spinner
+                android:id="@+id/sp_color_black"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/spinarr_color_black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="背景色：" />
+
+            <Spinner
+                android:id="@+id/sp_color_white"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/spinarr_color_white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="边距：" />
+
+            <Spinner
+                android:id="@+id/sp_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/spinarr_margin" />
 
         </LinearLayout>
 

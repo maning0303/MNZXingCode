@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="spinarr_error_correction">
-        <item>H</item>
-        <item>Q</item>
-        <item>M </item>
         <item>L </item>
+        <item>M </item>
+        <item>Q</item>
+        <item>H</item>
     </string-array>
 
     <string-array name="spinarr_margin">

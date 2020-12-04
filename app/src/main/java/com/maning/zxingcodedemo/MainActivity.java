@@ -35,9 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private Spinner mSpColorWhite;
     private Spinner mSpMargin;
 
+    private String error_correction_level;
     private int margin = 0;
     private int color_black = Color.BLACK;
     private int color_white = Color.WHITE;
+    private Spinner mSpErrorCorrectionLevel;
 
 
     @Override
@@ -121,6 +123,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        mSpErrorCorrectionLevel = (Spinner) findViewById(R.id.sp_error_correction_level);
+        mSpErrorCorrectionLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                error_correction_level = getResources().getStringArray(R.array.spinarr_error_correction)[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     public void requestCameraPerm() {
@@ -159,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         if (checkbox.isChecked()) {
             logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         }
-        qrImage = ZXingUtils.createQRCodeImage(str, 500, margin, color_black, color_white, logo);
+        qrImage = ZXingUtils.createQRCodeImage(str, 500, margin, color_black, color_white, error_correction_level, logo);
         if (qrImage != null) {
             imageView.setImageBitmap(qrImage);
         } else {

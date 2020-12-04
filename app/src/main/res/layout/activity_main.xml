@@ -123,6 +123,19 @@
                 android:layout_height="match_parent"
                 android:entries="@array/spinarr_margin" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="容错率：" />
+
+            <Spinner
+                android:id="@+id/sp_error_correction_level"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/spinarr_error_correction" />
+
         </LinearLayout>
 
         <ImageView

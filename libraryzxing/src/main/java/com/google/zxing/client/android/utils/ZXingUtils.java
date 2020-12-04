@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.text.TextUtils;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -58,42 +59,43 @@ public class ZXingUtils {
     }
 
     public static Bitmap createQRCodeImage(String content) {
-        return createQRCodeImage(content, 500, 0, Color.BLACK, Color.WHITE, null);
+        return createQRCodeImage(content, 500, 0, Color.BLACK, Color.WHITE, null, null);
     }
 
     public static Bitmap createQRCodeImage(String content, int size) {
-        return createQRCodeImage(content, size, 0, Color.BLACK, Color.WHITE, null);
+        return createQRCodeImage(content, size, 0, Color.BLACK, Color.WHITE, null, null);
     }
 
     public static Bitmap createQRCodeImage(String content, int size, int margin) {
-        return createQRCodeImage(content, size, margin, Color.BLACK, Color.WHITE, null);
+        return createQRCodeImage(content, size, margin, Color.BLACK, Color.WHITE, null, null);
     }
 
-    public static Bitmap createQRCodeImage(String text, Bitmap mLogoBitmap) {
-        return createQRCodeImage(text, 500, 0, Color.BLACK, Color.WHITE, mLogoBitmap);
+    public static Bitmap createQRCodeImage(String text, Bitmap logo_bitmap) {
+        return createQRCodeImage(text, 500, 0, Color.BLACK, Color.WHITE, null, logo_bitmap);
     }
 
-    public static Bitmap createQRCodeImage(String text, int size, Bitmap mLogoBitmap) {
-        return createQRCodeImage(text, size, 0, Color.BLACK, Color.WHITE, mLogoBitmap);
+    public static Bitmap createQRCodeImage(String text, int size, Bitmap logo_bitmap) {
+        return createQRCodeImage(text, size, 0, Color.BLACK, Color.WHITE, null, logo_bitmap);
     }
 
 
-    public static Bitmap createQRCodeImage(String text, int size, int margin, Bitmap mLogoBitmap) {
-        return createQRCodeImage(text, size, margin, Color.BLACK, Color.WHITE, mLogoBitmap);
+    public static Bitmap createQRCodeImage(String text, int size, int margin, Bitmap logo_bitmap) {
+        return createQRCodeImage(text, size, margin, Color.BLACK, Color.WHITE, null, logo_bitmap);
     }
 
     /**
      * 生成带logo的二维码，logo默认为二维码的1/5
      *
-     * @param text        需要生成二维码的内容
-     * @param size        需要生成二维码的大小
-     * @param margin      二维码边距
-     * @param black_color 二维码颜色
-     * @param white_color 二维码背景颜色
-     * @param mLogoBitmap logo文件
+     * @param text                   需要生成二维码的内容
+     * @param size                   需要生成二维码的大小
+     * @param margin                 二维码边距
+     * @param black_color            二维码颜色
+     * @param white_color            二维码背景颜色
+     * @param error_correction_level 容错率 L：7% M：15% Q：25% H：35%
+     * @param logo_bitmap            logo文件
      * @return bitmap
      */
-    public static Bitmap createQRCodeImage(String text, int size, int margin, int black_color, int white_color, Bitmap mLogoBitmap) {
+    public static Bitmap createQRCodeImage(String text, int size, int margin, int black_color, int white_color, String error_correction_level, Bitmap logo_bitmap) {
         try {
             int IMAGE_HALFWIDTH = size / 10;
             Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
@@ -103,11 +105,16 @@ public class ZXingUtils {
              * 设置容错级别，默认为ErrorCorrectionLevel.L
              * 因为中间加入logo所以建议你把容错级别调至H,否则可能会出现识别不了
              */
-            if (mLogoBitmap != null) {
-                hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            if (TextUtils.isEmpty(error_correction_level)) {
+                if (logo_bitmap != null) {
+                    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+                } else {
+                    hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+                }
             } else {
-                hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+                hints.put(EncodeHintType.ERROR_CORRECTION, error_correction_level);
             }
+
 
             BitMatrix bitMatrix = new QRCodeWriter().encode(text,
                     BarcodeFormat.QR_CODE, size, size, hints);
@@ -117,27 +124,27 @@ public class ZXingUtils {
             int halfW = width / 2;
             int halfH = height / 2;
 
-            if (mLogoBitmap != null) {
+            if (logo_bitmap != null) {
                 Matrix m = new Matrix();
-                float sx = (float) 2 * IMAGE_HALFWIDTH / mLogoBitmap.getWidth();
-                float sy = (float) 2 * IMAGE_HALFWIDTH / mLogoBitmap.getHeight();
+                float sx = (float) 2 * IMAGE_HALFWIDTH / logo_bitmap.getWidth();
+                float sy = (float) 2 * IMAGE_HALFWIDTH / logo_bitmap.getHeight();
                 m.setScale(sx, sy);
                 //设置缩放信息
                 //将logo图片按martix设置的信息缩放
-                mLogoBitmap = Bitmap.createBitmap(mLogoBitmap, 0, 0,
-                        mLogoBitmap.getWidth(), mLogoBitmap.getHeight(), m, false);
+                logo_bitmap = Bitmap.createBitmap(logo_bitmap, 0, 0,
+                        logo_bitmap.getWidth(), logo_bitmap.getHeight(), m, false);
             }
 
             int[] pixels = new int[size * size];
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
-                    if (mLogoBitmap != null) {
+                    if (logo_bitmap != null) {
                         if (x > halfW - IMAGE_HALFWIDTH && x < halfW + IMAGE_HALFWIDTH
                                 && y > halfH - IMAGE_HALFWIDTH
                                 && y < halfH + IMAGE_HALFWIDTH) {
                             //该位置用于存放图片信息
                             //记录图片每个像素信息
-                            pixels[y * width + x] = mLogoBitmap.getPixel(x - halfW
+                            pixels[y * width + x] = logo_bitmap.getPixel(x - halfW
                                     + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
                         } else {
                             if (bitMatrix.get(x, y)) {

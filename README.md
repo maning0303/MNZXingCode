@@ -10,6 +10,7 @@
     4：闪光灯开关
     5: 相机可以调整焦距放大缩小
     6: 完全自定义遮罩层
+    7: 自定义Activity
 
 ## 截图:
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpg)
@@ -23,6 +24,9 @@
 
 #### 完全自定义遮罩层
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
+
+#### 自定义Activity
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_005.jpg)
 
 ## 如何添加
 ### Gradle添加：
@@ -204,8 +208,20 @@
             }
 
         3：生成二维码：
-        	Bitmap qrImage = ZXingUtils.createQRImage("xxxxxx");
-        	Bitmap qrImage = ZXingUtils.createQRCodeWithLogo("xxxxxx", logoBitmap);
+        	Bitmap qrImage = ZXingUtils.createQRCodeImage("xxxxxx");
+            /**
+             * 生成带logo的二维码，logo默认为二维码的1/5
+             *
+             * @param text                   需要生成二维码的内容
+             * @param size                   需要生成二维码的大小
+             * @param margin                 二维码边距
+             * @param black_color            二维码颜色
+             * @param white_color            二维码背景颜色
+             * @param error_correction_level 容错率 L：7% M：15% Q：25% H：35%
+             * @param logo_bitmap            logo文件
+             * @return bitmap
+             */
+            public static Bitmap createQRCodeImage(String text, int size, int margin, int black_color, int white_color, String error_correction_level, Bitmap logo_bitmap) ;
         	
         4：解析图片中的二维码：
         	String code = ZXingUtils.syncDecodeQRCode(String picturePath);

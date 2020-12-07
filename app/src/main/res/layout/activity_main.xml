@@ -61,17 +61,32 @@
 
             <EditText
                 android:id="@+id/editText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:hint="输入要生成二维码的文本" />
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="输入要生成二维码的文本"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/checkbox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:text="Logo" />
+                android:layout_weight="1"
+                android:text="中间Logo" />
+
+            <CheckBox
+                android:id="@+id/checkbox2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="图片替代二维码" />
 
         </LinearLayout>
 

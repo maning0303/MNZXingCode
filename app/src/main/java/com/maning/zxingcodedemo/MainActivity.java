@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText editText;
     private CheckBox checkbox;
+    private CheckBox checkbox2;
     private Spinner mSpColorBlack;
     private Spinner mSpColorWhite;
     private Spinner mSpMargin;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
         editText = (EditText) findViewById(R.id.editText);
         checkbox = (CheckBox) findViewById(R.id.checkbox);
+        checkbox2 = (CheckBox) findViewById(R.id.checkbox2);
         mSpColorBlack = (Spinner) findViewById(R.id.sp_color_black);
         mSpColorWhite = (Spinner) findViewById(R.id.sp_color_white);
         mSpMargin = (Spinner) findViewById(R.id.sp_margin);
@@ -168,12 +170,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Bitmap qrImage;
+        Bitmap qrImage = null;
         Bitmap logo = null;
+        Bitmap foreground_bitmap = null;
         if (checkbox.isChecked()) {
             logo = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         }
-        qrImage = ZXingUtils.createQRCodeImage(str, 500, margin, color_black, color_white, error_correction_level, logo);
+        if (checkbox2.isChecked()) {
+            foreground_bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.tmp);
+        }
+        qrImage = ZXingUtils.createQRCodeImage(str, 500, margin, color_black, color_white, error_correction_level, logo, foreground_bitmap);
         if (qrImage != null) {
             imageView.setImageBitmap(qrImage);
         } else {

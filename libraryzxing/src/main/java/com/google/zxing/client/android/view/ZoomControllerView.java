@@ -291,6 +291,26 @@ public class ZoomControllerView extends FrameLayout implements View.OnTouchListe
                 }
             }
         }
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            float distanceX = moveX - startX;
+            float distanceY = moveY - startY;
+            if (Math.abs(distanceX) < 10 && Math.abs(distanceY) < 10) {
+                //处理点击事件
+                if (onSingleClickListener != null) {
+                    onSingleClickListener.onSingleClick(this);
+                }
+            }
+        }
         return true;
+    }
+
+    private OnSingleClickListener onSingleClickListener;
+
+    public interface OnSingleClickListener {
+        void onSingleClick(View view);
+    }
+
+    public void setOnSingleClickListener(OnSingleClickListener onSingleClickListener) {
+        this.onSingleClickListener = onSingleClickListener;
     }
 }

@@ -59,28 +59,28 @@ public class ZXingUtils {
     }
 
     public static Bitmap createQRCodeImage(String content) {
-        return createQRCodeImage(content, 500, 0, Color.BLACK, Color.WHITE, null, null);
+        return createQRCodeImage(content, 500, 0, Color.BLACK, Color.WHITE, null, null, null);
     }
 
     public static Bitmap createQRCodeImage(String content, int size) {
-        return createQRCodeImage(content, size, 0, Color.BLACK, Color.WHITE, null, null);
+        return createQRCodeImage(content, size, 0, Color.BLACK, Color.WHITE, null, null, null);
     }
 
     public static Bitmap createQRCodeImage(String content, int size, int margin) {
-        return createQRCodeImage(content, size, margin, Color.BLACK, Color.WHITE, null, null);
+        return createQRCodeImage(content, size, margin, Color.BLACK, Color.WHITE, null, null, null);
     }
 
     public static Bitmap createQRCodeImage(String text, Bitmap logo_bitmap) {
-        return createQRCodeImage(text, 500, 0, Color.BLACK, Color.WHITE, null, logo_bitmap);
+        return createQRCodeImage(text, 500, 0, Color.BLACK, Color.WHITE, null, logo_bitmap, null);
     }
 
     public static Bitmap createQRCodeImage(String text, int size, Bitmap logo_bitmap) {
-        return createQRCodeImage(text, size, 0, Color.BLACK, Color.WHITE, null, logo_bitmap);
+        return createQRCodeImage(text, size, 0, Color.BLACK, Color.WHITE, null, logo_bitmap, null);
     }
 
 
     public static Bitmap createQRCodeImage(String text, int size, int margin, Bitmap logo_bitmap) {
-        return createQRCodeImage(text, size, margin, Color.BLACK, Color.WHITE, null, logo_bitmap);
+        return createQRCodeImage(text, size, margin, Color.BLACK, Color.WHITE, null, logo_bitmap, null);
     }
 
     /**
@@ -89,13 +89,30 @@ public class ZXingUtils {
      * @param text                   需要生成二维码的内容
      * @param size                   需要生成二维码的大小
      * @param margin                 二维码边距
-     * @param black_color            二维码颜色
-     * @param white_color            二维码背景颜色
+     * @param foreground_color       二维码前景色
+     * @param background_color       二维码背景颜色
      * @param error_correction_level 容错率 L：7% M：15% Q：25% H：35%
      * @param logo_bitmap            logo文件
      * @return bitmap
      */
-    public static Bitmap createQRCodeImage(String text, int size, int margin, int black_color, int white_color, String error_correction_level, Bitmap logo_bitmap) {
+    public static Bitmap createQRCodeImage(String text, int size, int margin, int foreground_color, int background_color, String error_correction_level, Bitmap logo_bitmap) {
+        return createQRCodeImage(text, size, margin, foreground_color, background_color, error_correction_level, logo_bitmap, null);
+    }
+
+    /**
+     * 生成带logo的二维码，logo默认为二维码的1/5
+     *
+     * @param text                   需要生成二维码的内容
+     * @param size                   需要生成二维码的大小
+     * @param margin                 二维码边距
+     * @param foreground_color       二维码前景色
+     * @param background_color       二维码背景颜色
+     * @param error_correction_level 容错率 L：7% M：15% Q：25% H：35%
+     * @param logo_bitmap            logo文件
+     * @param logo_bitmap            二维码前景图片，不建议使用（可能太花识别率会降低）
+     * @return bitmap
+     */
+    public static Bitmap createQRCodeImage(String text, int size, int margin, int foreground_color, int background_color, String error_correction_level, Bitmap logo_bitmap, Bitmap foreground_bitmap) {
         try {
             int IMAGE_HALFWIDTH = size / 10;
             Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
@@ -134,6 +151,10 @@ public class ZXingUtils {
                 logo_bitmap = Bitmap.createBitmap(logo_bitmap, 0, 0,
                         logo_bitmap.getWidth(), logo_bitmap.getHeight(), m, false);
             }
+            if (foreground_bitmap != null) {
+                //从当前位图按一定的比例创建一个新的位图
+                foreground_bitmap = Bitmap.createScaledBitmap(foreground_bitmap, width, height, false);
+            }
 
             int[] pixels = new int[size * size];
             for (int y = 0; y < size; y++) {
@@ -148,16 +169,24 @@ public class ZXingUtils {
                                     + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
                         } else {
                             if (bitMatrix.get(x, y)) {
-                                pixels[y * size + x] = black_color;
+                                if (foreground_bitmap != null) {
+                                    pixels[y * width + x] = foreground_bitmap.getPixel(x, y);
+                                } else {
+                                    pixels[y * width + x] = foreground_color;
+                                }
                             } else {
-                                pixels[y * size + x] = white_color;
+                                pixels[y * size + x] = background_color;
                             }
                         }
                     } else {
                         if (bitMatrix.get(x, y)) {
-                            pixels[y * size + x] = black_color;
+                            if (foreground_bitmap != null) {
+                                pixels[y * width + x] = foreground_bitmap.getPixel(x, y);
+                            } else {
+                                pixels[y * width + x] = foreground_color;
+                            }
                         } else {
-                            pixels[y * size + x] = white_color;
+                            pixels[y * size + x] = background_color;
                         }
                     }
 

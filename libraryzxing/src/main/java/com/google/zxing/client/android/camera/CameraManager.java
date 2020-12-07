@@ -41,8 +41,7 @@ import java.io.IOException;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-@SuppressWarnings("deprecation") // camera APIs
-public final class CameraManager {
+public class CameraManager {
 
     private static final String TAG = CameraManager.class.getSimpleName();
 
@@ -415,4 +414,7 @@ public final class CameraManager {
 
     }
 
+    public Camera getCamera() {
+        return camera.getCamera();
+    }
 }

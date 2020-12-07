@@ -3,6 +3,7 @@ package com.google.zxing.client.android.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,6 +64,28 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         viewfinderView = view.findViewById(R.id.viewfinder_view);
         zoomControllerView = view.findViewById(R.id.zoom_controller_view);
 
+        //点击强行更新相机聚焦
+//        zoomControllerView.setOnSingleClickListener(new ZoomControllerView.OnSingleClickListener() {
+//            @Override
+//            public void onSingleClick(View view) {
+//                Log.i(">>>>>>>>", "zoomControllerView.setOnSingleClickListener");
+//                if (cameraManager != null && hasSurface) {
+//                    Camera camera = cameraManager.getCamera();
+//                    if (camera != null) {
+//                        camera.autoFocus(new Camera.AutoFocusCallback() {
+//                            @Override
+//                            public void onAutoFocus(boolean success, Camera camera) {
+//                                Log.i(">>>>>>>>", "onAutoFocus:" + success);
+//                                if (!success) {
+//                                    camera.autoFocus(this);//如果失败，自动聚焦
+//                                }
+//                            }
+//                        });
+//
+//                    }
+//                }
+//            }
+//        });
         zoomControllerView.setOnZoomControllerListener(new ZoomControllerView.OnZoomControllerListener() {
             @Override
             public void onZoom(int progress) {

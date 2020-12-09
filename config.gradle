@@ -1,0 +1,42 @@
+/**
+ * 全局统一配置
+ */
+ext {
+
+    /**
+     * 版本统一管理
+     */
+    versions = [
+            versionCode      : 216,                    //版本号
+            versionName      : "2.1.6",              //版本名称
+
+            compileSdkVersion: 28,
+            minSdkVersion    : 14,
+            targetSdkVersion : 28,
+
+    ]
+
+    appId = [
+            "app": "com.maning.zxingcodedemo",
+    ]
+
+    dependenciesGoogle = [
+            annotation      : 'androidx.annotation:annotation:1.1.0',
+            supportv4       : 'androidx.legacy:legacy-support-v4:1.0.0',
+            appcompat       : 'androidx.appcompat:appcompat:1.2.0',
+            design          : 'com.google.android.material:material:1.0.0',
+            recyclerView    : 'androidx.recyclerview:recyclerview:1.0.0',
+            constraintlayout: 'androidx.constraintlayout:constraintlayout:1.1.3',
+            multidex        : 'androidx.multidex:multidex:2.0.0',
+    ]
+
+    dependenciesOther = [
+            //颜色选择器
+            "colorpicker": 'com.github.duanhong169:colorpicker:1.1.6',
+    ]
+
+    dependenciesDebug = [
+            "leakcanary": "com.squareup.leakcanary:leakcanary-android:2.5",
+    ]
+
+}

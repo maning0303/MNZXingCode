@@ -1,12 +1,19 @@
 apply plugin: 'com.android.application'
 
+def versions = rootProject.ext.versions
+def appId = rootProject.ext.appId
+def dependenciesGoogle = rootProject.ext.dependenciesGoogle
+def dependenciesOther = rootProject.ext.dependenciesOther
+
 android {
-    compileSdkVersion 28
+    compileSdkVersion versions.compileSdkVersion
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 215
-        versionName "2.1.5"
+        applicationId appId.app
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        versionCode versions.versionCode
+        versionName versions.versionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -18,14 +25,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // 循环引入库
+    dependenciesGoogle.each { k, v -> api v }
+    dependenciesOther.each { k, v -> api v }
+    dependenciesDebug.each { k, v -> debugImplementation v }
 
-    //颜色选择器
-    implementation 'com.github.duanhong169:colorpicker:1.1.6'
-
-//    implementation 'com.github.maning0303:MNZXingCode:V2.1.5'
+//    implementation 'com.github.maning0303:MNZXingCode:V2.1.6'
     implementation project(':libraryzxing')
 }

@@ -23,7 +23,7 @@
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
 
 #### 完全自定义遮罩层
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_004.jpeg)
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_004.jpg)
 
 #### 自定义Activity
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_005.jpg)

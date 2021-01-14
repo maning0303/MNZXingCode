@@ -32,6 +32,7 @@ import com.google.zxing.Result;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.view.ScanSurfaceView;
 import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.multi.qrcode.QRCodeMultiReader;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -41,13 +42,24 @@ public class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final MultiFormatReader multiFormatReader;
-    private boolean running = true;
     private WeakReference<ScanSurfaceView> mSurfaceViewRef;
+    private boolean running = true;
+    private MultiFormatReader multiFormatReader;
+    private QRCodeMultiReader qrCodeMultiReader;
+    //支持同时扫描多个二维码
+    private boolean needQRCodeMulti = true;
+    private Map<DecodeHintType, Object> hints;
 
     public DecodeHandler(WeakReference<ScanSurfaceView> mSurfaceViewRef, Map<DecodeHintType, Object> hints) {
-        multiFormatReader = new MultiFormatReader();
-        multiFormatReader.setHints(hints);
+        this.hints = hints;
+        if(needQRCodeMulti){
+            //支持多个二维码，但是不支持条形码
+            qrCodeMultiReader = new QRCodeMultiReader();
+        }else{
+            //单个二维码
+            multiFormatReader = new MultiFormatReader();
+            multiFormatReader.setHints(hints);
+        }
         this.mSurfaceViewRef = mSurfaceViewRef;
     }
 
@@ -93,26 +105,45 @@ public class DecodeHandler extends Handler {
         if (scanSurfaceView == null) {
             return;
         }
-        Result rawResult = null;
+        Result[] rawResults = null;
         PlanarYUVLuminanceSource source = scanSurfaceView.getCameraManager().buildLuminanceSource(data, width, height);
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
-                rawResult = multiFormatReader.decodeWithState(bitmap);
-            } catch (ReaderException re) {
+                if (needQRCodeMulti) {
+                    rawResults = qrCodeMultiReader.decodeMultiple(bitmap);
+                } else {
+                    Result[] results = new Result[1];
+                    Result result = multiFormatReader.decodeWithState(bitmap);
+                    results[0] = result;
+                    rawResults = results;
+                }
+                if (rawResults != null) {
+                    Log.e(TAG, "rawResults：" + rawResults.length);
+                    if (rawResults.length > 0) {
+                        for (Result result : rawResults) {
+                            Log.e(TAG, "rawResults---result：" + result.toString());
+                        }
+                    }
+                }
+            } catch (Exception re) {
                 // continue
             } finally {
-                multiFormatReader.reset();
+                if (needQRCodeMulti) {
+                    qrCodeMultiReader.reset();
+                } else {
+                    multiFormatReader.reset();
+                }
             }
         }
 
         Handler handler = scanSurfaceView.getCaptureHandler();
-        if (rawResult != null) {
+        if (rawResults != null && rawResults.length > 0) {
             // Don't log the barcode contents for security.
             long end = System.currentTimeMillis();
             Log.d(TAG, "Found barcode in " + (end - start) + " ms");
             if (handler != null) {
-                Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+                Message message = Message.obtain(handler, R.id.decode_succeeded, rawResults);
                 Bundle bundle = new Bundle();
                 bundleThumbnail(source, bundle);
                 message.setData(bundle);

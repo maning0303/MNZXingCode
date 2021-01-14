@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="#000000">
+
+    <ImageView
+        android:id="@+id/iv_point_bg"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        tools:background="@drawable/mn_scan_result_point_default" />
+
+    <ImageView
+        android:id="@+id/iv_point_arrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/mn_icon_scan_default_result_point_arrow" />
+
+</RelativeLayout>

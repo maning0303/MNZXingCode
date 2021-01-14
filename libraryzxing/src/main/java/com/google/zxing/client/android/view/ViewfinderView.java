@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -34,7 +35,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
@@ -42,6 +46,9 @@ import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
@@ -51,6 +58,7 @@ import com.google.zxing.client.android.utils.CommonUtils;
  */
 public final class ViewfinderView extends View {
 
+    private static final String TAG = "ViewfinderView";
     private Context context;
     private CameraManager cameraManager;
     private final Paint paint;
@@ -62,7 +70,8 @@ public final class ViewfinderView extends View {
     private int maskColor;
     private int laserColor;
 
-    private Result resultPoint;
+    private Result[] resultPoint;
+    private List<Point> resultPointList = new ArrayList<>();
     private float scaleFactor;
     private boolean showResultPoint;
     private int resultPointColor;
@@ -424,7 +433,8 @@ public final class ViewfinderView extends View {
     }
 
 
-    ValueAnimator anim;
+    private ValueAnimator anim;
+    private boolean needAnimation = true;
 
     public void startAnimation() {
         if (anim != null && anim.isRunning()) {
@@ -437,6 +447,9 @@ public final class ViewfinderView extends View {
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
+                if(!needAnimation){
+                    return;
+                }
                 linePosition = (int) animation.getAnimatedValue();
                 try {
                     postInvalidate(
@@ -456,67 +469,76 @@ public final class ViewfinderView extends View {
         postInvalidate();
     }
 
-    public void setResultPoint(Result result, float scaleFactor) {
-        this.resultPoint = result;
+    @Deprecated
+    public void setResultPoint(Result[] results, float scaleFactor) {
+        this.resultPoint = results;
         this.scaleFactor = scaleFactor;
         postInvalidate();
     }
 
-    public void cleanCanvas(){
+    public void cleanCanvas() {
         resultPoint = null;
-        if(canvas != null){
+        if (canvas != null) {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         }
         postInvalidate();
     }
 
+    @Deprecated
     public void drawableResultPoint(Canvas canvas) {
         if (!showResultPoint) {
             return;
         }
-        if (resultPoint == null) {
+        if (resultPoint == null || resultPoint.length == 0) {
             return;
         }
-        ResultPoint[] points = resultPoint.getResultPoints();
-        if (points == null || points.length == 0) {
-            return;
-        }
-        if (points.length == 2 || points.length == 3 || points.length == 4) {
-            //计算右上角点
-            ResultPoint pointRight = points[0];
-            ResultPoint pointBottom = points[0];
-            float maxX = points[0].getX();
-            float maxY = points[0].getY();
-            for (int i = 0; i < points.length; i++) {
-                ResultPoint point = points[i];
-                if (maxX < point.getX()) {
-                    maxX = point.getX();
-                    pointRight = point;
-                }
-                if (maxY < point.getY()) {
-                    maxY = point.getY();
-                    pointBottom = point;
-                }
+        needAnimation = false;
+        resultPointList = new ArrayList<>();
+        for (int i = 0; i < resultPoint.length; i++) {
+            Result result = resultPoint[i];
+            ResultPoint[] points = result.getResultPoints();
+            if (points == null || points.length == 0) {
+                return;
             }
-            int centerX = (int) (pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2);
-            int centerY = (int) (pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2);
-            //判断是不是全屏模式
-            if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
-                centerX += frame.left;
-                centerY += frame.top;
-            }
-            paintResultPoint.setStyle(Paint.Style.STROKE);
+            if (points.length == 2 || points.length == 3 || points.length == 4) {
+                //计算右上角点
+                ResultPoint pointRight = points[0];
+                ResultPoint pointBottom = points[0];
+                float maxX = points[0].getX();
+                float maxY = points[0].getY();
+                for (int j = 0; j < points.length; j++) {
+                    ResultPoint point = points[j];
+                    if (maxX < point.getX()) {
+                        maxX = point.getX();
+                        pointRight = point;
+                    }
+                    if (maxY < point.getY()) {
+                        maxY = point.getY();
+                        pointBottom = point;
+                    }
+                }
+                int centerX = (int) (pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2);
+                int centerY = (int) (pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2);
+                //判断是不是全屏模式
+                if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
+                    centerX += frame.left;
+                    centerY += frame.top;
+                }
+                paintResultPoint.setStyle(Paint.Style.STROKE);
 
-            GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setCornerRadius(resultPointRadiusCorners);
-            gradientDrawable.setStroke(resultPointStrokeWidth, resultPointStrokeColor);
-            gradientDrawable.setColor(resultPointColor);
-            gradientDrawable.setSize(resultPointWithdHeight, resultPointWithdHeight);
-            Bitmap bitmap = drawableToBitmap(gradientDrawable);
-            if (bitmap != null) {
-                canvas.drawBitmap(bitmap, centerX, centerY, paintResultPoint);
+                GradientDrawable gradientDrawable = new GradientDrawable();
+                gradientDrawable.setCornerRadius(resultPointRadiusCorners);
+                gradientDrawable.setStroke(resultPointStrokeWidth, resultPointStrokeColor);
+                gradientDrawable.setColor(resultPointColor);
+                gradientDrawable.setSize(resultPointWithdHeight, resultPointWithdHeight);
+                Bitmap bitmap = drawableToBitmap(gradientDrawable);
+                if (bitmap != null) {
+                    canvas.drawBitmap(bitmap, centerX, centerY, paintResultPoint);
+                    resultPointList.add(new Point(centerX, centerY));
+                }
             }
         }
+
     }
 
     public Bitmap drawableToBitmap(Drawable drawable) {
@@ -537,13 +559,45 @@ public final class ViewfinderView extends View {
         return bitmap;
     }
 
-    public void destroyView(){
-        if(anim != null){
+    public void destroyView() {
+        if (anim != null) {
             anim.removeAllUpdateListeners();
             anim.cancel();
             anim.end();
             anim = null;
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        Log.e(TAG, "onTouchEvent---x:"+x+",y:"+y);
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                if (isInResultPoints(x, y)) {
+                    Log.e(TAG, "点击事件响应");
+                }
+                break;
+        }
+        return true;
+    }
+
+    private boolean isInResultPoints(int x, int y) {
+        for (int i = 0; i < resultPointList.size(); i++) {
+            Point point = resultPointList.get(i);
+            if (x >= point.x - resultPointWithdHeight && x <= point.x + resultPointWithdHeight) {
+                if (y >= point.y - resultPointWithdHeight && y <= point.y + resultPointWithdHeight) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

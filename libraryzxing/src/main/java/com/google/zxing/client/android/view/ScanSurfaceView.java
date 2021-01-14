@@ -3,7 +3,6 @@ package com.google.zxing.client.android.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     private OnScanCallback onScanCallback;
     private ScanSurfaceViewHandler scanSurfaceViewHandler;
     private ZoomControllerView zoomControllerView;
+    private ScanResultPointView resultPointView;
 
     private Collection<BarcodeFormat> decodeFormats;
     private String characterSet;
@@ -63,6 +63,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         surfaceView = view.findViewById(R.id.preview_view);
         viewfinderView = view.findViewById(R.id.viewfinder_view);
         zoomControllerView = view.findViewById(R.id.zoom_controller_view);
+        resultPointView = view.findViewById(R.id.result_point_view);
 
         //点击强行更新相机聚焦
 //        zoomControllerView.setOnSingleClickListener(new ZoomControllerView.OnSingleClickListener() {
@@ -94,6 +95,25 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
                 }
             }
         });
+        resultPointView.setOnResultPointClickListener(new ScanResultPointView.OnResultPointClickListener() {
+            @Override
+            public void onPointClick(String result) {
+                if (onScanCallback != null) {
+                    onScanCallback.onScanSuccess(result, null);
+                }
+            }
+
+            @Override
+            public void onCancle() {
+                resultPointView.setVisibility(View.GONE);
+                zoomControllerView.setVisibility(View.VISIBLE);
+                viewfinderView.setVisibility(View.VISIBLE);
+                if (onScanCallback != null) {
+                    onScanCallback.onRestartScan();
+                }
+                restartScan();
+            }
+        });
     }
 
     public void init(Activity activity) {
@@ -111,6 +131,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         ScanSurfaceView.scanConfig = config;
         viewfinderView.setScanConfig(ScanSurfaceView.scanConfig);
         zoomControllerView.setScanConfig(ScanSurfaceView.scanConfig);
+        resultPointView.setScanConfig(ScanSurfaceView.scanConfig);
     }
 
     public void setOnScanCallback(OnScanCallback callback) {
@@ -129,17 +150,32 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         return scanSurfaceViewHandler;
     }
 
-    public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
+    public void handleDecode(Result[] rawResult, Bitmap barcode, float scaleFactor) {
+        if(rawResult.length <= 0){
+            return;
+        }
         if (flagStop) {
             return;
         }
         flagStop = true;
         beepManager.playBeepSoundAndVibrate();
-        viewfinderView.setResultPoint(rawResult, scaleFactor);
-        //结果返回
+        zoomControllerView.setVisibility(View.GONE);
+        viewfinderView.cleanCanvas();
+        //展示结果点
+        resultPointView.setCameraFrame(getCameraManager().getFramingRect());
+        resultPointView.setDatas(rawResult);
+        resultPointView.setVisibility(View.VISIBLE);
+        stopScan();
         if (onScanCallback != null) {
-            onScanCallback.onScanSuccess(rawResult.getText(), barcode);
+            onScanCallback.onStopScan();
         }
+        //一个直接返回
+        if (rawResult.length == 1) {
+            if (onScanCallback != null) {
+                onScanCallback.onScanSuccess(rawResult[0].getText(), barcode);
+            }
+        }
+
     }
 
     public void stopScan() {
@@ -179,6 +215,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         viewfinderView.setCameraManager(cameraManager);
         viewfinderView.setVisibility(View.VISIBLE);
         zoomControllerView.setVisibility(View.VISIBLE);
+        resultPointView.setVisibility(View.GONE);
 
         beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());
 

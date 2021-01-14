@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -111,6 +112,7 @@ public class CaptureActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             StatusBarUtil.setTransparentForWindow(this);
             int statusBarHeight = StatusBarUtil.getStatusBarHeight(context);
+            Log.e("======", "statusBarHeight--" + statusBarHeight);
             ViewGroup.LayoutParams fakeStatusBarLayoutParams = fakeStatusBar.getLayoutParams();
             fakeStatusBarLayoutParams.height = statusBarHeight;
             fakeStatusBar.setLayoutParams(fakeStatusBarLayoutParams);
@@ -121,7 +123,10 @@ public class CaptureActivity extends Activity {
             //状态栏颜色
             String statusBarColor = mnScanConfig.getStatusBarColor();
             fakeStatusBar.setBackgroundColor(Color.parseColor(statusBarColor));
-
+        } else {
+            ViewGroup.LayoutParams fakeStatusBarLayoutParams = fakeStatusBar.getLayoutParams();
+            fakeStatusBarLayoutParams.height = 0;
+            fakeStatusBar.setLayoutParams(fakeStatusBarLayoutParams);
         }
     }
 
@@ -139,6 +144,16 @@ public class CaptureActivity extends Activity {
                         finishSuccess(resultTxt);
                     }
                 }, 200);
+            }
+
+            @Override
+            public void onStopScan() {
+                mActionMenuView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onRestartScan() {
+                mActionMenuView.setVisibility(View.VISIBLE);
             }
 
             @Override

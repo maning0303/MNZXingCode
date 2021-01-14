@@ -46,6 +46,16 @@ public class ScanActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onStopScan() {
+                //TODO:隐藏UI布局
+            }
+
+            @Override
+            public void onRestartScan() {
+                //TODO:重新展示布局
+            }
+
+            @Override
             public void onFail(String msg) {
                 Toast.makeText(ScanActivity.this, "失败：" + msg, Toast.LENGTH_SHORT).show();
                 //关闭页面

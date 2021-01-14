@@ -31,10 +31,11 @@
         <View
             android:id="@+id/fakeStatusBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:background="#00000000"
             tools:ignore="MissingConstraints"
             tools:layout_height="20dp" />
+
         <!--功能菜单-->
         <com.google.zxing.client.android.view.ScanActionMenuView
             android:id="@+id/action_menu_view"

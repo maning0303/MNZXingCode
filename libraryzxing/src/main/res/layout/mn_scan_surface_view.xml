@@ -25,4 +25,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!--扫描结果点-->
+    <com.google.zxing.client.android.view.ScanResultPointView
+        android:id="@+id/result_point_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
 </RelativeLayout>

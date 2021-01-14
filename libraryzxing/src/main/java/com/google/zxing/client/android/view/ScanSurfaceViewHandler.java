@@ -85,7 +85,7 @@ public final class ScanSurfaceViewHandler extends Handler {
                 }
                 scaleFactor = bundle.getFloat(DecodeThread.BARCODE_SCALED_FACTOR);
             }
-            scanSurfaceView.handleDecode((Result) message.obj, barcode, scaleFactor);
+            scanSurfaceView.handleDecode((Result[]) message.obj, barcode, scaleFactor);
             restartPreviewAndDecode();
         } else if (message.what == R.id.decode_failed) {// We're decoding as fast as possible, so when one decode fails, start another.
             state = State.PREVIEW;

@@ -17,6 +17,16 @@ public interface OnScanCallback {
     void onScanSuccess(String resultTxt, Bitmap barcode);
 
     /**
+     * 暂停扫描
+     */
+    void onStopScan();
+
+    /**
+     * 重新扫描
+     */
+    void onRestartScan();
+
+    /**
      * 失败
      * @param msg
      */

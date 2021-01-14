@@ -87,6 +87,8 @@ public class MNScanConfig implements Serializable {
     private String statusBarColor = "#00000000";
     //状态栏是否显示黑色字体
     private boolean statusBarDarkMode = false;
+    //支持多二维码同时扫出，这种状态下不支持条形码
+    private boolean supportMultiQRCode = false;
 
     private MNScanConfig() {
 
@@ -122,7 +124,12 @@ public class MNScanConfig implements Serializable {
         resultPointColor = builder.resultPointColor;
         statusBarColor = builder.statusBarColor;
         statusBarDarkMode = builder.statusBarDarkMode;
+        supportMultiQRCode = builder.supportMultiQRCode;
 
+    }
+
+    public boolean isSupportMultiQRCode() {
+        return supportMultiQRCode;
     }
 
     public String getStatusBarColor() {
@@ -286,6 +293,8 @@ public class MNScanConfig implements Serializable {
         private String statusBarColor = "#00000000";
         //状态栏是否显示黑色字体
         private boolean statusBarDarkMode = false;
+        //支持多二维码同时扫出，这种状态下不支持条形码
+        private boolean supportMultiQRCode = false;
 
         public MNScanConfig builder() {
             return new MNScanConfig(this);
@@ -423,6 +432,11 @@ public class MNScanConfig implements Serializable {
 
         public Builder setSupportZoom(boolean supportZoom) {
             isSupportZoom = supportZoom;
+            return this;
+        }
+
+        public Builder setSupportMultiQRCode(boolean supportMultiQRCode) {
+            this.supportMultiQRCode = supportMultiQRCode;
             return this;
         }
     }

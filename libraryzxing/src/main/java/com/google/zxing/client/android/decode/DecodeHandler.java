@@ -30,6 +30,7 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.client.android.R;
+import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.view.ScanSurfaceView;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
@@ -46,16 +47,22 @@ public class DecodeHandler extends Handler {
     private boolean running = true;
     private MultiFormatReader multiFormatReader;
     private QRCodeMultiReader qrCodeMultiReader;
-    //支持同时扫描多个二维码
-    private boolean needQRCodeMulti = true;
     private Map<DecodeHintType, Object> hints;
+    //支持同时扫描多个二维码
+    private boolean supportMultiQRCode = false;
 
     public DecodeHandler(WeakReference<ScanSurfaceView> mSurfaceViewRef, Map<DecodeHintType, Object> hints) {
         this.hints = hints;
-        if(needQRCodeMulti){
+        if(mSurfaceViewRef.get() != null){
+            MNScanConfig scanConfig = mSurfaceViewRef.get().getScanConfig();
+            if(scanConfig != null){
+                supportMultiQRCode = scanConfig.isSupportMultiQRCode();
+            }
+        }
+        if (supportMultiQRCode) {
             //支持多个二维码，但是不支持条形码
             qrCodeMultiReader = new QRCodeMultiReader();
-        }else{
+        } else {
             //单个二维码
             multiFormatReader = new MultiFormatReader();
             multiFormatReader.setHints(hints);
@@ -110,7 +117,7 @@ public class DecodeHandler extends Handler {
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {
-                if (needQRCodeMulti) {
+                if (supportMultiQRCode) {
                     rawResults = qrCodeMultiReader.decodeMultiple(bitmap);
                 } else {
                     Result[] results = new Result[1];
@@ -129,7 +136,7 @@ public class DecodeHandler extends Handler {
             } catch (Exception re) {
                 // continue
             } finally {
-                if (needQRCodeMulti) {
+                if (supportMultiQRCode) {
                     qrCodeMultiReader.reset();
                 } else {
                     multiFormatReader.reset();

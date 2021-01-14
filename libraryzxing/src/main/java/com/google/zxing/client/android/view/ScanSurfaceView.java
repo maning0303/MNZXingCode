@@ -150,6 +150,10 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         return scanSurfaceViewHandler;
     }
 
+    public MNScanConfig getScanConfig() {
+        return scanConfig;
+    }
+
     public void handleDecode(Result[] rawResult, Bitmap barcode, float scaleFactor) {
         if(rawResult.length <= 0){
             return;

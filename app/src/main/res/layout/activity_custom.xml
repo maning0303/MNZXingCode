@@ -59,7 +59,7 @@
                 android:id="@+id/cb_zoom_control_show"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                android:checked="false"
                 android:text="是否显示缩放控制器" />
 
             <CheckBox
@@ -87,7 +87,7 @@
                 android:id="@+id/cb_custom_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
+                android:checked="true"
                 android:text="是否完全自定义遮罩层" />
 
             <CheckBox
@@ -182,7 +182,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="#FFFF00" />
+                    android:background="#22CE6B" />
 
             </LinearLayout>
 
@@ -204,7 +204,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:background="#FFFF00" />
+                    android:background="#22CE6B" />
 
             </LinearLayout>
 

@@ -93,11 +93,11 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
     private RadioButton mRbZoomBottom;
 
 
-    private String colorText = "#FFFFFF00";
-    private String colorLine = "#FFFFFF00";
+    private String colorText = "#22CE6B";
+    private String colorLine = "#22CE6B";
     private String colorBackground = "#22FF0000";
     private String colorStatusBar = "#00000000";
-    private String colorResultPoint = "#CCFFFF00";
+    private String colorResultPoint = "#CC22CE6B";
     private String colorResultPointStroke = "#FFFFFFFF";
     /**
      * 左边

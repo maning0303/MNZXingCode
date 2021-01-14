@@ -162,6 +162,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         zoomControllerView.setVisibility(View.GONE);
         viewfinderView.cleanCanvas();
         //展示结果点
+        resultPointView.setScanSurfaceView(this);
         resultPointView.setCameraFrame(getCameraManager().getFramingRect());
         resultPointView.setDatas(rawResult);
         resultPointView.setVisibility(View.VISIBLE);

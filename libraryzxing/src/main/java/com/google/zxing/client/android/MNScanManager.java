@@ -20,6 +20,8 @@ public class MNScanManager {
     public static final int RESULT_CANCLE = 2;
     public static final String INTENT_KEY_RESULT_SUCCESS = "INTENT_KEY_RESULT_SUCCESS";
     public static final String INTENT_KEY_RESULT_ERROR = "INTENT_KEY_RESULT_ERROR";
+    //是否是调试模式
+    public static final boolean isDebugMode = false;
 
 
     //跳转传入的数据

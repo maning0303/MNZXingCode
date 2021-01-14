@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
@@ -37,6 +38,7 @@ public class ScanResultPointView extends FrameLayout {
     private Result[] resultPoint;
     private Rect cameraFrame;
     private OnResultPointClickListener onResultPointClickListener;
+    private ScanSurfaceView scanSurfaceView;
 
     private int resultPointColor;
     private int resultPointStrokeColor;
@@ -107,6 +109,10 @@ public class ScanResultPointView extends FrameLayout {
         initResultPointConfigs();
     }
 
+    public void setScanSurfaceView(ScanSurfaceView scanSurfaceView) {
+        this.scanSurfaceView = scanSurfaceView;
+    }
+
 
     private void initResultPointConfigs() {
         if (scanConfig == null) {
@@ -150,7 +156,6 @@ public class ScanResultPointView extends FrameLayout {
 
     public void drawableResultPoint() {
         Log.e("======", "drawableResultPoint---start");
-        Log.e("======", "drawableResultPoint---resultPoint:" + resultPoint.length);
         fl_result_point_root.removeAllViews();
         if (resultPoint == null || resultPoint.length == 0) {
             if (onResultPointClickListener != null) {
@@ -158,6 +163,32 @@ public class ScanResultPointView extends FrameLayout {
             }
             return;
         }
+
+        int surfaceViewScreenY = 0;
+        if (scanSurfaceView != null) {
+            int statusBarHeight = StatusBarUtil.getStatusBarHeight(getContext());
+            int[] location = new int[2];
+            scanSurfaceView.getLocationOnScreen(location);
+            if (location[1] > statusBarHeight) {
+                surfaceViewScreenY = location[1] - statusBarHeight;
+            }
+            //更新虚假状态栏高度
+            if (location[1] <= 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ViewGroup.LayoutParams fakeStatusBarLayoutParams = fakeStatusBar.getLayoutParams();
+                    fakeStatusBarLayoutParams.height = statusBarHeight;
+                    fakeStatusBar.setLayoutParams(fakeStatusBarLayoutParams);
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    ViewGroup.LayoutParams fakeStatusBarLayoutParams = fakeStatusBar.getLayoutParams();
+                    fakeStatusBarLayoutParams.height = 0;
+                    fakeStatusBar.setLayoutParams(fakeStatusBarLayoutParams);
+                }
+            }
+        }
+        Log.e("======", "surfaceViewScreenY--->" + surfaceViewScreenY);
+
         if (scanConfig == null) {
             scanConfig = new MNScanConfig.Builder().builder();
         }
@@ -172,31 +203,33 @@ public class ScanResultPointView extends FrameLayout {
             if (points == null || points.length == 0) {
                 return;
             }
-//            //测试需要：绘制point
-//            for (int j = 0; j < points.length; j++) {
-//                ResultPoint point = points[j];
-//                Log.e("======", "drawableResultPoint---points :" + point.toString());
-//
-//                GradientDrawable gradientDrawable = new GradientDrawable();
-//                gradientDrawable.setShape(GradientDrawable.OVAL);
-//                gradientDrawable.setColor(resultPointColor);
-//
-//                ImageView view = new ImageView(getContext());
-//                view.setImageDrawable(gradientDrawable);
-//
-//                //判断是不是全屏模式
-//                int centerX = (int) point.getX();
-//                int centerY = (int) point.getY();
-//                if (!scanConfig.isFullScreenScan() && cameraFrame != null) {
-//                    centerX += cameraFrame.left;
-//                    centerY += cameraFrame.top;
-//                }
-//                RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(CommonUtils.dip2px(getContext(), 6), CommonUtils.dip2px(getContext(), 6));
-//                lpRoot.setMargins(centerX, centerY, 0, 0);
-//                view.setLayoutParams(lpRoot);
-//
-//                fl_result_point_root.addView(view);
-//            }
+            //测试需要：绘制point
+            if(MNScanManager.isDebugMode){
+                for (int j = 0; j < points.length; j++) {
+                    ResultPoint point = points[j];
+                    Log.e("======", "drawableResultPoint---points :" + point.toString());
+
+                    GradientDrawable gradientDrawable = new GradientDrawable();
+                    gradientDrawable.setShape(GradientDrawable.OVAL);
+                    gradientDrawable.setColor(resultPointColor);
+
+                    ImageView view = new ImageView(getContext());
+                    view.setImageDrawable(gradientDrawable);
+
+                    //判断是不是全屏模式
+                    int centerX = (int) point.getX();
+                    int centerY = (int) point.getY();
+                    if (!scanConfig.isFullScreenScan() && cameraFrame != null) {
+                        centerX += cameraFrame.left;
+                        centerY += cameraFrame.top;
+                    }
+                    RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(CommonUtils.dip2px(getContext(), 6), CommonUtils.dip2px(getContext(), 6));
+                    lpRoot.setMargins(centerX, centerY - surfaceViewScreenY, 0, 0);
+                    view.setLayoutParams(lpRoot);
+
+                    fl_result_point_root.addView(view);
+                }
+            }
 
             //绘制中心
             if (points.length >= 2) {
@@ -257,7 +290,7 @@ public class ScanResultPointView extends FrameLayout {
 
                 //位置
                 RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(resultPointWithdHeight, resultPointWithdHeight);
-                lpRoot.setMargins(centerX, centerY, 0, 0);
+                lpRoot.setMargins(centerX, centerY - surfaceViewScreenY, 0, 0);
                 rl_root.setLayoutParams(lpRoot);
 
                 iv_point_bg.setOnClickListener(new OnClickListener() {

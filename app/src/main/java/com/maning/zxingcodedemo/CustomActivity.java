@@ -3,7 +3,6 @@ package com.maning.zxingcodedemo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.model.MNScanConfig;
@@ -116,6 +117,10 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
      */
     private CheckBox mCbStatusDark;
     private TextView mBtnColorStatusbarBg;
+    /**
+     * 是否支持多二维码同时扫描（不支持条形码）
+     */
+    private CheckBox mCbSupportMultiQrcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +158,7 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
         mCbStatusDark = (CheckBox) findViewById(R.id.cb_status_dark);
         mBtnColorStatusbarBg = (TextView) findViewById(R.id.btn_color_statusbar_bg);
         mBtnColorStatusbarBg.setOnClickListener(this);
+        mCbSupportMultiQrcode = (CheckBox) findViewById(R.id.cb_support_multi_qrcode);
     }
 
     @Override
@@ -290,6 +296,8 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
                 .setResultPointConfigs(36, 12, 3, colorResultPointStroke, colorResultPoint)
                 //状态栏设置
                 .setStatusBarConfigs(colorStatusBar, mCbStatusDark.isChecked())
+                //是否支持多二维码同时扫出，true不支持条形码
+                .setSupportMultiQRCode(mCbSupportMultiQrcode.isChecked())
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(mCbCustomView.isChecked() ? R.layout.layout_custom_view : 0, new MNCustomViewBindCallback() {
                     @Override

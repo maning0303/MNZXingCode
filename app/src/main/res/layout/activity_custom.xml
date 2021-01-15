@@ -104,6 +104,13 @@
                 android:checked="false"
                 android:text="是否状态栏黑色字体" />
 
+            <CheckBox
+                android:id="@+id/cb_support_multi_qrcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="是否支持多二维码同时扫描（不支持条形码）" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

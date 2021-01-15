@@ -1,6 +1,6 @@
 #   MNZXingCode 快速集成zxing二维码扫描
 
-##  快速集成zxing二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层，自定义Activity（ZXing 3.4.0）
+##  快速集成zxing二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层，自定义Activity，多个二维码扫码（ZXing 3.4.0）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
 ##  功能：
@@ -11,6 +11,7 @@
     5: 相机可以调整焦距放大缩小
     6: 完全自定义遮罩层
     7: 自定义Activity
+    8: 支持微信，支付宝类似多个二维码扫码
 
 ## 截图:
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpg)
@@ -28,6 +29,9 @@
 #### 自定义Activity
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_005.jpg)
 
+#### 支持微信，支付宝类似多个二维码扫码
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_006.jpg)
+
 ## 如何添加
 ### Gradle添加：
 #### 1.在Project的build.gradle中添加仓库地址
@@ -44,7 +48,7 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.5'
+	     implementation 'com.github.maning0303:MNZXingCode:V2.1.6'
 	}
 ```
 
@@ -119,6 +123,8 @@
                             .setResultPointConfigs(36, 12, 2, "#FFFFFFFF", "#CC00A81F")
                             //状态栏设置：颜色，是否黑色字体
                             .setStatusBarConfigs("#00000000", true)
+                            //是否支持多二维码同时扫出，true不支持条形码
+                            .setSupportMultiQRCode(true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override
@@ -255,6 +261,10 @@
 ```
 
 ## 版本记录：
+    v2.1.7:
+        1.支持多二维码同时扫出
+        2.优化扫描结果点位置显示
+        
     v2.1.6:
         1.优化代码，防止内存泄露
         2.生成二维码支持修改颜色和边距

@@ -53,9 +53,9 @@ public class DecodeHandler extends Handler {
 
     public DecodeHandler(WeakReference<ScanSurfaceView> mSurfaceViewRef, Map<DecodeHintType, Object> hints) {
         this.hints = hints;
-        if(mSurfaceViewRef.get() != null){
+        if (mSurfaceViewRef.get() != null) {
             MNScanConfig scanConfig = mSurfaceViewRef.get().getScanConfig();
-            if(scanConfig != null){
+            if (scanConfig != null) {
                 supportMultiQRCode = scanConfig.isSupportMultiQRCode();
             }
         }
@@ -94,6 +94,9 @@ public class DecodeHandler extends Handler {
      * @param height The height of the preview frame.
      */
     private void decode(byte[] data, int width, int height) {
+        //1080*2248 小米8：1264*2248
+        //1080*2160 魅族16X：960*1920
+        Log.e(TAG, "decode---width：" + width + "，height" + height);
         long start = System.currentTimeMillis();
 
         //2017.11.13 添加竖屏代码处理，生成正确方向图片
@@ -124,14 +127,6 @@ public class DecodeHandler extends Handler {
                     Result result = multiFormatReader.decodeWithState(bitmap);
                     results[0] = result;
                     rawResults = results;
-                }
-                if (rawResults != null) {
-                    Log.e(TAG, "rawResults：" + rawResults.length);
-                    if (rawResults.length > 0) {
-                        for (Result result : rawResults) {
-                            Log.e(TAG, "rawResults---result：" + result.toString());
-                        }
-                    }
                 }
             } catch (Exception re) {
                 // continue

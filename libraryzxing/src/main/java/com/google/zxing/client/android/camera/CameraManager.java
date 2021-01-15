@@ -142,7 +142,7 @@ public class CameraManager {
         surfaceView.resize(surfaceViewWidth, surfaceViewHeight);
         Log.e(">>>>>>", "openDriver----surfaceView.getWidth():" + surfaceView.getWidth() + ",surfaceView.getHeight():" + surfaceView.getHeight());
         Log.e(">>>>>>", "openDriver----previewSizeOnScreen：" + previewSizeOnScreen.toString());
-        Log.e(">>>>>>", "openDriver----修正--surfaceViewWidth：" + surfaceViewHeight + ",surfaceViewHeight:" + surfaceViewHeight);
+        Log.e(">>>>>>", "openDriver----修正--surfaceViewWidth：" + surfaceViewWidth + ",surfaceViewHeight:" + surfaceViewHeight);
     }
 
     public boolean isZoomSupported() {

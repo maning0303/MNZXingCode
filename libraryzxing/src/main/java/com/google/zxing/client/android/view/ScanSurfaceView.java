@@ -155,7 +155,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void handleDecode(Result[] rawResult, Bitmap barcode, float scaleFactor) {
-        if(rawResult.length <= 0){
+        if (rawResult.length <= 0) {
             return;
         }
         if (flagStop) {
@@ -165,7 +165,9 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         beepManager.playBeepSoundAndVibrate();
         zoomControllerView.setVisibility(View.GONE);
         viewfinderView.cleanCanvas();
+
         //展示结果点
+        resultPointView.setResizeAbleSurfaceView(surfaceView);
         resultPointView.setScanSurfaceView(this);
         resultPointView.setCameraFrame(getCameraManager().getFramingRect());
         resultPointView.setDatas(rawResult);

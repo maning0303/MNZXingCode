@@ -223,8 +223,10 @@ public class ScanResultPointView extends FrameLayout {
                     ImageView view = new ImageView(getContext());
                     view.setImageDrawable(gradientDrawable);
                     RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(CommonUtils.dip2px(getContext(), 6), CommonUtils.dip2px(getContext(), 6));
-                    lpRoot.setMargins(centerPoint.x, centerPoint.y, 0, 0);
                     view.setLayoutParams(lpRoot);
+
+                    view.setX(centerPoint.x);
+                    view.setY(centerPoint.y);
 
                     fl_result_point_root.addView(view);
                 }
@@ -245,6 +247,7 @@ public class ScanResultPointView extends FrameLayout {
                 float maxY = points[0].getY();
                 for (int j = 0; j < points.length; j++) {
                     ResultPoint point = points[j];
+                    Log.e("======", "drawableResultPoint---points :" + point.toString());
                     if (maxX < point.getX()) {
                         maxX = point.getX();
                         pointRight = point;
@@ -259,8 +262,10 @@ public class ScanResultPointView extends FrameLayout {
                 Point centerPoint = getCenterPoint(centerX, centerY);
                 //位置
                 RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(resultPointWithdHeight, resultPointWithdHeight);
-                lpRoot.setMargins(centerPoint.x, centerPoint.y, 0, 0);
                 rl_root.setLayoutParams(lpRoot);
+
+                rl_root.setX(centerPoint.x);
+                rl_root.setY(centerPoint.y);
 
                 GradientDrawable gradientDrawable = new GradientDrawable();
                 gradientDrawable.setCornerRadius(resultPointRadiusCorners);
@@ -310,7 +315,7 @@ public class ScanResultPointView extends FrameLayout {
         Log.e("======", "drawableResultPoint---end");
     }
 
-    private Point getCenterPoint(int x,int y){
+    private Point getCenterPoint(int x, int y) {
         int centerX = x;
         int centerY = y;
         //判断是不是全屏模式
@@ -330,7 +335,7 @@ public class ScanResultPointView extends FrameLayout {
 //                        centerX -= (resizeAbleSurfaceView.getWidth() - scanSurfaceView.getWidth()) / 2;
 //                    }
         }
-        return new Point(centerX,centerY);
+        return new Point(centerX, centerY);
     }
 
 }

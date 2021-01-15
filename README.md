@@ -29,6 +29,9 @@
 #### 自定义Activity
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_005.jpg)
 
+#### 多二维码扫码
+![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_006.jpg)
+
 ## 如何添加
 ### Gradle添加：
 #### 1.在Project的build.gradle中添加仓库地址
@@ -45,13 +48,14 @@
 #### 2.在Module目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-         //zxing 3.4.0 不兼容7.0以下版本，必须java8+
-         implementation 'com.google.zxing:core:3.4.0'
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
 
-         //需要支持7.0以下
-         implementation 'com.google.zxing:core:3.3.3'
-	     implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
+            //zxing 3.4.0 不兼容7.0以下版本，必须java8+
+            implementation 'com.google.zxing:core:3.4.0'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
+
+            //需要支持7.0以下
+            implementation 'com.google.zxing:core:3.3.3'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
 
 	}
 ```
@@ -266,6 +270,7 @@
     v2.1.7:
         1.支持多二维码同时扫出
         2.优化扫描结果点位置显示
+        3.zxing版本自定义
         
     v2.1.6:
         1.优化代码，防止内存泄露

@@ -21,5 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.zxing:core:3.4.0'
+    //3.4.0-对应7.0以上+java8
+    //3.3.3-支持7.0以下版本
+    compileOnly 'com.google.zxing:core:3.3.3'
 }

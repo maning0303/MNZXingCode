@@ -31,6 +31,13 @@ dependencies {
     dependenciesOther.each { k, v -> api v }
     dependenciesDebug.each { k, v -> debugImplementation v }
 
-//    implementation 'com.github.maning0303:MNZXingCode:V2.1.6'
     implementation project(':libraryzxing')
+
+    //3.4.0-对应7.0以上+java8
+//    implementation 'com.google.zxing:core:3.4.0'
+//    implementation 'com.github.maning0303:MNZXingCode:V2.1.6'
+
+    //3.3.3-支持7.0以下版本
+    implementation 'com.google.zxing:core:3.3.3'
+//    implementation 'com.github.maning0303:MNZXingCode:V2.1.6'
 }

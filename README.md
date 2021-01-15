@@ -131,6 +131,8 @@
                             .setResultPointConfigs(36, 12, 2, "#FFFFFFFF", "#CC00A81F")
                             //状态栏设置：颜色，是否黑色字体
                             .setStatusBarConfigs("#00000000", true)
+                            //是否支持多二维码同时扫出，true不支持条形码
+                            .setSupportMultiQRCode(true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
                                 @Override

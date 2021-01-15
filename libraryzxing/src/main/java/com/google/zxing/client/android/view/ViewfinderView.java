@@ -20,35 +20,22 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
-import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.R;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This view is overlaid on top of the camera preview. It adds the viewfinder rectangle and partial
@@ -69,16 +56,6 @@ public final class ViewfinderView extends View {
     private Paint paintLaser;
     private int maskColor;
     private int laserColor;
-
-    private Result[] resultPoint;
-    private List<Point> resultPointList = new ArrayList<>();
-    private float scaleFactor;
-    private boolean showResultPoint;
-    private int resultPointColor;
-    private int resultPointStrokeColor;
-    private int resultPointWithdHeight;
-    private int resultPointRadiusCorners;
-    private int resultPointStrokeWidth;
 
     private Rect frame;
     private String hintMsg;
@@ -114,8 +91,6 @@ public final class ViewfinderView extends View {
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.mn_scan_viewfinder_mask);
         laserColor = resources.getColor(R.color.mn_scan_viewfinder_laser);
-        resultPointColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point);
-        resultPointStrokeColor = resources.getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
         hintMsg = "将二维码放入框内，即可自动扫描";
         //文字
         paintText.setColor(Color.WHITE);
@@ -143,10 +118,6 @@ public final class ViewfinderView extends View {
         //网格扫描线先关配置
         gridColumn = 24;
         gridHeight = 0;
-        //扫描点大小
-        resultPointWithdHeight = CommonUtils.dip2px(context, 36);
-        resultPointRadiusCorners = CommonUtils.dip2px(context, 36);
-        resultPointStrokeWidth = CommonUtils.dip2px(context, 3);
     }
 
     /**
@@ -202,8 +173,6 @@ public final class ViewfinderView extends View {
     public void setScanConfig(MNScanConfig scanConfig) {
         this.mnScanConfig = scanConfig;
 
-        initResultPointConfigs();
-
         //扫描文字配置
         setHintText(mnScanConfig.getScanHintText(), mnScanConfig.getScanHintTextColor(), mnScanConfig.getScanHintTextSize());
 
@@ -218,36 +187,6 @@ public final class ViewfinderView extends View {
         }
         setGridScannerColumn(mnScanConfig.getGridScanLineColumn());
         setGridScannerHeight(mnScanConfig.getGridScanLineHeight());
-    }
-
-    private void initResultPointConfigs() {
-        showResultPoint = mnScanConfig.isShowResultPoint();
-        if (showResultPoint) {
-            resultPointRadiusCorners = CommonUtils.dip2px(context, mnScanConfig.getResultPointCorners());
-            resultPointWithdHeight = CommonUtils.dip2px(context, mnScanConfig.getResultPointWithdHeight());
-            resultPointStrokeWidth = CommonUtils.dip2px(context, mnScanConfig.getResultPointStrokeWidth());
-            String resultPointColorStr = mnScanConfig.getResultPointColor();
-            String resultPointStrokeColorStr = mnScanConfig.getResultPointStrokeColor();
-            if (resultPointWithdHeight == 0) {
-                resultPointWithdHeight = CommonUtils.dip2px(context, 36);
-            }
-            if (resultPointRadiusCorners == 0) {
-                resultPointRadiusCorners = CommonUtils.dip2px(context, 36);
-            }
-            if (resultPointStrokeWidth == 0) {
-                resultPointStrokeWidth = CommonUtils.dip2px(context, 3);
-            }
-            if (!TextUtils.isEmpty(resultPointColorStr)) {
-                resultPointColor = Color.parseColor(resultPointColorStr);
-            } else {
-                resultPointColor = context.getResources().getColor(R.color.mn_scan_viewfinder_laser_result_point);
-            }
-            if (!TextUtils.isEmpty(resultPointStrokeColorStr)) {
-                resultPointStrokeColor = Color.parseColor(resultPointStrokeColorStr);
-            } else {
-                resultPointStrokeColor = context.getResources().getColor(R.color.mn_scan_viewfinder_laser_result_point_border);
-            }
-        }
     }
 
     /**
@@ -365,8 +304,6 @@ public final class ViewfinderView extends View {
         }
         //动画刷新
         startAnimation();
-        //结果点
-        drawableResultPoint(canvas);
     }
 
     /**
@@ -469,94 +406,11 @@ public final class ViewfinderView extends View {
         postInvalidate();
     }
 
-    @Deprecated
-    public void setResultPoint(Result[] results, float scaleFactor) {
-        this.resultPoint = results;
-        this.scaleFactor = scaleFactor;
-        postInvalidate();
-    }
-
     public void cleanCanvas() {
-        resultPoint = null;
         if (canvas != null) {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         }
         postInvalidate();
-    }
-
-    @Deprecated
-    public void drawableResultPoint(Canvas canvas) {
-        if (!showResultPoint) {
-            return;
-        }
-        if (resultPoint == null || resultPoint.length == 0) {
-            return;
-        }
-        needAnimation = false;
-        resultPointList = new ArrayList<>();
-        for (int i = 0; i < resultPoint.length; i++) {
-            Result result = resultPoint[i];
-            ResultPoint[] points = result.getResultPoints();
-            if (points == null || points.length == 0) {
-                return;
-            }
-            if (points.length == 2 || points.length == 3 || points.length == 4) {
-                //计算右上角点
-                ResultPoint pointRight = points[0];
-                ResultPoint pointBottom = points[0];
-                float maxX = points[0].getX();
-                float maxY = points[0].getY();
-                for (int j = 0; j < points.length; j++) {
-                    ResultPoint point = points[j];
-                    if (maxX < point.getX()) {
-                        maxX = point.getX();
-                        pointRight = point;
-                    }
-                    if (maxY < point.getY()) {
-                        maxY = point.getY();
-                        pointBottom = point;
-                    }
-                }
-                int centerX = (int) (pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2);
-                int centerY = (int) (pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2);
-                //判断是不是全屏模式
-                if (!(mnScanConfig != null && mnScanConfig.isFullScreenScan())) {
-                    centerX += frame.left;
-                    centerY += frame.top;
-                }
-                paintResultPoint.setStyle(Paint.Style.STROKE);
-
-                GradientDrawable gradientDrawable = new GradientDrawable();
-                gradientDrawable.setCornerRadius(resultPointRadiusCorners);
-                gradientDrawable.setStroke(resultPointStrokeWidth, resultPointStrokeColor);
-                gradientDrawable.setColor(resultPointColor);
-                gradientDrawable.setSize(resultPointWithdHeight, resultPointWithdHeight);
-                Bitmap bitmap = drawableToBitmap(gradientDrawable);
-                if (bitmap != null) {
-                    canvas.drawBitmap(bitmap, centerX, centerY, paintResultPoint);
-                    resultPointList.add(new Point(centerX, centerY));
-                }
-            }
-        }
-
-    }
-
-    public Bitmap drawableToBitmap(Drawable drawable) {
-        // 取 drawable 的长宽
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-
-        // 取 drawable 的颜色格式
-        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                : Bitmap.Config.RGB_565;
-        // 建立对应 bitmap
-        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
-        // 建立对应 bitmap 的画布
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, w, h);
-        // 把 drawable 内容画到画布中
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     public void destroyView() {
@@ -566,38 +420,6 @@ public final class ViewfinderView extends View {
             anim.end();
             anim = null;
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        Log.e(TAG, "onTouchEvent---x:"+x+",y:"+y);
-        int action = event.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                break;
-            case MotionEvent.ACTION_MOVE:
-                break;
-            case MotionEvent.ACTION_UP:
-                if (isInResultPoints(x, y)) {
-                    Log.e(TAG, "点击事件响应");
-                }
-                break;
-        }
-        return true;
-    }
-
-    private boolean isInResultPoints(int x, int y) {
-        for (int i = 0; i < resultPointList.size(); i++) {
-            Point point = resultPointList.get(i);
-            if (x >= point.x - resultPointWithdHeight && x <= point.x + resultPointWithdHeight) {
-                if (y >= point.y - resultPointWithdHeight && y <= point.y + resultPointWithdHeight) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
 }

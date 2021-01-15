@@ -7,8 +7,8 @@ ext {
      * 版本统一管理
      */
     versions = [
-            versionCode      : 216,                    //版本号
-            versionName      : "2.1.6",              //版本名称
+            versionCode      : 217,                    //版本号
+            versionName      : "2.1.7",              //版本名称
 
             compileSdkVersion: 28,
             minSdkVersion    : 14,

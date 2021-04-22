@@ -116,12 +116,16 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         });
     }
 
-    public void init(Activity activity) {
-        inactivityTimer = new InactivityTimer(activity);
-        beepManager = new BeepManager(activity);
+    public void init() {
         cameraManager = new CameraManager(getContext().getApplicationContext());
         scanSurfaceViewHandler = new ScanSurfaceViewHandler(this, decodeFormats, null, characterSet, cameraManager);
         scanConfig = new MNScanConfig.Builder().builder();
+    }
+
+    public void init(Activity activity) {
+        inactivityTimer = new InactivityTimer(activity);
+        beepManager = new BeepManager(activity);
+        init();
     }
 
     public void setScanConfig(MNScanConfig config) {
@@ -162,7 +166,9 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
             return;
         }
         flagStop = true;
-        beepManager.playBeepSoundAndVibrate();
+        if (beepManager != null) {
+            beepManager.playBeepSoundAndVibrate();
+        }
         zoomControllerView.setVisibility(View.GONE);
         viewfinderView.cleanCanvas();
 
@@ -199,8 +205,12 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
             scanSurfaceViewHandler.quitSynchronously();
             scanSurfaceViewHandler = null;
         }
-        inactivityTimer.onPause();
-        beepManager.close();
+        if (inactivityTimer != null) {
+            inactivityTimer.onPause();
+        }
+        if (beepManager != null) {
+            beepManager.close();
+        }
         cameraManager.closeDriver();
         zoomControllerView.setVisibility(View.GONE);
         viewfinderView.cleanCanvas();
@@ -224,9 +234,12 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         zoomControllerView.setVisibility(View.VISIBLE);
         resultPointView.setVisibility(View.GONE);
 
-        beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());
-
-        inactivityTimer.onResume();
+        if (beepManager != null) {
+            beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());
+        }
+        if (inactivityTimer != null) {
+            inactivityTimer.onResume();
+        }
 
         decodeFormats = null;
         characterSet = null;

@@ -7,7 +7,6 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,7 +14,7 @@ import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.other.OnScanCallback;
 import com.google.zxing.client.android.view.ScanSurfaceView;
 
-public class ScanActivity extends AppCompatActivity {
+public class CustomScanActivity extends AppCompatActivity {
 
     private ScanSurfaceView mScanSurfaceView;
     private Handler UIHandler = new Handler(Looper.getMainLooper());
@@ -37,7 +36,7 @@ public class ScanActivity extends AppCompatActivity {
         mScanSurfaceView.setOnScanCallback(new OnScanCallback() {
             @Override
             public void onScanSuccess(String resultTxt, Bitmap barcode) {
-                Toast.makeText(ScanActivity.this, "成功：" + resultTxt, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CustomScanActivity.this, "成功：" + resultTxt, Toast.LENGTH_SHORT).show();
                 UIHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -59,7 +58,7 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onFail(String msg) {
-                Toast.makeText(ScanActivity.this, "失败：" + msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CustomScanActivity.this, "失败：" + msg, Toast.LENGTH_SHORT).show();
                 //关闭页面
                 finish();
             }

@@ -91,7 +91,7 @@ public class CameraManager {
 
         if (!initialized) {
             initialized = true;
-            configManager.initFromCameraParameters(theCamera);
+            configManager.initFromCameraParameters(theCamera, surfaceView);
             if (requestedFramingRectWidth > 0 && requestedFramingRectHeight > 0) {
                 setManualFramingRect(requestedFramingRectWidth, requestedFramingRectHeight);
                 requestedFramingRectWidth = 0;

@@ -23,7 +23,7 @@ import com.google.zxing.client.android.other.MNScanCallback;
 
 import top.defaults.colorpicker.ColorPickerPopup;
 
-public class CustomActivity extends AppCompatActivity implements View.OnClickListener {
+public class CustomConfigActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * 是否显示相册功能

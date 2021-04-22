@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void customScan(View view) {
-        startActivity(new Intent(this, CustomActivity.class));
+        startActivity(new Intent(this, CustomConfigActivity.class));
     }
 
     public void createQRImage(View view) {
@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void customActivity(View view) {
-        startActivity(new Intent(this, ScanActivity.class));
+        startActivity(new Intent(this, CustomScanActivity.class));
     }
+
 }

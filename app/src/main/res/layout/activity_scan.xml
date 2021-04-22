@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanActivity">
+    tools:context=".CustomScanActivity">
 
     <com.google.zxing.client.android.view.ScanSurfaceView
         android:id="@+id/scan_surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
     <Button
         android:layout_width="wrap_content"

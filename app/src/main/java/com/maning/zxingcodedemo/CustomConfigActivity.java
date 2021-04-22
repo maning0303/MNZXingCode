@@ -296,7 +296,7 @@ public class CustomConfigActivity extends AppCompatActivity implements View.OnCl
                 .setResultPointConfigs(36, 12, 3, colorResultPointStroke, colorResultPoint)
                 //状态栏设置
                 .setStatusBarConfigs(colorStatusBar, mCbStatusDark.isChecked())
-                //是否支持多二维码同时扫出，true不支持条形码
+                //是否支持多二维码同时扫出,默认false,多二维码状态不支持条形码
                 .setSupportMultiQRCode(mCbSupportMultiQrcode.isChecked())
                 //自定义遮罩
                 .setCustomShadeViewLayoutID(mCbCustomView.isChecked() ? R.layout.layout_custom_view : 0, new MNCustomViewBindCallback() {

@@ -51,11 +51,11 @@
 
             //zxing 3.4.0 不兼容7.0以下版本，必须java8+
             implementation 'com.google.zxing:core:3.4.0'
-            implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.8'
 
             //需要支持7.0以下
             implementation 'com.google.zxing:core:3.3.3'
-            implementation 'com.github.maning0303:MNZXingCode:V2.1.7'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.8'
 
 	}
 ```
@@ -131,7 +131,7 @@
                             .setResultPointConfigs(36, 12, 2, "#FFFFFFFF", "#CC00A81F")
                             //状态栏设置：颜色，是否黑色字体
                             .setStatusBarConfigs("#00000000", true)
-                            //是否支持多二维码同时扫出，true不支持条形码
+                            //是否支持多二维码同时扫出,默认false,多二维码状态不支持条形码
                             .setSupportMultiQRCode(true)
                             //自定义遮罩
                             .setCustomShadeViewLayoutID(R.layout.layout_custom_view, new MNCustomViewBindCallback() {
@@ -269,25 +269,18 @@
 ```
 
 ## 版本记录：
+    v2.1.8:
+        1.扫描结果点显示位置偏移修复
+        
     v2.1.7:
         1.支持多二维码同时扫出
-        2.优化扫描结果点位置显示
+        2.优化扫描结果点
         3.zxing版本自定义
         
     v2.1.6:
         1.优化代码，防止内存泄露
         2.生成二维码支持修改颜色和边距
         3.整体转为AndroidX
-        
-    v2.1.5:
-        1.修复扫描结果标记点间隙问题
-        2.默认显示标记点
-
-    v2.1.4:
-        1.优化代码
-        2.可以自定义Activity添加扫描
-        3.全屏扫描背景色自动透明
-        4.扫描文字移动到扫描框下方
 
 
 ## 感谢：

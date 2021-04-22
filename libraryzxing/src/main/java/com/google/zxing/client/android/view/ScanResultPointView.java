@@ -1,6 +1,7 @@
 package com.google.zxing.client.android.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -21,9 +22,11 @@ import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.MNScanManager;
 import com.google.zxing.client.android.R;
+import com.google.zxing.client.android.camera.CameraManager;
 import com.google.zxing.client.android.model.MNScanConfig;
 import com.google.zxing.client.android.utils.CommonUtils;
 import com.google.zxing.client.android.utils.StatusBarUtil;
+import com.google.zxing.qrcode.detector.FinderPattern;
 
 import static android.graphics.drawable.GradientDrawable.RECTANGLE;
 
@@ -39,6 +42,8 @@ public class ScanResultPointView extends FrameLayout {
     private Rect cameraFrame;
     private OnResultPointClickListener onResultPointClickListener;
     private ScanSurfaceView scanSurfaceView;
+    private ViewfinderView viewfinderView;
+    private CameraManager cameraManager;
 
     private int resultPointColor;
     private int resultPointStrokeColor;
@@ -50,6 +55,7 @@ public class ScanResultPointView extends FrameLayout {
     private FrameLayout fl_result_point_root;
     private View fakeStatusBar;
     private int statusBarHeight;
+    private ImageView iv_show_result;
 
     public void setOnResultPointClickListener(OnResultPointClickListener onResultPointClickListener) {
         this.onResultPointClickListener = onResultPointClickListener;
@@ -77,6 +83,7 @@ public class ScanResultPointView extends FrameLayout {
     private void initView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.mn_scan_result_point_view, this);
         fakeStatusBar = view.findViewById(R.id.fakeStatusBar2);
+        iv_show_result = view.findViewById(R.id.iv_show_result);
         tv_cancle = view.findViewById(R.id.tv_cancle);
         rl_result_root = view.findViewById(R.id.rl_result_root);
         fl_result_point_root = view.findViewById(R.id.fl_result_point_root);
@@ -120,6 +127,15 @@ public class ScanResultPointView extends FrameLayout {
         this.scanSurfaceView = scanSurfaceView;
     }
 
+    public void setViewfinderView(ViewfinderView viewfinderView) {
+        this.viewfinderView = viewfinderView;
+    }
+
+    public void setCameraManager(CameraManager cameraManager) {
+        this.cameraManager = cameraManager;
+        cameraFrame = cameraManager.getFramingRect();
+    }
+
 
     private void initResultPointConfigs() {
         if (scanConfig == null) {
@@ -152,17 +168,18 @@ public class ScanResultPointView extends FrameLayout {
     }
 
 
-    public void setCameraFrame(Rect cameraFrame) {
-        this.cameraFrame = cameraFrame;
-    }
+    private Bitmap barcodeBitmap;
+    private float scaleFactor;
 
-    public void setDatas(Result[] results) {
+    public void setDatas(Result[] results, Bitmap barcode, float scaleFactor) {
         this.resultPoint = results;
+        this.barcodeBitmap = barcode;
+        this.scaleFactor = scaleFactor;
         drawableResultPoint();
     }
 
     public void drawableResultPoint() {
-        Log.e("======", "drawableResultPoint---start");
+        Log.e(">>>>>>", "drawableResultPoint---start");
         fl_result_point_root.removeAllViews();
         if (resultPoint == null || resultPoint.length == 0) {
             if (onResultPointClickListener != null) {
@@ -170,12 +187,12 @@ public class ScanResultPointView extends FrameLayout {
             }
             return;
         }
-        Log.e("======", "statusBarHeight--->" + statusBarHeight);
+        Log.e(">>>>>>", "statusBarHeight--->" + statusBarHeight);
         if (resizeAbleSurfaceView != null) {
-            Log.e("======", "resizeAbleSurfaceView.getWidth():" + resizeAbleSurfaceView.getWidth() + ",resizeAbleSurfaceView.getHeight():" + resizeAbleSurfaceView.getHeight());
+            Log.e(">>>>>>", "resizeAbleSurfaceView.getWidth():" + resizeAbleSurfaceView.getWidth() + ",resizeAbleSurfaceView.getHeight():" + resizeAbleSurfaceView.getHeight());
         }
         if (scanSurfaceView != null) {
-            Log.e("======", "scanSurfaceView.getWidth():" + scanSurfaceView.getWidth() + ",scanSurfaceView.getHeight():" + scanSurfaceView.getHeight());
+            Log.e(">>>>>>", "scanSurfaceView.getWidth():" + scanSurfaceView.getWidth() + ",scanSurfaceView.getHeight():" + scanSurfaceView.getHeight());
             int[] location = new int[2];
             scanSurfaceView.getLocationOnScreen(location);
             //更新虚假状态栏高度
@@ -247,7 +264,7 @@ public class ScanResultPointView extends FrameLayout {
                 float maxY = points[0].getY();
                 for (int j = 0; j < points.length; j++) {
                     ResultPoint point = points[j];
-                    Log.e("======", "drawableResultPoint---points :" + point.toString());
+                    Log.e(">>>>>>", "drawableResultPoint---points :" + point.toString());
                     if (maxX < point.getX()) {
                         maxX = point.getX();
                         pointRight = point;
@@ -257,15 +274,16 @@ public class ScanResultPointView extends FrameLayout {
                         pointBottom = point;
                     }
                 }
-                int centerX = (int) (pointRight.getX() - (pointRight.getX() - pointBottom.getX()) / 2);
-                int centerY = (int) (pointBottom.getY() - (pointBottom.getY() - pointRight.getY()) / 2);
-                Point centerPoint = getCenterPoint(centerX, centerY);
+                Point realRight = getCenterPoint((int) pointRight.getX(), (int) pointRight.getY());
+                Point realBottom = getCenterPoint((int) pointBottom.getX(), (int) pointBottom.getY());
+                int centerX = (int) (realRight.x - (realRight.x - realBottom.x) / 2);
+                int centerY = (int) (realBottom.y - (realBottom.y - realRight.y) / 2);
                 //位置
                 RelativeLayout.LayoutParams lpRoot = new RelativeLayout.LayoutParams(resultPointWithdHeight, resultPointWithdHeight);
                 rl_root.setLayoutParams(lpRoot);
 
-                rl_root.setX(centerPoint.x);
-                rl_root.setY(centerPoint.y);
+                rl_root.setX(centerX - resultPointWithdHeight / 2.0f);
+                rl_root.setY(centerY - resultPointWithdHeight / 2.0f);
 
                 GradientDrawable gradientDrawable = new GradientDrawable();
                 gradientDrawable.setCornerRadius(resultPointRadiusCorners);
@@ -305,35 +323,42 @@ public class ScanResultPointView extends FrameLayout {
             }
         }
         int childCount = fl_result_point_root.getChildCount();
-        Log.e("======", "fl_result_point_root---childCount：" + childCount);
+        Log.e(">>>>>>", "fl_result_point_root---childCount：" + childCount);
         if (childCount <= 0) {
             //关闭页面
             if (onResultPointClickListener != null) {
                 onResultPointClickListener.onCancle();
             }
         }
-        Log.e("======", "drawableResultPoint---end");
+        if (MNScanManager.isDebugMode) {
+            iv_show_result.setImageBitmap(barcodeBitmap);
+        }
+        Log.e(">>>>>>", "drawableResultPoint---end");
     }
 
     private Point getCenterPoint(int x, int y) {
         int centerX = x;
         int centerY = y;
+        Rect rectFrame = viewfinderView.getRectFrame();
+        Point previewSizeOnScreen = cameraManager.getConfigManager().getPreviewSizeOnScreen();
         //判断是不是全屏模式
         if (!scanConfig.isFullScreenScan()) {
-            if (cameraFrame != null) {
-                centerX += cameraFrame.left;
-                centerY += cameraFrame.top;
+            //计算对应点在当前View上的宽高
+            float newHeight = (float) y / (float) previewSizeOnScreen.y * resizeAbleSurfaceView.getHeight();
+            centerY = (int) newHeight;
+            float newWidth = (float) x / (float) previewSizeOnScreen.x * resizeAbleSurfaceView.getWidth();
+            centerX = (int) newWidth;
+
+            if (viewfinderView != null) {
+                centerX += rectFrame.left;
+                centerY += rectFrame.top;
             }
         } else {
-            centerY += statusBarHeight;
-        }
-        if (resizeAbleSurfaceView != null && scanSurfaceView != null) {
-            if (resizeAbleSurfaceView.getHeight() > scanSurfaceView.getHeight()) {
-                centerY -= (resizeAbleSurfaceView.getHeight() - scanSurfaceView.getHeight()) / 2;
-            }
-//                    if (resizeAbleSurfaceView.getWidth() > scanSurfaceView.getWidth()) {
-//                        centerX -= (resizeAbleSurfaceView.getWidth() - scanSurfaceView.getWidth()) / 2;
-//                    }
+            //计算对应点在当前View上的宽高
+            float newHeight = (float) y / (float) previewSizeOnScreen.y * resizeAbleSurfaceView.getHeight();
+            centerY = (int) newHeight;
+            float newWidth = (float) x / (float) previewSizeOnScreen.x * resizeAbleSurfaceView.getWidth();
+            centerX = (int) newWidth;
         }
         return new Point(centerX, centerY);
     }

@@ -36,7 +36,7 @@ import com.google.zxing.client.android.view.ResizeAbleSurfaceView;
  * configure the camera hardware.
  */
 @SuppressWarnings("deprecation") // camera APIs
-final class CameraConfigurationManager {
+public final class CameraConfigurationManager {
 
     private static final String TAG = "CameraConfiguration";
 
@@ -176,7 +176,7 @@ final class CameraConfigurationManager {
         return bestPreviewSize;
     }
 
-    Point getPreviewSizeOnScreen() {
+    public Point getPreviewSizeOnScreen() {
         return previewSizeOnScreen;
     }
 

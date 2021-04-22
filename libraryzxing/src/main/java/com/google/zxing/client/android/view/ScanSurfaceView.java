@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.zxing.BarcodeFormat;
@@ -159,6 +160,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     }
 
     public void handleDecode(Result[] rawResult, Bitmap barcode, float scaleFactor) {
+        Log.i(">>>>>>", "scaleFactor---：" + scaleFactor);
         if (rawResult.length <= 0) {
             return;
         }
@@ -175,8 +177,9 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         //展示结果点
         resultPointView.setResizeAbleSurfaceView(surfaceView);
         resultPointView.setScanSurfaceView(this);
-        resultPointView.setCameraFrame(getCameraManager().getFramingRect());
-        resultPointView.setDatas(rawResult);
+        resultPointView.setViewfinderView(viewfinderView);
+        resultPointView.setCameraManager(getCameraManager());
+        resultPointView.setDatas(rawResult, barcode, scaleFactor);
         resultPointView.setVisibility(View.VISIBLE);
         stopScan();
         if (onScanCallback != null) {
@@ -315,6 +318,11 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.e(TAG, ">>>>>>surfaceChanged---width：" + width + "，height:" + height);
+        ViewGroup.LayoutParams layoutParams = resultPointView.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        resultPointView.setLayoutParams(layoutParams);
     }
 
     @Override

@@ -384,7 +384,7 @@ public final class ViewfinderView extends View {
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if(!needAnimation){
+                if (!needAnimation) {
                     return;
                 }
                 linePosition = (int) animation.getAnimatedValue();
@@ -422,4 +422,7 @@ public final class ViewfinderView extends View {
         }
     }
 
+    public Rect getRectFrame() {
+        return frame;
+    }
 }

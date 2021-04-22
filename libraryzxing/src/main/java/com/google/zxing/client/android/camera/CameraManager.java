@@ -421,4 +421,8 @@ public class CameraManager {
     public Camera getCamera() {
         return camera.getCamera();
     }
+
+    public CameraConfigurationManager getConfigManager(){
+        return configManager;
+    }
 }

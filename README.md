@@ -13,6 +13,20 @@
     7: 自定义Activity
     8: 支持微信，支付宝类似多个二维码扫码
 
+
+## 截图:
+
+<div align="center">
+<img src = "screenshots/mn_zxing_screenshot_000.jpg" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_001.jpeg" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_002.png" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_003.jpeg" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_004.jpg" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_005.jpg" width=180 >
+<img src = "screenshots/mn_zxing_screenshot_006.jpg" width=180 >
+</div>
+
+
 ## 截图:
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpg)
 ![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)

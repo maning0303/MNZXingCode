@@ -26,26 +26,6 @@
 <img src = "screenshots/mn_zxing_screenshot_006.jpg" width=180 >
 </div>
 
-
-## 截图:
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_000.jpg)
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_001.jpeg)
-
-#### 默认扫描
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_002.png)
-
-#### 自定义颜色扫描样式等
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_003.jpeg)
-
-#### 完全自定义遮罩层
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_004.jpg)
-
-#### 自定义Activity
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_005.jpg)
-
-#### 多二维码扫码
-![image](https://github.com/maning0303/MNZXingCode/blob/master/screenshots/mn_zxing_screenshot_006.jpg)
-
 ## 如何添加
 ### Gradle添加：
 #### 1.在Project的build.gradle中添加仓库地址

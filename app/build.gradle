@@ -38,7 +38,7 @@ dependencies {
     //3.3.3-支持7.0以下版本
     implementation 'com.google.zxing:core:3.3.3'
 
-//    implementation 'com.github.maning0303:MNZXingCode:V2.1.8'
+//    implementation 'com.github.maning0303:MNZXingCode:V2.1.9'
     implementation project(':libraryzxing')
 
 }

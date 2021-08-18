@@ -45,11 +45,11 @@
 
             //zxing 3.4.0 不兼容7.0以下版本，必须java8+
             implementation 'com.google.zxing:core:3.4.0'
-            implementation 'com.github.maning0303:MNZXingCode:V2.1.8'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.9'
 
             //需要支持7.0以下
             implementation 'com.google.zxing:core:3.3.3'
-            implementation 'com.github.maning0303:MNZXingCode:V2.1.8'
+            implementation 'com.github.maning0303:MNZXingCode:V2.1.9'
 
 	}
 ```

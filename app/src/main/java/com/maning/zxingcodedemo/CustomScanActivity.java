@@ -101,7 +101,8 @@ public class CustomScanActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mScanSurfaceView.isResultPointViewShow()) {
+        //多点扫描结果点显示，可以取消
+        if (mScanSurfaceView != null && mScanSurfaceView.isResultPointViewShow()) {
             mScanSurfaceView.hideResultPointView();
             mScanSurfaceView.restartScan();
             return;

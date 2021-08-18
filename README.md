@@ -213,6 +213,17 @@
                     super.onDestroy();
                     mScanSurfaceView.onDestroy();
                 }
+
+                @Override
+                public void onBackPressed() {
+                    //多点扫描结果点显示，可以取消
+                    if (mScanSurfaceView != null && mScanSurfaceView.isResultPointViewShow()) {
+                        mScanSurfaceView.hideResultPointView();
+                        mScanSurfaceView.restartScan();
+                        return;
+                    }
+                    super.onBackPressed();
+                }
             }
 
         3：生成二维码：
@@ -263,6 +274,11 @@
 ```
 
 ## 版本记录：
+    v2.1.9:
+        1.扫描结果点显示位置偏移优化
+        2.扫描结果点View支持手动取消
+        3.扫描网格线显示优化
+        
     v2.1.8:
         1.扫描结果点显示位置偏移修复
         
@@ -270,11 +286,6 @@
         1.支持多二维码同时扫出
         2.优化扫描结果点
         3.zxing版本自定义
-        
-    v2.1.6:
-        1.优化代码，防止内存泄露
-        2.生成二维码支持修改颜色和边距
-        3.整体转为AndroidX
 
 
 ## 感谢：

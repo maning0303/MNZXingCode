@@ -107,12 +107,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
 
             @Override
             public void onCancle() {
-                resultPointView.setVisibility(View.GONE);
-                zoomControllerView.setVisibility(View.VISIBLE);
-                viewfinderView.setVisibility(View.VISIBLE);
-                if (onScanCallback != null) {
-                    onScanCallback.onRestartScan();
-                }
+                hideResultPointView();
                 restartScan();
             }
         });
@@ -129,6 +124,11 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
     public void hideResultPointView(){
         resultPointView.removeAllPoints();
         resultPointView.setVisibility(View.GONE);
+        zoomControllerView.setVisibility(View.VISIBLE);
+        viewfinderView.setVisibility(View.VISIBLE);
+        if (onScanCallback != null) {
+            onScanCallback.onRestartScan();
+        }
     }
 
     public void init() {
@@ -249,7 +249,8 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         viewfinderView.setCameraManager(cameraManager);
         viewfinderView.setVisibility(View.VISIBLE);
         zoomControllerView.setVisibility(View.VISIBLE);
-        hideResultPointView();
+        resultPointView.removeAllPoints();
+        resultPointView.setVisibility(View.GONE);
 
         if (beepManager != null) {
             beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());

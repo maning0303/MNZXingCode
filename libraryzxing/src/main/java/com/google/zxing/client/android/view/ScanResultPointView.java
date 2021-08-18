@@ -187,7 +187,12 @@ public class ScanResultPointView extends FrameLayout {
             }
             return;
         }
+        if (barcodeBitmap != null) {
+            Log.e(">>>>>>", "barcodeBitmap--w:" + barcodeBitmap.getWidth() + ",h:" + barcodeBitmap.getHeight());
+        }
         Log.e(">>>>>>", "statusBarHeight--->" + statusBarHeight);
+        Log.e(">>>>>>", "viewfinderView.getRectFrame()--->" + viewfinderView.getRectFrame().toString());
+        Log.e(">>>>>>", "previewSizeOnScreen:" + cameraManager.getConfigManager().getPreviewSizeOnScreen().toString());
         if (resizeAbleSurfaceView != null) {
             Log.e(">>>>>>", "resizeAbleSurfaceView.getWidth():" + resizeAbleSurfaceView.getWidth() + ",resizeAbleSurfaceView.getHeight():" + resizeAbleSurfaceView.getHeight());
         }
@@ -341,24 +346,17 @@ public class ScanResultPointView extends FrameLayout {
         int centerY = y;
         Rect rectFrame = viewfinderView.getRectFrame();
         Point previewSizeOnScreen = cameraManager.getConfigManager().getPreviewSizeOnScreen();
+        //计算对应点在当前View上的宽高
+        float newHeight = (float) y / (float) previewSizeOnScreen.y * scanSurfaceView.getHeight();
+        centerY = (int) newHeight;
+        float newWidth = (float) x / (float) previewSizeOnScreen.x * scanSurfaceView.getWidth();
+        centerX = (int) newWidth;
         //判断是不是全屏模式
         if (!scanConfig.isFullScreenScan()) {
-            //计算对应点在当前View上的宽高
-            float newHeight = (float) y / (float) previewSizeOnScreen.y * resizeAbleSurfaceView.getHeight();
-            centerY = (int) newHeight;
-            float newWidth = (float) x / (float) previewSizeOnScreen.x * resizeAbleSurfaceView.getWidth();
-            centerX = (int) newWidth;
-
             if (viewfinderView != null) {
                 centerX += rectFrame.left;
                 centerY += rectFrame.top;
             }
-        } else {
-            //计算对应点在当前View上的宽高
-            float newHeight = (float) y / (float) previewSizeOnScreen.y * resizeAbleSurfaceView.getHeight();
-            centerY = (int) newHeight;
-            float newWidth = (float) x / (float) previewSizeOnScreen.x * resizeAbleSurfaceView.getWidth();
-            centerX = (int) newWidth;
         }
         return new Point(centerX, centerY);
     }

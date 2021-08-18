@@ -31,6 +31,8 @@ public class CustomScanActivity extends AppCompatActivity {
         mScanSurfaceView.init(this);
         MNScanConfig scanConfig = new MNScanConfig.Builder()
                 .setSupportZoom(true)
+                .setFullScreenScan(true)
+                .setSupportMultiQRCode(true)
                 .builder();
         mScanSurfaceView.setScanConfig(scanConfig);
         mScanSurfaceView.setOnScanCallback(new OnScanCallback() {

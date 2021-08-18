@@ -34,11 +34,13 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_alignParentBottom="true"
-        android:layout_width="160dp"
         android:id="@+id/iv_show_result"
+        android:layout_width="160dp"
+        android:layout_height="240dp"
         android:layout_alignParentRight="true"
-        android:layout_height="240dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:scaleType="centerInside" />
 
     <FrameLayout
         android:id="@+id/fl_result_point_root"

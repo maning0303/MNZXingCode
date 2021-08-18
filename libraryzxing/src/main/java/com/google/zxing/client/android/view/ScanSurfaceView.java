@@ -3,6 +3,7 @@ package com.google.zxing.client.android.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.VpnService;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -115,6 +116,19 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
                 restartScan();
             }
         });
+    }
+
+    /**
+     * 结果点是否显示
+     * @return
+     */
+    public boolean isResultPointViewShow(){
+        return resultPointView.getVisibility() == View.VISIBLE;
+    }
+
+    public void hideResultPointView(){
+        resultPointView.removeAllPoints();
+        resultPointView.setVisibility(View.GONE);
     }
 
     public void init() {
@@ -235,7 +249,7 @@ public class ScanSurfaceView extends FrameLayout implements SurfaceHolder.Callba
         viewfinderView.setCameraManager(cameraManager);
         viewfinderView.setVisibility(View.VISIBLE);
         zoomControllerView.setVisibility(View.VISIBLE);
-        resultPointView.setVisibility(View.GONE);
+        hideResultPointView();
 
         if (beepManager != null) {
             beepManager.updatePrefs(scanConfig.isShowBeep(), scanConfig.isShowVibrate());

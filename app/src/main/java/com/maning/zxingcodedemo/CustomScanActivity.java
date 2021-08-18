@@ -98,4 +98,14 @@ public class CustomScanActivity extends AppCompatActivity {
             mScanSurfaceView.stopScan();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (mScanSurfaceView.isResultPointViewShow()) {
+            mScanSurfaceView.hideResultPointView();
+            mScanSurfaceView.restartScan();
+            return;
+        }
+        super.onBackPressed();
+    }
 }

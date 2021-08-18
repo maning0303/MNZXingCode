@@ -102,6 +102,7 @@ public class ScanResultPointView extends FrameLayout {
                 if (onResultPointClickListener != null) {
                     onResultPointClickListener.onCancle();
                 }
+                removeAllPoints();
             }
         });
         rl_result_root.setOnClickListener(new OnClickListener() {
@@ -178,9 +179,13 @@ public class ScanResultPointView extends FrameLayout {
         drawableResultPoint();
     }
 
+    public void removeAllPoints(){
+        fl_result_point_root.removeAllViews();
+    }
+
     public void drawableResultPoint() {
         Log.e(">>>>>>", "drawableResultPoint---start");
-        fl_result_point_root.removeAllViews();
+        removeAllPoints();
         if (resultPoint == null || resultPoint.length == 0) {
             if (onResultPointClickListener != null) {
                 onResultPointClickListener.onCancle();

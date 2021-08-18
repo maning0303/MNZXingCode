@@ -338,7 +338,12 @@ public final class ViewfinderView extends View {
         int stroke = 2;
         paintLaser.setStrokeWidth(stroke);
         //计算Y轴开始位置
-        int startY = gridHeight > 0 && linePosition - frame.top > gridHeight ? linePosition - gridHeight : frame.top;
+        int startY;
+        if(gridHeight > 0 && linePosition - frame.top > gridHeight){
+            startY = linePosition - gridHeight;
+        }else{
+            startY = frame.top;
+        }
 
         LinearGradient linearGradient = new LinearGradient(frame.left + frame.width() / 2, startY, frame.left + frame.width() / 2, linePosition, new int[]{shadeColor(laserColor), laserColor}, new float[]{0, 1f}, LinearGradient.TileMode.CLAMP);
         //给画笔设置着色器
@@ -347,8 +352,18 @@ public final class ViewfinderView extends View {
         float wUnit = frame.width() * 1.0f / gridColumn;
         float hUnit = wUnit;
         //遍历绘制网格纵线
-        for (int i = 1; i < gridColumn; i++) {
-            canvas.drawLine(frame.left + i * wUnit, startY, frame.left + i * wUnit, linePosition, paintLaser);
+        for (int i = 0; i <= gridColumn; i++) {
+            float startX;
+            float stopX;
+            if (i == 0) {
+                startX = frame.left + 1;
+            } else if (i == gridColumn) {
+                startX = frame.left + i * wUnit - 1;
+            } else {
+                startX = frame.left + i * wUnit;
+            }
+            stopX = startX;
+            canvas.drawLine(startX, startY, stopX, linePosition, paintLaser);
         }
         int height = gridHeight > 0 && linePosition - frame.top > gridHeight ? gridHeight : linePosition - frame.top;
         //遍历绘制网格横线
@@ -377,7 +392,7 @@ public final class ViewfinderView extends View {
         if (anim != null && anim.isRunning()) {
             return;
         }
-        anim = ValueAnimator.ofInt(frame.top + margin, frame.bottom - margin);
+        anim = ValueAnimator.ofInt(frame.top, frame.bottom);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.setRepeatMode(ValueAnimator.RESTART);
         anim.setDuration(2400);

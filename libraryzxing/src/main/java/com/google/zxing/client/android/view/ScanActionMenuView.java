@@ -33,7 +33,6 @@ public class ScanActionMenuView extends FrameLayout {
 
     private RelativeLayout rl_default_menu;
     private LinearLayout ll_custom_view;
-    private View fakeStatusBar;
 
     private OnScanActionMenuListener onScanActionMenuListener;
 
@@ -74,7 +73,6 @@ public class ScanActionMenuView extends FrameLayout {
         btn_photo = (LinearLayout) findViewById(R.id.btn_photo);
         rl_default_menu = (RelativeLayout) findViewById(R.id.rl_default_menu);
         ll_custom_view = (LinearLayout) findViewById(R.id.ll_custom_view);
-        fakeStatusBar = (View) findViewById(R.id.fakeStatusBar);
 
         rl_default_menu.setVisibility(View.GONE);
         ll_custom_view.setVisibility(View.GONE);

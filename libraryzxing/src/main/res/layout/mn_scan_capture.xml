@@ -31,10 +31,9 @@
         <View
             android:id="@+id/fakeStatusBar"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="20dp"
             android:background="#00000000"
-            tools:ignore="MissingConstraints"
-            tools:layout_height="20dp" />
+            tools:ignore="MissingConstraints" />
 
         <!--功能菜单-->
         <com.google.zxing.client.android.view.ScanActionMenuView

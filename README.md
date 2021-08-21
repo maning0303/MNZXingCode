@@ -3,7 +3,8 @@
 ##  快速集成zxing二维码扫描，生成二维码，可配置相册，闪光灯，相机可以调整焦距放大缩小，自定义扫描线颜色，自定义背景颜色，自定义遮罩层，自定义Activity，多个二维码扫码（zxing:core:3.3.3/3.4.0）
 [![](https://jitpack.io/v/maning0303/MNZXingCode.svg)](https://jitpack.io/#maning0303/MNZXingCode)
 
-## （推荐）觉得zxing速度慢的可以使用下面MLKit集成识别，速度更快，可以同时支持多个二维码和条形码扫描
+
+### （推荐）MNMLKitScanner 基于MLKit集成识别，速度比zxing更快，可以同时支持多个二维码和多个条形码扫描
 [MNMLKitScanner](https://github.com/maning0303/MNMLKitScanner)
 
 ##  功能：
@@ -56,9 +57,6 @@
 
 	}
 ```
-
-### 源码添加：
-#### 直接拷贝整个module：libraryzxing，然后关联到你的项目就可以使用
 
 ## 使用方法:
 ###  进入需要提前申请相机权限；进入需要提前申请相机权限；进入需要提前申请相机权限；
